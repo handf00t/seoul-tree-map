@@ -4,3 +4,10 @@ __pycache__/
 .DS_Store
 .env
 *.ipynb_checkpoints
+node_modules/
+.cache/
+build/
+dist/
+*.log
+
+
