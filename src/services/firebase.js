@@ -264,7 +264,11 @@ export const visitService = {
           species_kr: treeData.species_kr,
           tree_type: treeData.tree_type,
           borough: treeData.borough,
-          district: treeData.district
+          district: treeData.district,
+          coordinates: {
+            lat: treeData.clickCoordinates?.lat || treeData.latitude || 37.5665,
+            lng: treeData.clickCoordinates?.lng || treeData.longitude || 126.9780
+          }
         }
       };
 

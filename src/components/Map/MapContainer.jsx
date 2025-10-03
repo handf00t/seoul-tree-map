@@ -289,11 +289,12 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
 
     if (selectedTree && selectedTree.clickCoordinates) {
       const getMarkerColor = (treeType) => {
+        const style = getComputedStyle(document.documentElement);
         switch(treeType) {
-          case 'protected': return '#FF6B6B';
-          case 'roadside': return '#22C55E';
-          case 'park': return '#45B7D1';
-          default: return '#2ECC71';
+          case 'protected': return style.getPropertyValue('--tree-protected').trim() || '#FF6B6B';
+          case 'roadside': return style.getPropertyValue('--primary').trim() || '#22C55E';
+          case 'park': return style.getPropertyValue('--tree-park').trim() || '#45B7D1';
+          default: return style.getPropertyValue('--primary').trim() || '#a3e635';
         }
       };
 

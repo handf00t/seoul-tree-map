@@ -2,6 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { visitService } from '../../services/firebase';
+import IconButton from '../UI/IconButton';
+import LoadingSpinner from '../UI/LoadingSpinner';
+import EmptyState from '../UI/EmptyState';
 
 const MobileNavPanel = ({ 
   map, 
@@ -35,13 +38,13 @@ const MobileNavPanel = ({
   const [loadingMyVisits, setLoadingMyVisits] = useState(false);
 
   const previewFilters = user ? [
-    { id: 'my-trees', name: '', color: '#FF69B4', icon: '💚' },
-    { id: 'cherry', name: '벚나무', color: '#FFB6C1' },
-    { id: 'pine', name: '소나무', color: '#006400' }
+    { id: 'my-trees', name: '', color: 'var(--favorite-pink)', icon: <span className="material-icons" style={{ fontSize: '16px' }}>favorite</span> },
+    { id: 'cherry', name: '벚나무', color: 'var(--species-cherry)' },
+    { id: 'pine', name: '소나무', color: 'var(--species-pine)' }
   ] : [
-    { id: 'ginkgo', name: '은행나무', color: '#FFD700' },
-    { id: 'cherry', name: '벚나무', color: '#FFB6C1' },
-    { id: 'pine', name: '소나무', color: '#006400' }
+    { id: 'ginkgo', name: '은행나무', color: 'var(--species-ginkgo)' },
+    { id: 'cherry', name: '벚나무', color: 'var(--species-cherry)' },
+    { id: 'pine', name: '소나무', color: 'var(--species-pine)' }
   ];
 
   // 나의 방문 로드
@@ -446,10 +449,10 @@ const MobileNavPanel = ({
       bottom: getBottomPosition(),
       left: 0,
       right: 0,
-      background: 'rgba(255, 255, 255, 0.98)',
+      background: 'var(--surface-elevated)',
       backdropFilter: 'blur(20px)',
       borderRadius: '20px 20px 0 0',
-      boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.1)',
+      boxShadow: '0 -4px 20px var(--shadow-color-md)',
       zIndex: 1000,
       maxHeight: getMaxHeight(),
       //overflowY: 'auto',
@@ -476,7 +479,7 @@ const MobileNavPanel = ({
         <div style={{
           width: '36px',
           height: '4px',
-          background: isDragging ? '#4ECDC4' : '#e0e0e0',
+          background: isDragging ? 'var(--primary)' : 'var(--outline)',
           borderRadius: '2px',
           transition: isDragging ? 'none' : 'all 0.2s ease'
         }} />
@@ -498,7 +501,7 @@ const MobileNavPanel = ({
             justifyContent: 'space-between',
             marginBottom: '24px',
             paddingBottom: '16px',
-            borderBottom: '1px solid #f0f0f0'
+            borderBottom: '1px solid var(--divider)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <img
@@ -514,7 +517,7 @@ const MobileNavPanel = ({
               <div>
                 <div style={{
                   fontWeight: '700',
-                  color: '#333',
+                  color: 'var(--text-primary)',
                   fontSize: '18px',
                   marginBottom: '4px'
                 }}>
@@ -522,35 +525,24 @@ const MobileNavPanel = ({
                 </div>
                 <div style={{
                   fontSize: '14px',
-                  color: '#666'
+                  color: 'var(--text-secondary)'
                 }}>
                   {user.email}
                 </div>
               </div>
             </div>
             
-            <button
+            <IconButton
+              icon="close"
               onClick={() => setShowProfileMenu(false)}
-              style={{
-                background: '#f8f9fa',
-                border: 'none',
-                borderRadius: '50%',
-                width: '32px',
-                height: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontSize: '18px',
-                color: '#666'
-              }}
-            >
-              ✕
-            </button>
+              variant="close"
+              size="medium"
+              ariaLabel="메뉴 닫기"
+            />
           </div>
 
           <div style={{
-            background: '#f8f9fa',
+            background: 'var(--surface-variant)',
             padding: '16px',
             borderRadius: '12px',
             marginBottom: '20px'
@@ -561,20 +553,20 @@ const MobileNavPanel = ({
               alignItems: 'center',
               marginBottom: '12px'
             }}>
-              <span style={{ fontSize: '14px', color: '#666', fontWeight: '600' }}>
+              <span style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '600' }}>
                 즐겨찾기한 나무
               </span>
               <span style={{
                 fontSize: '18px',
                 fontWeight: '700',
-                color: '#4ECDC4'
+                color: 'var(--primary)'
               }}>
                 {userFavorites.length}개
               </span>
             </div>
             
             {userFavorites.length > 0 && (
-              <div style={{ fontSize: '12px', color: '#888' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
                 가장 최근: {userFavorites[0]?.species_kr || '미상'} 
                 ({userFavorites[0]?.borough})
               </div>
@@ -589,26 +581,26 @@ const MobileNavPanel = ({
               }}
               style={{
                 padding: '16px 20px',
-                background: 'white',
-                border: '1px solid #e0e0e0',
+                background: 'var(--surface)',
+                border: '1px solid var(--outline)',
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#333',
+                color: 'var(--text-primary)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 transition: 'all 0.2s ease'
               }}
-              onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
+              onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
               onMouseLeave={(e) => e.target.style.background = 'white'}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ fontSize: '20px' }}>💚</span>
                 <span>내 즐겨찾기</span>
               </div>
-              <span style={{ color: '#666', fontSize: '14px' }}>{'>'}</span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
             </button>
             
             <button
@@ -618,37 +610,37 @@ const MobileNavPanel = ({
               }}
               style={{
                 padding: '16px 20px',
-                background: 'white',
-                border: '1px solid #e0e0e0',
+                background: 'var(--surface)',
+                border: '1px solid var(--outline)',
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#333',
+                color: 'var(--text-primary)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 transition: 'all 0.2s ease'
               }}
-              onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
+              onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
               onMouseLeave={(e) => e.target.style.background = 'white'}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ fontSize: '20px' }}>📍</span>
                 <span>나의 방문</span>
               </div>
-              <span style={{ color: '#666', fontSize: '14px' }}>{'>'}</span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
             </button>
             
             <button
               style={{
                 padding: '16px 20px',
-                background: 'white',
-                border: '1px solid #e0e0e0',
+                background: 'var(--surface)',
+                border: '1px solid var(--outline)',
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#333',
+                color: 'var(--text-primary)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -662,18 +654,18 @@ const MobileNavPanel = ({
                 <span style={{ fontSize: '20px' }}>⚙️</span>
                 <span>설정</span>
               </div>
-              <span style={{ color: '#ccc', fontSize: '12px' }}>준비중</span>
+              <span style={{ color: 'var(--text-disabled)', fontSize: '12px' }}>준비중</span>
             </button>
             
             <button
               style={{
                 padding: '16px 20px',
-                background: 'white',
-                border: '1px solid #e0e0e0',
+                background: 'var(--surface)',
+                border: '1px solid var(--outline)',
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#333',
+                color: 'var(--text-primary)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -687,7 +679,7 @@ const MobileNavPanel = ({
                 <span style={{ fontSize: '20px' }}>❓</span>
                 <span>도움말</span>
               </div>
-              <span style={{ color: '#ccc', fontSize: '12px' }}>준비중</span>
+              <span style={{ color: 'var(--text-disabled)', fontSize: '12px' }}>준비중</span>
             </button>
           </div>
 
@@ -696,11 +688,11 @@ const MobileNavPanel = ({
             style={{
               padding: '16px 20px',
               background: 'none',
-              border: '1px solid #e0e0e0',
+              border: '1px solid var(--outline)',
               borderRadius: '12px',
               fontSize: '16px',
               fontWeight: '600',
-              color: '#ff4757',
+              color: 'var(--error)',
               cursor: 'pointer',
               marginTop: '20px',
               marginBottom: '80px'
@@ -721,11 +713,11 @@ const MobileNavPanel = ({
         }}>
           <div style={{
             padding: '20px',
-            borderBottom: '1px solid #f0f0f0',
+            borderBottom: '1px solid var(--divider)',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            background: 'white',
+            background: 'var(--surface)',
             position: 'sticky',
             top: 0,
             zIndex: 10
@@ -740,7 +732,7 @@ const MobileNavPanel = ({
                 padding: '4px',
                 display: 'flex',
                 alignItems: 'center',
-                color: '#666'
+                color: 'var(--text-secondary)'
               }}
             >
               ←
@@ -750,14 +742,14 @@ const MobileNavPanel = ({
                 margin: 0,
                 fontSize: '18px',
                 fontWeight: '700',
-                color: '#333'
+                color: 'var(--text-primary)'
               }}>
                 나의 방문
               </h3>
               <p style={{
                 margin: '2px 0 0 0',
                 fontSize: '13px',
-                color: '#666'
+                color: 'var(--text-secondary)'
               }}>
                 내가 기록한 나무 {myVisits.length}개
               </p>
@@ -771,36 +763,14 @@ const MobileNavPanel = ({
             paddingBottom: 'calc(100px + env(safe-area-inset-bottom))'
           }}>
             {loadingMyVisits ? (
-              <div style={{
-                padding: '60px 20px',
-                textAlign: 'center',
-                color: '#666'
-              }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  border: '3px solid #f3f3f3',
-                  borderTop: '3px solid #4ECDC4',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite',
-                  margin: '0 auto 12px'
-                }} />
-                방문기록을 불러오는 중...
-              </div>
+              <LoadingSpinner text="방문기록을 불러오는 중..." />
             ) : myVisits.length === 0 ? (
-              <div style={{
-                padding: '60px 20px',
-                textAlign: 'center',
-                color: '#999'
-              }}>
-                <div style={{ fontSize: '48px', marginBottom: '12px' }}>🌳</div>
-                <div style={{ fontSize: '16px', marginBottom: '8px', fontWeight: '600' }}>
-                  아직 방문 기록이 없습니다
-                </div>
-                <div style={{ fontSize: '14px', color: '#bbb' }}>
-                  나무를 방문하고 첫 기록을 남겨보세요!
-                </div>
-              </div>
+              <EmptyState
+                icon="park"
+                title="아직 방문 기록이 없습니다"
+                description="나무를 방문하고 첫 기록을 남겨보세요!"
+                variant="plain"
+              />
             ) : (
               <div style={{
                 display: 'flex',
@@ -815,9 +785,9 @@ const MobileNavPanel = ({
                       display: 'flex',
                       gap: '12px',
                       padding: '16px',
-                      background: '#f8f9fa',
+                      background: 'var(--surface-variant)',
                       borderRadius: '12px',
-                      border: '1px solid #e8e8e8',
+                      border: '1px solid var(--outline-variant)',
                       cursor: 'pointer',
                       position: 'relative',
                       transition: 'all 0.2s ease'
@@ -830,7 +800,7 @@ const MobileNavPanel = ({
                         flexShrink: 0,
                         borderRadius: '8px',
                         overflow: 'hidden',
-                        background: '#e0e0e0'
+                        background: 'var(--outline)'
                       }}
                     >
                       {visit.photoURL ? (
@@ -863,7 +833,7 @@ const MobileNavPanel = ({
                       <div style={{
                         fontSize: '16px',
                         fontWeight: '600',
-                        color: '#333',
+                        color: 'var(--text-primary)',
                         marginBottom: '4px'
                       }}>
                         {visit.treeInfo?.species_kr || '미상'}
@@ -871,7 +841,7 @@ const MobileNavPanel = ({
                       
                       <div style={{
                         fontSize: '13px',
-                        color: '#666',
+                        color: 'var(--text-secondary)',
                         marginBottom: '6px'
                       }}>
                         {visit.treeInfo?.borough} {visit.treeInfo?.district}
@@ -879,7 +849,7 @@ const MobileNavPanel = ({
 
                       <div style={{
                         fontSize: '14px',
-                        color: '#333',
+                        color: 'var(--text-primary)',
                         marginBottom: '6px',
                         lineHeight: '1.4',
                         overflow: 'hidden',
@@ -891,45 +861,24 @@ const MobileNavPanel = ({
 
                       <div style={{
                         fontSize: '12px',
-                        color: '#999'
+                        color: 'var(--text-tertiary)'
                       }}>
                         {formatDate(visit.createdAt)}
                       </div>
                     </div>
 
-                    <button
+                    <IconButton
+                      icon="delete"
                       onClick={(e) => handleDeleteMyVisit(visit.id, e)}
+                      variant="danger"
+                      size="medium"
+                      ariaLabel="삭제"
                       style={{
                         position: 'absolute',
                         top: '12px',
-                        right: '12px',
-                        background: '#fff',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '6px',
-                        width: '32px',
-                        height: '32px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#999',
-                        transition: 'all 0.2s ease'
+                        right: '12px'
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = '#ff4757';
-                        e.target.style.color = 'white';
-                        e.target.style.borderColor = '#ff4757';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = '#fff';
-                        e.target.style.color = '#999';
-                        e.target.style.borderColor = '#e0e0e0';
-                      }}
-                      title="삭제"
-                    >
-                      🗑️
-                    </button>
+                    />
                   </div>
                 ))}
               </div>
@@ -960,8 +909,8 @@ const MobileNavPanel = ({
                     padding: '12px 16px',
                     fontSize: '16px',
                     borderRadius: '12px',
-                    border: '1px solid #e0e0e0',
-                    background: '#f8f9fa',
+                    border: '1px solid var(--outline)',
+                    background: 'var(--surface-variant)',
                     outline: 'none'
                   }}
                   onFocus={() => {
@@ -983,7 +932,7 @@ const MobileNavPanel = ({
                       background: 'none',
                       border: 'none',
                       fontSize: '18px',
-                      color: '#666',
+                      color: 'var(--text-secondary)',
                       cursor: 'pointer'
                     }}
                   >
@@ -997,7 +946,7 @@ const MobileNavPanel = ({
                 style={{
                   width: '44px',
                   height: '44px',
-                  background: user ? '#4ECDC4' : '#f8f9fa',
+                  background: user ? 'var(--primary)' : 'var(--surface-variant)',
                   border: 'none',
                   borderRadius: '12px',
                   cursor: 'pointer',
@@ -1005,7 +954,7 @@ const MobileNavPanel = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '18px',
-                  color: user ? 'white' : '#666'
+                  color: user ? 'white' : 'var(--text-secondary)'
                 }}
               >
                 ☰
@@ -1017,9 +966,9 @@ const MobileNavPanel = ({
                 marginBottom: '20px',
                 maxHeight: '200px',
                 overflowY: 'auto',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--outline)',
                 borderRadius: '12px',
-                background: 'white'
+                background: 'var(--surface)'
               }}>
                 {suggestions.map((suggestion) => (
                   <div
@@ -1028,13 +977,13 @@ const MobileNavPanel = ({
                     style={{
                       padding: '12px 16px',
                       cursor: 'pointer',
-                      borderBottom: '1px solid #f0f0f0'
+                      borderBottom: '1px solid var(--divider)'
                     }}
                   >
-                    <div style={{ fontWeight: '600', color: '#333' }}>
+                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
                       {suggestion.shortName}
                     </div>
-                    <div style={{ fontSize: '14px', color: '#666' }}>
+                    <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
                       {suggestion.name}
                     </div>
                   </div>
@@ -1047,7 +996,7 @@ const MobileNavPanel = ({
                 margin: '0 0 12px 0',
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#333'
+                color: 'var(--text-primary)'
               }}>
                 나무 필터
               </h3>
@@ -1069,9 +1018,9 @@ const MobileNavPanel = ({
                       onClick={() => handleQuickFilter(filter.id)}
                       style={{
                         padding: '8px 16px',
-                        background: isActive ? filter.color : '#f8f9fa',
-                        color: isActive ? 'white' : '#333',
-                        border: isActive ? 'none' : '1px solid #e0e0e0',
+                        background: isActive ? filter.color : 'var(--surface-variant)',
+                        color: isActive ? 'white' : 'var(--text-primary)',
+                        border: isActive ? 'none' : '1px solid var(--outline)',
                         borderRadius: '20px',
                         fontSize: '14px',
                         fontWeight: '600',
@@ -1102,9 +1051,9 @@ const MobileNavPanel = ({
                   onClick={onFilterClick}
                   style={{
                     padding: '8px 16px',
-                    background: '#f8f9fa',
-                    color: '#666',
-                    border: '1px solid #e0e0e0',
+                    background: 'var(--surface-variant)',
+                    color: 'var(--text-secondary)',
+                    border: '1px solid var(--outline)',
                     borderRadius: '20px',
                     fontSize: '14px',
                     fontWeight: '600',
@@ -1122,7 +1071,7 @@ const MobileNavPanel = ({
                 <div style={{
                   marginTop: '8px',
                   fontSize: '12px',
-                  color: '#4ECDC4',
+                  color: 'var(--primary)',
                   fontWeight: '600'
                 }}>
                   {isMyTreesActive ? '나의 나무 표시 중' : `${activeFilterCount}개 필터 활성화됨`}
@@ -1137,7 +1086,7 @@ const MobileNavPanel = ({
                     margin: '0 0 12px 0',
                     fontSize: '16px',
                     fontWeight: '600',
-                    color: '#333'
+                    color: 'var(--text-primary)'
                   }}>
                     즐겨찾기
                   </h3>
@@ -1157,9 +1106,9 @@ const MobileNavPanel = ({
                           alignItems: 'center',
                           justifyContent: 'space-between',
                           padding: '16px',
-                          background: '#f8f9fa',
+                          background: 'var(--surface-variant)',
                           borderRadius: '12px',
-                          border: '1px solid #e8e8e8'
+                          border: '1px solid var(--outline-variant)'
                         }}
                       >
                         <div
@@ -1176,15 +1125,15 @@ const MobileNavPanel = ({
                             width: '12px',
                             height: '12px',
                             borderRadius: '50%',
-                            background: favorite.tree_type === 'protected' ? '#FF6B6B' :
-                                       favorite.tree_type === 'roadside' ? '#4ECDC4' : '#45B7D1',
+                            background: favorite.tree_type === 'protected' ? 'var(--tree-protected)' :
+                                       favorite.tree_type === 'roadside' ? 'var(--primary)' : 'var(--tree-park)',
                             flexShrink: 0
                           }} />
                           
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ 
                               fontWeight: '600', 
-                              color: '#333', 
+                              color: 'var(--text-primary)', 
                               fontSize: '15px',
                               marginBottom: '4px'
                             }}>
@@ -1192,7 +1141,7 @@ const MobileNavPanel = ({
                             </div>
                             <div style={{ 
                               fontSize: '13px', 
-                              color: '#666',
+                              color: 'var(--text-secondary)',
                               lineHeight: '1.3'
                             }}>
                               {favorite.address || `${favorite.borough} ${favorite.district}`}
@@ -1203,8 +1152,8 @@ const MobileNavPanel = ({
                         <button
                           onClick={() => handleRemoveFavorite(favorite)}
                           style={{
-                            background: '#fff',
-                            border: '1px solid #e0e0e0',
+                            background: 'var(--surface)',
+                            border: '1px solid var(--outline)',
                             borderRadius: '6px',
                             width: '32px',
                             height: '32px',
@@ -1213,7 +1162,7 @@ const MobileNavPanel = ({
                             justifyContent: 'center',
                             cursor: 'pointer',
                             fontSize: '12px',
-                            color: '#999',
+                            color: 'var(--text-tertiary)',
                             marginLeft: '12px',
                             flexShrink: 0
                           }}
@@ -1230,9 +1179,9 @@ const MobileNavPanel = ({
                         style={{
                           padding: '12px',
                           background: 'none',
-                          border: '1px solid #e0e0e0',
+                          border: '1px solid var(--outline)',
                           borderRadius: '8px',
-                          color: '#4ECDC4',
+                          color: 'var(--primary)',
                           fontSize: '14px',
                           fontWeight: '600',
                           cursor: 'pointer'
@@ -1244,61 +1193,36 @@ const MobileNavPanel = ({
                   </div>
                 </div>
               ) : (
-                <div style={{
-                  padding: '24px',
-                  textAlign: 'center',
-                  background: '#f8f9fa',
-                  borderRadius: '12px',
-                  border: '1px dashed #e0e0e0'
-                }}>
-                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>🌳</div>
-                  <div style={{ color: '#666', fontSize: '14px' }}>
-                    아직 즐겨찾기한 나무가 없어요
-                  </div>
-                </div>
+                <EmptyState
+                  icon="🌳"
+                  description="아직 즐겨찾기한 나무가 없어요"
+                  variant="dashed"
+                />
               )
             ) : (
-              <div style={{
-                padding: '20px',
-                textAlign: 'center',
-                background: '#f8f9fa',
-                borderRadius: '12px',
-                border: '1px solid #e0e0e0'
-              }}>
-                <div style={{ fontSize: '28px', marginBottom: '12px' }}>💚</div>
-                <div style={{ 
-                  color: '#333', 
-                  fontSize: '16px', 
-                  fontWeight: '600',
-                  marginBottom: '8px'
-                }}>
-                  즐겨찾기 기능
-                </div>
-                <div style={{ 
-                  color: '#666', 
-                  fontSize: '14px',
-                  marginBottom: '16px',
-                  lineHeight: '1.4'
-                }}>
-                  마음에 드는 나무를 저장하고<br/>
-                  언제든 다시 찾아보세요
-                </div>
-                <button
-                  onClick={() => onFavoritesClick()}
-                  style={{
-                    background: '#4ECDC4',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '10px 20px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  로그인하기
-                </button>
-              </div>
+              <EmptyState
+                icon="💚"
+                title="즐겨찾기 기능"
+                description={<>마음에 드는 나무를 저장하고<br/>언제든 다시 찾아보세요</>}
+                variant="default"
+                action={
+                  <button
+                    onClick={() => onFavoritesClick()}
+                    style={{
+                      background: 'var(--primary)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '10px 20px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    로그인하기
+                  </button>
+                }
+              />
             )}
           </div>
         </>

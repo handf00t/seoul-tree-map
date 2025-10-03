@@ -5,6 +5,9 @@ import { visitService } from '../../services/firebase';
 import CameraCapture from '../Visit/CameraCapture';
 import VisitRecordForm from '../Visit/VisitRecordForm';
 import VisitList from '../Visit/VisitList';
+import IconButton from '../UI/IconButton';
+import LoadingSpinner from '../UI/LoadingSpinner';
+import ActionButton from '../UI/ActionButton';
 
 const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMapInteracting, onLoginRequest }) => {
   const { user, addToFavorites, removeFromFavorites, isFavorite, recordTreeView } = useAuth();
@@ -319,9 +322,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     bottom: 0,
     left: 0,
     right: 0,
-    background: '#ffffff',
+    background: 'var(--surface)',
     borderRadius: '16px 16px 0 0',
-    boxShadow: '0 -2px 20px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 -2px 20px var(--shadow-color-md)',
     zIndex: 2001,
     maxHeight: isMinimized ? '180px' : '85vh',
     overflowY: 'auto',
@@ -334,9 +337,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    background: '#ffffff',
+    background: 'var(--surface)',
     borderRadius: '12px',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+    boxShadow: '0 8px 32px var(--shadow-color-lg)',
     zIndex: 2001,
     width: '520px',
     maxHeight: '85vh',
@@ -391,7 +394,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
             <div style={{
               width: '36px',
               height: '4px',
-              background: isDragging ? '#4ECDC4' : '#e0e0e0',
+              background: isDragging ? 'var(--primary)' : 'var(--outline)',
               borderRadius: '2px',
               transition: isDragging ? 'none' : 'all 0.2s ease'
             }} />
@@ -418,43 +421,32 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                 margin: 0,
                 fontSize: isMobile ? '22px' : '28px',
                 fontWeight: '700',
-                color: '#333',
+                color: 'var(--text-primary)',
                 lineHeight: '1.2'
               }}>
                 {treeData.species_kr || '미상'}
               </h2>
 
-              <button
+              <IconButton
+                icon="close"
                 onClick={(e) => {
                   e.stopPropagation();
                   onClose();
                 }}
-                style={{
-                  background: '#f5f5f5',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#666'
-                }}
-              >
-                ✕
-              </button>
+                variant="close"
+                size="medium"
+                ariaLabel="닫기"
+              />
             </div>
             
             <div style={{
               fontSize: isMinimized ? '12px' : (isMobile ? '14px' : '16px'),
-              color: '#666',
+              color: 'var(--text-secondary)',
               marginBottom: isMinimized ? '0' : '4px'
             }}>
               {getTreeType(treeData.tree_type)}
               {isMinimized && (
-                <span style={{ marginLeft: '8px', color: '#888' }}>
+                <span style={{ marginLeft: '8px', color: 'var(--text-tertiary)' }}>
                   {treeData.borough} {treeData.district}
                 </span>
               )}
@@ -463,7 +455,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
             {!isMinimized && (
               <div style={{
                 fontSize: isMobile ? '13px' : '15px',
-                color: '#888',
+                color: 'var(--text-tertiary)',
                 lineHeight: '1.4'
               }}>
                 {treeData.borough}
@@ -489,9 +481,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   style={{
                     flex: 1,
                     padding: '14px 16px',
-                    background: '#f8f9fa',
-                    color: '#333',
-                    border: '1px solid #e0e0e0',
+                    background: 'var(--surface-variant)',
+                    color: 'var(--text-primary)',
+                    border: '1px solid var(--outline)',
                     borderRadius: '8px',
                     fontSize: '15px',
                     fontWeight: '600',
@@ -505,7 +497,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   <span>
                     연간 생태적 편익 {treeData.total_annual_value_krw ? formatKRW(treeData.total_annual_value_krw) : '정보 없음'}
                   </span>
-                  <span style={{ fontSize: '12px' }}>▼</span>
+                  <span className="material-icons" style={{ fontSize: '12px' }}>expand_more</span>
                 </button>
               )}
 
@@ -518,9 +510,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                 style={{
                   width: '48px',
                   height: '48px',
-                  background: '#f8f9fa',
-                  color: shareStatus === 'copied' ? '#22C55E' : '#666',
-                  border: '1px solid #e0e0e0',
+                  background: 'var(--surface-variant)',
+                  color: shareStatus === 'copied' ? 'var(--primary-light)' : 'var(--text-secondary)',
+                  border: '1px solid var(--outline)',
                   borderRadius: '8px',
                   fontSize: '14px',
                   cursor: shareStatus === 'copying' ? 'not-allowed' : 'pointer',
@@ -540,28 +532,26 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   e.stopPropagation();
                   handleFavoriteToggle();
                 }}
-                disabled={favoriteStatus !== 'idle' || !user}
+                disabled={favoriteStatus !== 'idle'}
                 style={{
                   width: '48px',
                   height: '48px',
-                  background: !user ? '#f8f9fa' : 
-                            isTreeFavorited ? '#ff4757' : '#22C55E',
-                  color: !user ? '#666' : '#fff',
-                  border: !user ? '1px solid #e0e0e0' : 'none',
+                  background: !user ? 'var(--surface-variant)' :
+                            isTreeFavorited ? 'var(--error)' : 'var(--primary)',
+                  color: 'var(--surface)',
+                  border: !user ? '1px solid var(--outline)' : 'none',
                   borderRadius: '8px',
-                  cursor: (!user || favoriteStatus !== 'idle') ? 'not-allowed' : 'pointer',
+                  cursor: favoriteStatus !== 'idle' ? 'not-allowed' : 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  opacity: (!user || favoriteStatus !== 'idle') ? 0.6 : 1,
+                  opacity: favoriteStatus !== 'idle' ? 0.6 : 1,
                   transition: 'all 0.2s ease'
                 }}
               >
-                {favoriteStatus === 'adding' || favoriteStatus === 'removing' ? (
-                  <div className="loading-spinner" style={{ width: '16px', height: '16px' }} />
-                ) : (
-                  <>💚</>
-                )}
+                <span className="material-icons" style={{ fontSize: '20px' }}>
+                  {isTreeFavorited ? 'favorite' : 'favorite_border'}
+                </span>
               </button>
             </div>
           ) : (
@@ -569,98 +559,48 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
             <>
               {/* 액션 버튼들 */}
               <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                <button
+                <ActionButton
                   onClick={handleShare}
                   disabled={shareStatus === 'copying'}
+                  variant="secondary"
+                  fullWidth
+                  icon={
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
+                    </svg>
+                  }
                   style={{
-                    flex: 1,
-                    height: '44px',
-                    background: '#f8f9fa',
-                    color: shareStatus === 'copied' ? '#22C55E' : '#666',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    cursor: shareStatus === 'copying' ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
-                    transition: 'all 0.2s ease'
+                    color: shareStatus === 'copied' ? 'var(--primary-light)' : undefined
                   }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
-                  </svg>
-                  {shareStatus === 'copying' ? '복사중' : 
+                  {shareStatus === 'copying' ? '복사중' :
                    shareStatus === 'copied' ? '복사완료' : '공유'}
-                </button>
+                </ActionButton>
 
-                <button
+                <ActionButton
                   onClick={handleFavoriteToggle}
-                  disabled={favoriteStatus !== 'idle' || !user}
-                  style={{
-                    flex: 1,
-                    height: '44px',
-                    background: !user ? '#f8f9fa' : 
-                              isTreeFavorited ? '#ff4757' : '#22C55E',
-                    color: !user ? '#666' : '#fff',
-                    border: !user ? '1px solid #e0e0e0' : 'none',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    cursor: (!user || favoriteStatus !== 'idle') ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
-                    opacity: (!user || favoriteStatus !== 'idle') ? 0.6 : 1,
-                    transition: 'all 0.2s ease'
-                  }}
+                  disabled={favoriteStatus !== 'idle'}
+                  variant={!user ? 'secondary' : isTreeFavorited ? 'error' : 'primary'}
+                  fullWidth
+                  icon={isTreeFavorited ? 'favorite' : 'favorite_border'}
                 >
-                  {favoriteStatus === 'adding' ? (
-                    <>
-                      <div className="loading-spinner" style={{ width: '14px', height: '14px' }} />
-                      추가 중
-                    </>
-                  ) : favoriteStatus === 'removing' ? (
-                    <>
-                      <div className="loading-spinner" style={{ width: '14px', height: '14px' }} />
-                      제거 중
-                    </>
-                  ) : !user ? (
-                    <>💚 즐겨찾기</>
-                  ) : isTreeFavorited ? (
-                    <>💚 해제</>
-                  ) : (
-                    <>💚 추가</>
-                  )}
-                </button>
+                  {!user ? '즐겨찾기' : isTreeFavorited ? '즐겨찾기 해제' : '즐겨찾기'}
+                </ActionButton>
 
                 {/* 방문기록 버튼 (모바일만) */}
                 {isMobile && (
-                  <button
-    onClick={handleVisitRecord}
-    style={{
-      flex: 1,
-      height: '44px',
-      background: '#4ECDC4',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '8px',
-      fontSize: '13px',
-      fontWeight: '500',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '4px',
-      transition: 'all 0.2s ease'
-    }}
-  >
-    <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-40 192-256q-15-11-23.5-28t-8.5-36v-480q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v480q0 19-8.5 36T768-256L480-40Zm0-100 240-180v-480H240v480l240 180Zm-42-220 226-226-56-58-170 170-84-84-58 56 142 142Zm42-440H240h480-240Z"/></svg>
-    방문기록
-  </button>
+                  <ActionButton
+                    onClick={handleVisitRecord}
+                    variant="primary"
+                    fullWidth
+                    icon={
+                      <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor">
+                        <path d="M480-40 192-256q-15-11-23.5-28t-8.5-36v-480q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v480q0 19-8.5 36T768-256L480-40Zm0-100 240-180v-480H240v480l240 180Zm-42-220 226-226-56-58-170 170-84-84-58 56 142 142Zm42-440H240h480-240Z"/>
+                      </svg>
+                    }
+                  >
+                    방문기록
+                  </ActionButton>
                 )}
               </div>
 
@@ -668,7 +608,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
               {isMobile && (
                 <div style={{
                   display: 'flex',
-                  borderBottom: '2px solid #f0f0f0',
+                  borderBottom: '2px solid var(--divider)',
                   marginBottom: '16px'
                 }}>
                   <button
@@ -678,8 +618,8 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                       padding: '12px',
                       background: 'none',
                       border: 'none',
-                      borderBottom: activeTab === 'info' ? '2px solid #4ECDC4' : '2px solid transparent',
-                      color: activeTab === 'info' ? '#4ECDC4' : '#999',
+                      borderBottom: activeTab === 'info' ? '2px solid var(--primary)' : '2px solid transparent',
+                      color: activeTab === 'info' ? 'var(--primary)' : 'var(--text-tertiary)',
                       fontSize: '15px',
                       fontWeight: '600',
                       cursor: 'pointer',
@@ -696,8 +636,8 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                       padding: '12px',
                       background: 'none',
                       border: 'none',
-                      borderBottom: activeTab === 'visits' ? '2px solid #4ECDC4' : '2px solid transparent',
-                      color: activeTab === 'visits' ? '#4ECDC4' : '#999',
+                      borderBottom: activeTab === 'visits' ? '2px solid var(--primary)' : '2px solid transparent',
+                      color: activeTab === 'visits' ? 'var(--primary)' : 'var(--text-tertiary)',
                       fontSize: '15px',
                       fontWeight: '600',
                       cursor: 'pointer',
@@ -714,9 +654,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
               {isMobile && activeTab === 'visits' ? (
                 // 방문록 탭
                 loadingVisits ? (
-                  <div style={{ padding: '40px', textAlign: 'center' }}>
-                    <div className="loading-spinner" style={{ width: '32px', height: '32px', margin: '0 auto' }} />
-                  </div>
+                  <LoadingSpinner size="medium" />
                 ) : (
                   <VisitList
                     visits={visits}
@@ -735,32 +673,32 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                       flexWrap: 'wrap',
                       gap: '16px',
                       padding: '16px',
-                      background: '#F0FDF4',
+                      background: 'var(--primary-surface)',
                       borderRadius: '8px',
                       marginBottom: '16px',
                       fontSize: '14px',
-                      border: '1px solid #BBF7D0'
+                      border: '1px solid var(--primary-border)'
                     }}>
                       {hasValidData(treeData.height_m) && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: '#666' }}>높이</span>
-                          <span style={{ fontWeight: '600', color: '#22C55E' }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>높이</span>
+                          <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
                             {Math.round(treeData.height_m)}m
                           </span>
                         </div>
                       )}
                       {hasValidData(treeData.dbh_cm) && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: '#666' }}>직경</span>
-                          <span style={{ fontWeight: '600', color: '#22C55E' }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>직경</span>
+                          <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
                             {Math.round(treeData.dbh_cm)}cm
                           </span>
                         </div>
                       )}
                       {treeData.source_id && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: '#666' }}>나무번호</span>
-                          <span style={{ fontWeight: '600', color: '#22C55E' }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>나무번호</span>
+                          <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
                             {treeData.source_id}
                           </span>
                         </div>
@@ -775,9 +713,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                         style={{
                           width: '100%',
                           padding: '14px 16px',
-                          background: showBenefits ? '#22C55E' : '#f8f9fa',
-                          color: showBenefits ? '#fff' : '#333',
-                          border: showBenefits ? 'none' : '1px solid #e0e0e0',
+                          background: showBenefits ? 'var(--primary)' : 'var(--surface-variant)',
+                          color: showBenefits ? 'var(--surface)' : 'var(--text-primary)',
+                          border: showBenefits ? 'none' : '1px solid var(--outline)',
                           borderRadius: '8px',
                           fontSize: '15px',
                           fontWeight: '600',
@@ -791,12 +729,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                         <span>
                           연간 생태적 편익 {treeData.total_annual_value_krw ? formatKRW(treeData.total_annual_value_krw) : '정보 없음'}
                         </span>
-                        <span style={{ 
+                        <span className="material-icons" style={{
                           transform: showBenefits ? 'rotate(180deg)' : 'rotate(0deg)',
                           transition: 'transform 0.2s ease',
                           fontSize: '12px'
                         }}>
-                          ▼
+                          expand_more
                         </span>
                       </button>
                     </div>
@@ -804,11 +742,11 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
 
                   {showBenefits && hasBenefitsData && (
                     <div style={{
-                      background: '#DCFCE7',
+                      background: 'var(--primary-surface)',
                       padding: '16px',
                       borderRadius: '8px',
                       marginBottom: '16px',
-                      border: '1px solid #BBF7D0'
+                      border: '1px solid var(--primary-border)'
                     }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {hasValidData(treeData.stormwater_liters_year) && (
@@ -817,19 +755,19 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             padding: '10px 12px',
-                            background: '#fff',
+                            background: 'var(--surface)',
                             borderRadius: '6px',
-                            border: '1px solid #BBF7D0'
+                            border: '1px solid var(--primary-border)'
                           }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: '#666' }}>빗물 흡수</span>
+                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>빗물 흡수</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: '#22C55E' }}>
+                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
                                 {formatNumber(treeData.stormwater_liters_year)}L
                               </div>
                               {hasValidData(treeData.stormwater_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: '#16A34A' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
                                   {formatKRW(treeData.stormwater_value_krw_year)}
                                 </div>
                               )}
@@ -843,19 +781,19 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             padding: '10px 12px',
-                            background: '#fff',
+                            background: 'var(--surface)',
                             borderRadius: '6px',
-                            border: '1px solid #BBF7D0'
+                            border: '1px solid var(--primary-border)'
                           }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: '#666' }}>에너지 절약</span>
+                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>에너지 절약</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: '#22C55E' }}>
+                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
                                 {formatNumber(treeData.energy_kwh_year)}kWh
                               </div>
                               {hasValidData(treeData.energy_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: '#16A34A' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
                                   {formatKRW(treeData.energy_value_krw_year)}
                                 </div>
                               )}
@@ -869,19 +807,19 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             padding: '10px 12px',
-                            background: '#fff',
+                            background: 'var(--surface)',
                             borderRadius: '6px',
-                            border: '1px solid #BBF7D0'
+                            border: '1px solid var(--primary-border)'
                           }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: '#666' }}>대기 정화</span>
+                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>대기 정화</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: '#22C55E' }}>
+                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
                                 {formatNumber(treeData.air_pollution_kg_year * 1000)}g
                               </div>
                               {hasValidData(treeData.air_pollution_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: '#16A34A' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
                                   {formatKRW(treeData.air_pollution_value_krw_year)}
                                 </div>
                               )}
@@ -895,19 +833,19 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             padding: '10px 12px',
-                            background: '#fff',
+                            background: 'var(--surface)',
                             borderRadius: '6px',
-                            border: '1px solid #BBF7D0'
+                            border: '1px solid var(--primary-border)'
                           }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: '#666' }}>탄소 흡수</span>
+                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>탄소 흡수</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: '#22C55E' }}>
+                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
                                 {formatNumber(treeData.carbon_storage_kg_year)}kg
                               </div>
                               {hasValidData(treeData.carbon_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: '#16A34A' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
                                   {formatKRW(treeData.carbon_value_krw_year)}
                                 </div>
                               )}
@@ -920,13 +858,13 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                         padding: '12px',
                         marginTop: '12px',
                         fontSize: '12px',
-                        color: '#666',
+                        color: 'var(--text-secondary)',
                         lineHeight: '1.4',
-                        background: 'rgba(255, 255, 255, 0.7)',
+                        background: 'var(--overlay-light)',
                         borderRadius: '6px',
-                        border: '1px solid #BBF7D0'
+                        border: '1px solid var(--primary-border)'
                       }}>
-                        <strong>편익 산정 기준:</strong> 한국 기후조건, 산림청 공익기능 평가 기준, 
+                        <strong>편익 산정 기준:</strong> 한국 기후조건, 산림청 공익기능 평가 기준,
                         환경부 대기오염 피해비용, K-ETS 탄소가격 등을 반영하여 계산된 연간 추정값입니다.
                       </div>
                     </div>

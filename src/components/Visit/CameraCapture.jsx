@@ -75,7 +75,7 @@ const CameraCapture = ({ onCapture, onClose }) => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.9)',
+          background: 'var(--overlay-darker)',
           zIndex: 3000
         }}
       />
@@ -98,20 +98,20 @@ const CameraCapture = ({ onCapture, onClose }) => {
         {error ? (
           <div
             style={{
-              background: 'white',
+              background: 'var(--surface)',
               padding: '40px',
               borderRadius: '12px',
               textAlign: 'center'
             }}
           >
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>📷</div>
+            <span className="material-icons" style={{ fontSize: '48px', marginBottom: '16px', display: 'block' }}>photo_camera</span>
             <div style={{ color: '#666', marginBottom: '20px' }}>{error}</div>
             <button
               onClick={onClose}
               style={{
                 padding: '12px 24px',
-                background: '#4ECDC4',
-                color: 'white',
+                background: 'var(--primary)',
+                color: 'var(--surface)',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '16px',
@@ -150,7 +150,7 @@ const CameraCapture = ({ onCapture, onClose }) => {
                 style={{
                   flex: 1,
                   padding: '16px',
-                  background: 'rgba(255, 255, 255, 0.9)',
+                  background: 'var(--overlay-lighter)',
                   color: '#333',
                   border: 'none',
                   borderRadius: '12px',
@@ -168,16 +168,20 @@ const CameraCapture = ({ onCapture, onClose }) => {
                 style={{
                   flex: 1,
                   padding: '16px',
-                  background: isReady ? '#4ECDC4' : '#ccc',
-                  color: 'white',
+                  background: isReady ? 'var(--primary)' : 'var(--text-disabled)',
+                  color: 'var(--surface)',
                   border: 'none',
                   borderRadius: '12px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  cursor: isReady ? 'pointer' : 'not-allowed'
+                  cursor: isReady ? 'pointer' : 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
                 }}
               >
-                📷 촬영
+                <span className="material-icons">photo_camera</span> 촬영
               </button>
             </div>
           </>

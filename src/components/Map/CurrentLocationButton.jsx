@@ -70,10 +70,10 @@ const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight }) => {
         right: isMobile ? '20px' : '20px',
         width: '48px',
         height: '48px',
-        background: isLocating ? '#ccc' : 'white',
+        background: isLocating ? 'var(--text-disabled)' : 'var(--surface)',
         border: 'none',
         borderRadius: '50%',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.15)',
+        boxShadow: '0 2px 12px var(--shadow-color-lg)',
         cursor: isLocating ? 'not-allowed' : 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -85,13 +85,13 @@ const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight }) => {
       onMouseEnter={(e) => {
         if (!isLocating) {
           e.target.style.transform = 'scale(1.05)';
-          e.target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.2)';
+          e.target.style.boxShadow = '0 4px 16px var(--shadow-color-xl)';
         }
       }}
       onMouseLeave={(e) => {
         if (!isLocating) {
           e.target.style.transform = 'scale(1)';
-          e.target.style.boxShadow = '0 2px 12px rgba(0, 0, 0, 0.15)';
+          e.target.style.boxShadow = '0 2px 12px var(--shadow-color-lg)';
         }
       }}
       title="현재 위치"
@@ -106,7 +106,7 @@ const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight }) => {
           animation: 'spin 1s linear infinite'
         }} />
       ) : (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#4ECDC4">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--primary)">
           <path d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" />
         </svg>
       )}

@@ -166,7 +166,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
   return (
     <>
       {/* 백그라운드 오버레이 */}
-      <div 
+      <div
         onClick={onClose}
         style={{
           position: 'fixed',
@@ -174,7 +174,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
+          background: 'var(--overlay-dark)',
           zIndex: 1999
         }}
       />
@@ -185,9 +185,9 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        background: 'white',
+        background: 'var(--surface)',
         borderRadius: '16px',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 20px 40px var(--shadow-color-xl)',
         zIndex: 2000,
         width: 'min(90vw, 500px)',
         maxHeight: '85vh',
@@ -196,7 +196,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
         {/* 헤더 */}
         <div style={{
           padding: '20px 24px',
-          borderBottom: '1px solid #e9ecef',
+          borderBottom: '1px solid var(--outline-light)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
@@ -206,14 +206,14 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
               margin: '0 0 4px 0',
               fontSize: '20px',
               fontWeight: 'bold',
-              color: '#2c3e50'
+              color: 'var(--text-heading)'
             }}>
               나무 필터
             </h2>
             <p style={{
               margin: 0,
               fontSize: '14px',
-              color: '#666'
+              color: 'var(--text-secondary)'
             }}>
               수종과 크기로 나무를 필터링하세요
             </p>
@@ -221,7 +221,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
           <button
             onClick={onClose}
             style={{
-              background: '#f8f9fa',
+              background: 'var(--surface-variant)',
               border: 'none',
               borderRadius: '50%',
               width: '36px',
@@ -231,7 +231,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
               justifyContent: 'center',
               cursor: 'pointer',
               fontSize: '18px',
-              color: '#666'
+              color: 'var(--text-secondary)'
             }}
           >
             ✕
@@ -256,7 +256,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                 margin: 0,
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#2c3e50'
+                color: 'var(--text-heading)'
               }}>
                 수종별 필터
               </h3>
@@ -264,11 +264,11 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                 onClick={toggleAllSpecies}
                 style={{
                   background: 'none',
-                  border: '1px solid #4ECDC4',
+                  border: '1px solid var(--primary)',
                   borderRadius: '6px',
                   padding: '4px 8px',
                   fontSize: '12px',
-                  color: '#4ECDC4',
+                  color: 'var(--primary)',
                   cursor: 'pointer'
                 }}
               >
@@ -289,9 +289,9 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                     alignItems: 'center',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #e9ecef',
+                    border: '1px solid var(--outline-light)',
                     cursor: 'pointer',
-                    background: selectedSpecies.includes(species.name) ? '#f0f8ff' : 'white',
+                    background: selectedSpecies.includes(species.name) ? 'var(--primary-surface)' : 'var(--surface)',
                     transition: 'all 0.2s'
                   }}
                   onClick={(e) => {
@@ -317,7 +317,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                       marginRight: '8px'
                     }}
                   />
-                  <span style={{ fontSize: '14px', color: '#2c3e50' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--text-heading)' }}>
                     {species.name}
                   </span>
                 </label>
@@ -337,7 +337,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                 margin: 0,
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#2c3e50'
+                color: 'var(--text-heading)'
               }}>
                 크기별 필터 (줄기 직경)
               </h3>
@@ -345,11 +345,11 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                 onClick={toggleAllSizes}
                 style={{
                   background: 'none',
-                  border: '1px solid #4ECDC4',
+                  border: '1px solid var(--primary)',
                   borderRadius: '6px',
                   padding: '4px 8px',
                   fontSize: '12px',
-                  color: '#4ECDC4',
+                  color: 'var(--primary)',
                   cursor: 'pointer'
                 }}
               >
@@ -370,9 +370,9 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                     alignItems: 'center',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #e9ecef',
+                    border: '1px solid var(--outline-light)',
                     cursor: 'pointer',
-                    background: selectedSizes.includes(size.id) ? '#f0f8ff' : 'white',
+                    background: selectedSizes.includes(size.id) ? 'var(--primary-surface)' : 'var(--surface)',
                     transition: 'all 0.2s'
                   }}
                   onClick={(e) => {
@@ -398,7 +398,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                       marginRight: '8px'
                     }}
                   />
-                  <span style={{ fontSize: '14px', color: '#2c3e50' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--text-heading)' }}>
                     {size.label}
                   </span>
                 </label>
@@ -410,7 +410,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
         {/* 하단 액션 버튼 */}
         <div style={{
           padding: '16px 24px',
-          borderTop: '1px solid #e9ecef',
+          borderTop: '1px solid var(--outline-light)',
           display: 'flex',
           gap: '12px'
         }}>
@@ -419,8 +419,8 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
             style={{
               flex: 1,
               padding: '12px',
-              background: '#f8f9fa',
-              color: '#666',
+              background: 'var(--surface-variant)',
+              color: 'var(--text-secondary)',
               border: 'none',
               borderRadius: '8px',
               fontSize: '14px',
@@ -435,7 +435,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
             style={{
               flex: 2,
               padding: '12px',
-              background: '#4ECDC4',
+              background: 'var(--primary)',
               color: 'white',
               border: 'none',
               borderRadius: '8px',

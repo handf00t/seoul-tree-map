@@ -20,7 +20,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
     { name: '회화나무', color: '#8B4513' },
     { name: '참나무', color: '#8B4513' },
     { name: '메타세쿼이아', color: '#228B22' },
-    { name: '기타', color: '#4ECDC4' }
+    { name: '기타', color: '#84cc16' }
   ];
 
   // DBH 크기별 분류
@@ -316,7 +316,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
               fontSize: '18px',
               pointerEvents: 'none'
             }}>
-              📍
+              <span className="material-icons" style={{ fontSize: '18px' }}>place</span>
             </div>
 
             <div style={{
@@ -346,7 +346,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     justifyContent: 'center'
                   }}
                 >
-                  ✕
+                  <span className="material-icons" style={{ fontSize: '14px' }}>close</span>
                 </button>
               )}
             </div>
@@ -362,9 +362,9 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
               style={{
                 width: '100%',
                 padding: '14px 16px',
-                background: activeFilterCount > 0 ? '#22C55E' : '#f8f9fa',
-                color: activeFilterCount > 0 ? 'white' : '#666',
-                border: activeFilterCount > 0 ? 'none' : '1px solid #e0e0e0',
+                background: activeFilterCount > 0 ? 'var(--primary)' : 'var(--surface-variant)',
+                color: activeFilterCount > 0 ? 'var(--surface)' : 'var(--text-secondary)',
+                border: activeFilterCount > 0 ? 'none' : '1px solid var(--outline)',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: '600',
@@ -374,14 +374,14 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                 justifyContent: 'center',
                 gap: '12px',
                 transition: 'all 0.2s ease',
-                boxShadow: activeFilterCount > 0 ? '0 2px 4px rgba(34, 197, 94, 0.2)' : '0 1px 3px rgba(0, 0, 0, 0.1)'
+                boxShadow: activeFilterCount > 0 ? 'var(--shadow-primary)' : 'var(--shadow-color-sm)'
               }}
             >
-              <span style={{ fontSize: '16px' }}>🎯</span>
+              <span className="material-icons" style={{ fontSize: '16px' }}>filter_alt</span>
               나무 필터
               {activeFilterCount > 0 && (
                 <span className="badge" style={{
-                  background: 'rgba(255, 255, 255, 0.3)',
+                  background: 'var(--overlay-light)',
                   borderRadius: 'var(--radius-lg)',
                   padding: '4px 8px',
                   fontSize: '12px',
@@ -403,7 +403,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
           }}>
             <div style={{
               padding: '16px',
-              borderTop: '1px solid #e0e0e0',
+              borderTop: '1px solid var(--outline)',
               overflowY: 'auto',
               paddingBottom: '80px' // 하단 버튼 공간 확보
             }}>
@@ -417,7 +417,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                   margin: 0,
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: '#333'
+                  color: 'var(--text-primary)'
                 }}>
                   나무 필터 설정
                 </h3>
@@ -427,11 +427,14 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     background: 'none',
                     border: 'none',
                     fontSize: '20px',
-                    color: '#666',
-                    cursor: 'pointer'
+                    color: 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
                 >
-                  ✕
+                  <span className="material-icons" style={{ fontSize: '20px' }}>close</span>
                 </button>
               </div>
 
@@ -447,7 +450,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     margin: 0,
                     fontSize: '14px',
                     fontWeight: '600',
-                    color: '#333'
+                    color: 'var(--text-primary)'
                   }}>
                     수종별 필터
                   </h4>
@@ -455,11 +458,11 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     onClick={toggleAllSpecies}
                     style={{
                       background: 'none',
-                      border: '1px solid #4ECDC4',
+                      border: '1px solid var(--primary)',
                       borderRadius: '6px',
                       padding: '4px 8px',
                       fontSize: '12px',
-                      color: '#4ECDC4',
+                      color: 'var(--primary)',
                       cursor: 'pointer'
                     }}
                   >
@@ -480,9 +483,9 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                         alignItems: 'center',
                         padding: '8px 12px',
                         borderRadius: '8px',
-                        border: '1px solid #e9ecef',
+                        border: '1px solid var(--outline-light)',
                         cursor: 'pointer',
-                        background: selectedSpecies.includes(species.name) ? '#f0f8ff' : 'white',
+                        background: selectedSpecies.includes(species.name) ? 'var(--primary-surface)' : 'var(--surface)',
                         transition: 'all 0.2s'
                       }}
                       onClick={(e) => {
@@ -508,7 +511,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                           marginRight: '6px'
                         }}
                       />
-                      <span style={{ fontSize: '12px', color: '#333' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-primary)' }}>
                         {species.name}
                       </span>
                     </label>
@@ -528,7 +531,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     margin: 0,
                     fontSize: '14px',
                     fontWeight: '600',
-                    color: '#333'
+                    color: 'var(--text-primary)'
                   }}>
                     크기별 필터
                   </h4>
@@ -536,11 +539,11 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     onClick={toggleAllSizes}
                     style={{
                       background: 'none',
-                      border: '1px solid #4ECDC4',
+                      border: '1px solid var(--primary)',
                       borderRadius: '6px',
                       padding: '4px 8px',
                       fontSize: '12px',
-                      color: '#4ECDC4',
+                      color: 'var(--primary)',
                       cursor: 'pointer'
                     }}
                   >
@@ -561,9 +564,9 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                         alignItems: 'center',
                         padding: '8px 12px',
                         borderRadius: '8px',
-                        border: '1px solid #e9ecef',
+                        border: '1px solid var(--outline-light)',
                         cursor: 'pointer',
-                        background: selectedSizes.includes(size.id) ? '#f0f8ff' : 'white',
+                        background: selectedSizes.includes(size.id) ? 'var(--primary-surface)' : 'var(--surface)',
                         transition: 'all 0.2s'
                       }}
                       onClick={(e) => {
@@ -589,7 +592,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                           marginRight: '6px'
                         }}
                       />
-                      <span style={{ fontSize: '12px', color: '#333' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-primary)' }}>
                         {size.label}
                       </span>
                     </label>
@@ -605,20 +608,20 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
               left: 0,
               right: 0,
               padding: '16px',
-              background: 'white',
-              borderTop: '1px solid #e0e0e0',
+              background: 'var(--surface)',
+              borderTop: '1px solid var(--outline)',
               borderRadius: '0 0 16px 16px',
               display: 'flex',
               gap: '12px',
-              boxShadow: '0 -2px 8px rgba(0,0,0,0.1)'
+              boxShadow: '0 -2px 8px var(--shadow-color-md)'
             }}>
               <button
                 onClick={resetFilters}
                 style={{
                   flex: 1,
                   padding: '12px',
-                  background: '#f8f9fa',
-                  color: '#666',
+                  background: 'var(--surface-variant)',
+                  color: 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: '8px',
                   fontSize: '14px',
@@ -633,8 +636,8 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                 style={{
                   flex: 2,
                   padding: '12px',
-                  background: '#4ECDC4',
-                  color: 'white',
+                  background: 'var(--primary)',
+                  color: 'var(--surface)',
                   border: 'none',
                   borderRadius: '8px',
                   fontSize: '14px',
@@ -692,7 +695,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                   }}
                 >
                   <div style={{
-                    background: '#22C55E',
+                    background: 'var(--primary)',
                     borderRadius: '50%',
                     width: '32px',
                     height: '32px',
@@ -700,7 +703,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '14px',
-                    color: 'white',
+                    color: 'var(--surface)',
                     flexShrink: 0
                   }}>
                     {suggestion.icon}
@@ -746,7 +749,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                 color: 'var(--on-surface-variant)',
                 fontSize: '14px'
               }}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🔍</div>
+                <span className="material-icons" style={{ fontSize: '32px', marginBottom: '8px', display: 'block' }}>search</span>
                 탐험할 수 있는 장소를 찾지 못했어요
               </div>
             ) : null}

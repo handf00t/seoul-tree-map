@@ -1,34 +1,96 @@
 /* src/App.css - 게임화된 스타일 업데이트 */
 :root {
-  /* Primary Color System - 더 생동감 있는 색상 */
-  --primary: #4ECDC4;
-  --primary-light: #7FDBD6;
-  --primary-dark: #26B5A8;
-  --primary-surface: #F0FDFD;
-  
-  /* 게임화 그라디언트 색상 */
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-secondary: linear-gradient(45deg, #4ECDC4, #44A08D);
-  --gradient-success: linear-gradient(45deg, #56ab2f, #a8e6cf);
-  --gradient-warning: linear-gradient(45deg, #f093fb, #f5576c);
-  --gradient-legendary: linear-gradient(45deg, #ffd700, #ffed4e);
-  
-  /* Neutral Colors with more depth */
+  /* Primary Brand Colors - Greens */
+  --primary: #84cc16;
+  --primary-light: #a3e635;
+  --primary-lighter: #bef264;
+  --primary-dark: #4d7c0f;
+  --primary-darker: #365314;
+  --primary-surface: #f7fee7;
+  --primary-border: #d9f99d;
+
+  /* Tree Type Colors */
+  --tree-protected: #FF6B6B;
+  --tree-roadside: #84cc16;
+  --tree-park: #45B7D1;
+
+  /* Tree Species Colors */
+  --species-ginkgo: #FFD700;
+  --species-cherry: #FFB6C1;
+  --species-pine: #006400;
+  --species-maple: #FF4500;
+  --species-plane: #8FBC8F;
+  --species-zelkova: #228B22;
+  --species-oak: #8B4513;
+  --species-willow: #32CD32;
+  --species-other: #4ECDC4;
+
+  /* Tree Size Colors */
+  --size-small: #90EE90;
+  --size-medium-small: #32CD32;
+  --size-medium: #228B22;
+  --size-large: #006400;
+  --size-extra-large: #013220;
+
+  /* Neutral Colors - Surfaces */
   --surface: #FFFFFF;
   --surface-variant: #F8F9FA;
   --surface-elevated: rgba(255, 255, 255, 0.95);
+  --surface-dim: #F5F5F5;
+  --surface-container: #F0F0F0;
+
+  /* Neutral Colors - Borders */
   --outline: #E0E0E0;
-  --outline-variant: #F0F0F0;
-  
+  --outline-variant: #E8E8E8;
+  --outline-light: #E9ECEF;
+  --divider: #F0F0F0;
+
   /* Text Colors */
-  --on-surface: #2C3E50;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-quaternary: #BBBBBB;
+  --text-disabled: #CCCCCC;
+  --text-heading: #2C3E50;
+  --on-surface: #333333;
   --on-surface-variant: #666666;
   --on-primary: #FFFFFF;
-  
-  /* State Colors */
-  --error: #E74C3C;
+
+  /* Action Colors */
+  --error: #ff4757;
+  --error-dark: #e74c3c;
   --warning: #F39C12;
-  --success: #27AE60;
+  --success: #84cc16;
+  --info: #45B7D1;
+
+  /* Special UI Colors */
+  --google-blue: #4285f4;
+  --google-blue-dark: #3367d6;
+  --favorite-pink: #FF69B4;
+
+  /* Overlay Colors */
+  --overlay-dark: rgba(0, 0, 0, 0.5);
+  --overlay-darker: rgba(0, 0, 0, 0.9);
+  --overlay-light: rgba(255, 255, 255, 0.7);
+  --overlay-lighter: rgba(255, 255, 255, 0.9);
+  --overlay-subtle: rgba(0, 0, 0, 0.1);
+
+  /* Shadow Colors */
+  --shadow-color-sm: rgba(0, 0, 0, 0.08);
+  --shadow-color-md: rgba(0, 0, 0, 0.12);
+  --shadow-color-lg: rgba(0, 0, 0, 0.15);
+  --shadow-color-xl: rgba(0, 0, 0, 0.2);
+  --shadow-primary: rgba(132, 204, 22, 0.3);
+  --shadow-glow: rgba(78, 205, 196, 0.3);
+
+  /* Solid colors (gradients removed) */
+  --gradient-primary: var(--primary);
+  --gradient-secondary: var(--primary);
+  --gradient-success: var(--success);
+  --gradient-warning: var(--warning);
+  --gradient-legendary: var(--species-ginkgo);
+  --gradient-protected: var(--tree-protected);
+  --gradient-park: var(--tree-park);
   
   /* Spacing System (8px grid) */
   --spacing-xs: 4px;

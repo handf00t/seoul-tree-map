@@ -23,7 +23,7 @@ const LoginModal = ({ isVisible, onClose }) => {
   return (
     <>
       {/* 백그라운드 오버레이 */}
-      <div 
+      <div
         onClick={onClose}
         style={{
           position: 'fixed',
@@ -31,7 +31,7 @@ const LoginModal = ({ isVisible, onClose }) => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
+          background: 'var(--overlay-dark)',
           zIndex: 2999,
           animation: 'fadeIn 0.3s ease-out'
         }}
@@ -43,9 +43,9 @@ const LoginModal = ({ isVisible, onClose }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        background: 'white',
+        background: 'var(--surface)',
         borderRadius: '16px',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 20px 40px var(--shadow-color-xl)',
         zIndex: 3000,
         width: 'min(90vw, 400px)',
         maxHeight: '85vh',
@@ -57,19 +57,19 @@ const LoginModal = ({ isVisible, onClose }) => {
           padding: '24px 24px 0 24px',
           textAlign: 'center'
         }}>
-          <div style={{ fontSize: '48px', marginBottom: '12px' }}>🌳</div>
+          <span className="material-icons" style={{ fontSize: '48px', marginBottom: '12px', display: 'block' }}>park</span>
           <h2 style={{
             margin: '0 0 8px 0',
             fontSize: '24px',
             fontWeight: 'bold',
-            color: '#2c3e50'
+            color: 'var(--text-heading)'
           }}>
             서울시 나무지도에 오신걸 환영합니다
           </h2>
           <p style={{
             margin: '0 0 24px 0',
             fontSize: '14px',
-            color: '#666',
+            color: 'var(--text-secondary)',
             lineHeight: '1.5'
           }}>
             로그인하고 좋아하는 나무들을 저장하고 공유해보세요
@@ -84,7 +84,7 @@ const LoginModal = ({ isVisible, onClose }) => {
             style={{
               width: '100%',
               padding: '14px 20px',
-              background: '#4285f4',
+              background: 'var(--google-blue)',
               color: 'white',
               border: 'none',
               borderRadius: '8px',
@@ -100,10 +100,10 @@ const LoginModal = ({ isVisible, onClose }) => {
               marginBottom: '16px'
             }}
             onMouseEnter={(e) => {
-              if (!isLoading) e.target.style.background = '#3367d6';
+              if (!isLoading) e.target.style.background = 'var(--google-blue-dark)';
             }}
             onMouseLeave={(e) => {
-              if (!isLoading) e.target.style.background = '#4285f4';
+              if (!isLoading) e.target.style.background = 'var(--google-blue)';
             }}
           >
             {isLoading ? (
@@ -111,7 +111,7 @@ const LoginModal = ({ isVisible, onClose }) => {
                 <div style={{
                   width: '20px',
                   height: '20px',
-                  border: '2px solid #ffffff',
+                  border: '2px solid var(--surface)',
                   borderTop: '2px solid transparent',
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite'
@@ -133,7 +133,7 @@ const LoginModal = ({ isVisible, onClose }) => {
 
           {/* 로그인 혜택 안내 */}
           <div style={{
-            background: '#f8f9fa',
+            background: 'var(--surface-variant)',
             padding: '16px',
             borderRadius: '8px',
             marginBottom: '16px'
@@ -142,7 +142,7 @@ const LoginModal = ({ isVisible, onClose }) => {
               margin: '0 0 8px 0',
               fontSize: '14px',
               fontWeight: '600',
-              color: '#2c3e50'
+              color: 'var(--text-heading)'
             }}>
               로그인하면 이런 기능을 사용할 수 있어요
             </h4>
@@ -150,13 +150,11 @@ const LoginModal = ({ isVisible, onClose }) => {
               margin: 0,
               padding: '0 0 0 16px',
               fontSize: '13px',
-              color: '#666',
+              color: 'var(--text-secondary)',
               lineHeight: '1.4'
             }}>
               <li>마음에 드는 나무를 즐겨찾기에 저장</li>
-              <li>나만의 나무 컬렉션 관리</li>
-              <li>나무 위치를 친구들과 공유</li>
-              <li>개인 맞춤 추천 기능</li>
+              <li>나무 방문록 작성</li>
             </ul>
           </div>
 
@@ -166,8 +164,8 @@ const LoginModal = ({ isVisible, onClose }) => {
             style={{
               width: '100%',
               padding: '12px',
-              background: '#f8f9fa',
-              color: '#666',
+              background: 'var(--surface-variant)',
+              color: 'var(--text-secondary)',
               border: 'none',
               borderRadius: '8px',
               fontSize: '14px',
@@ -228,9 +226,9 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
       position: 'absolute',
       top: '60px',
       right: '0',
-      background: 'white',
+      background: 'var(--surface)',
       borderRadius: '12px',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+      boxShadow: '0 8px 24px var(--shadow-color-md)',
       minWidth: '280px',
       zIndex: 2000,
       animation: 'slideDown 0.2s ease-out'
@@ -238,7 +236,7 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
       {/* 사용자 정보 */}
       <div style={{
         padding: '16px',
-        borderBottom: '1px solid #e9ecef'
+        borderBottom: '1px solid var(--outline-light)'
       }}>
         <div style={{
           display: 'flex',
@@ -258,14 +256,14 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
           <div style={{ flex: 1 }}>
             <div style={{
               fontWeight: '600',
-              color: '#2c3e50',
+              color: 'var(--text-heading)',
               fontSize: '14px'
             }}>
               {user.displayName}
             </div>
             <div style={{
               fontSize: '12px',
-              color: '#666'
+              color: 'var(--text-secondary)'
             }}>
               {user.email}
             </div>
@@ -286,19 +284,19 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
             textAlign: 'left',
             cursor: 'pointer',
             fontSize: '14px',
-            color: '#2c3e50',
+            color: 'var(--text-heading)',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
             transition: 'background 0.2s'
           }}
-          onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
+          onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
           onMouseLeave={(e) => e.target.style.background = 'none'}
         >
-          ⭐ 즐겨찾기한 나무  {userFavorites.length}개
+          <span className="material-icons">star</span> 즐겨찾기한 나무  {userFavorites.length}개
 
         </button>
-        
+
         <button
           onClick={handleSignOut}
           disabled={isLoading}
@@ -310,7 +308,7 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
             textAlign: 'left',
             cursor: isLoading ? 'not-allowed' : 'pointer',
             fontSize: '14px',
-            color: '#666',
+            color: 'var(--text-secondary)',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
@@ -318,13 +316,13 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
             opacity: isLoading ? 0.6 : 1
           }}
           onMouseEnter={(e) => {
-            if (!isLoading) e.target.style.background = '#f8f9fa';
+            if (!isLoading) e.target.style.background = 'var(--surface-variant)';
           }}
           onMouseLeave={(e) => {
             if (!isLoading) e.target.style.background = 'none';
           }}
         >
-          {isLoading ? '로그아웃 중...' : '🚪 로그아웃'}
+          {isLoading ? '로그아웃 중...' : <><span className="material-icons">logout</span> 로그아웃</>}
         </button>
       </div>
 

@@ -107,7 +107,7 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
                       fontSize: '32px'
                     }}
                   >
-                    🌳
+                    <span className="material-icons" style={{ fontSize: '32px' }}>park</span>
                   </div>
                 )}
               </div>

@@ -143,7 +143,7 @@ const SplashScreen = ({ onComplete }) => {
               opacity: 0.8
             }}
           >
-            🍃
+            <span className="material-icons" style={{ fontSize: '40px' }}>eco</span>
           </div>
         ))}
 
@@ -156,7 +156,7 @@ const SplashScreen = ({ onComplete }) => {
             transform: 'scale(0)'
           }}
         >
-          🌳
+          <span className="material-icons" style={{ fontSize: '120px' }}>park</span>
         </div>
 
         <div

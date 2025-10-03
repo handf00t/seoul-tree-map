@@ -1,6 +1,9 @@
 // components/Favorites/FavoritesModal.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import IconButton from '../UI/IconButton';
+import LoadingSpinner from '../UI/LoadingSpinner';
+import EmptyState from '../UI/EmptyState';
 
 const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
   const { userFavorites, removeFromFavorites, loadUserFavorites, user } = useAuth();
@@ -100,10 +103,10 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
   // 나무 타입별 색상
   const getTypeColor = (type) => {
     switch(type) {
-      case 'protected': return '#FF6B6B';
-      case 'roadside': return '#4ECDC4';
-      case 'park': return '#45B7D1';
-      default: return '#666';
+      case 'protected': return 'var(--tree-protected)';
+      case 'roadside': return 'var(--primary)';
+      case 'park': return 'var(--tree-park)';
+      default: return 'var(--text-secondary)';
     }
   };
 
@@ -122,7 +125,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
   return (
     <>
       {/* 백그라운드 오버레이 */}
-      <div 
+      <div
         onClick={onClose}
         style={{
           position: 'fixed',
@@ -130,7 +133,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
+          background: 'var(--overlay-dark)',
           zIndex: 2999
         }}
       />
@@ -141,9 +144,9 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        background: 'white',
+        background: 'var(--surface)',
         borderRadius: '16px',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 20px 40px var(--shadow-color-xl)',
         zIndex: 3000,
         width: 'min(90vw, 600px)',
         maxHeight: '85vh',
@@ -154,7 +157,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
         {/* 헤더 */}
         <div style={{
           padding: '20px 24px',
-          borderBottom: '1px solid #e9ecef',
+          borderBottom: '1px solid var(--outline-light)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
@@ -164,42 +167,31 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
               margin: '0 0 4px 0',
               fontSize: '20px',
               fontWeight: 'bold',
-              color: '#2c3e50'
+              color: 'var(--text-heading)'
             }}>
               내 즐겨찾기
             </h2>
             <p style={{
               margin: 0,
               fontSize: '14px',
-              color: '#666'
+              color: 'var(--text-secondary)'
             }}>
               저장한 나무 {userFavorites.length}개
             </p>
           </div>
-          <button
+          <IconButton
+            icon="close"
             onClick={onClose}
-            style={{
-              background: '#f8f9fa',
-              border: 'none',
-              borderRadius: '50%',
-              width: '36px',
-              height: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              fontSize: '18px',
-              color: '#666'
-            }}
-          >
-            ✕
-          </button>
+            variant="close"
+            size="large"
+            ariaLabel="닫기"
+          />
         </div>
 
         {/* 필터 및 검색 */}
         <div style={{
           padding: '16px 24px',
-          borderBottom: '1px solid #e9ecef',
+          borderBottom: '1px solid var(--outline-light)',
           display: 'flex',
           flexDirection: 'column',
           gap: '12px'
@@ -214,7 +206,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
               style={{
                 width: '100%',
                 padding: '8px 12px',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--outline)',
                 borderRadius: '6px',
                 fontSize: '14px',
                 outline: 'none'
@@ -242,10 +234,10 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                   onClick={() => setSelectedFilter(filter.id)}
                   style={{
                     padding: '4px 8px',
-                    border: '1px solid #e0e0e0',
+                    border: '1px solid var(--outline)',
                     borderRadius: '4px',
-                    background: selectedFilter === filter.id ? '#4ECDC4' : 'white',
-                    color: selectedFilter === filter.id ? 'white' : '#666',
+                    background: selectedFilter === filter.id ? 'var(--primary)' : 'var(--surface)',
+                    color: selectedFilter === filter.id ? 'var(--surface)' : 'var(--text-secondary)',
                     fontSize: '12px',
                     cursor: 'pointer'
                   }}
@@ -261,11 +253,11 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
               onChange={(e) => setSortBy(e.target.value)}
               style={{
                 padding: '4px 8px',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--outline)',
                 borderRadius: '4px',
                 fontSize: '12px',
-                background: 'white',
-                color: '#666'
+                background: 'var(--surface)',
+                color: 'var(--text-secondary)'
               }}
             >
               <option value="recent">최근 저장순</option>
@@ -282,47 +274,22 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
           maxHeight: 'calc(85vh - 200px)'
         }}>
           {isLoading ? (
-            <div style={{
-              padding: '40px',
-              textAlign: 'center',
-              color: '#666'
-            }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                border: '3px solid #f3f3f3',
-                borderTop: '3px solid #4ECDC4',
-                borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
-                margin: '0 auto 12px'
-              }} />
-              즐겨찾기를 불러오는 중...
-            </div>
+            <LoadingSpinner text="즐겨찾기를 불러오는 중..." />
           ) : filteredFavorites.length === 0 ? (
-            <div style={{
-              padding: '40px',
-              textAlign: 'center',
-              color: '#666'
-            }}>
-              {userFavorites.length === 0 ? (
-                <div>
-                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>🌳</div>
-                  <p style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '600' }}>
-                    아직 저장한 나무가 없어요
-                  </p>
-                  <p style={{ margin: 0, fontSize: '14px' }}>
-                    마음에 드는 나무를 찾아서 하트 버튼을 눌러보세요!
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>🔍</div>
-                  <p style={{ margin: 0, fontSize: '14px' }}>
-                    검색 조건에 맞는 나무를 찾을 수 없습니다
-                  </p>
-                </div>
-              )}
-            </div>
+            userFavorites.length === 0 ? (
+              <EmptyState
+                icon="park"
+                title="아직 저장한 나무가 없어요"
+                description="마음에 드는 나무를 찾아서 하트 버튼을 눌러보세요!"
+                variant="plain"
+              />
+            ) : (
+              <EmptyState
+                icon="search"
+                description="검색 조건에 맞는 나무를 찾을 수 없습니다"
+                variant="plain"
+              />
+            )
           ) : (
             <div style={{ padding: '0 24px 24px 24px' }}>
               {filteredFavorites.map((favorite, index) => (
@@ -334,13 +301,13 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                     gap: '12px',
                     padding: '12px',
                     borderRadius: '8px',
-                    border: '1px solid #e9ecef',
+                    border: '1px solid var(--outline-light)',
                     marginBottom: '8px',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
-                  onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
-                  onMouseLeave={(e) => e.target.style.background = 'white'}
+                  onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
+                  onMouseLeave={(e) => e.target.style.background = 'var(--surface)'}
                   onClick={() => handleTreeSelect(favorite)}
                 >
                   {/* 나무 타입 색상 표시 */}
@@ -357,7 +324,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                   <div style={{ flex: 1 }}>
                     <div style={{
                       fontWeight: '600',
-                      color: '#2c3e50',
+                      color: 'var(--text-heading)',
                       fontSize: '15px',
                       marginBottom: '4px'
                     }}>
@@ -365,7 +332,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                     </div>
                     <div style={{
                       fontSize: '12px',
-                      color: '#666',
+                      color: 'var(--text-secondary)',
                       marginBottom: '2px'
                     }}>
                       {getTreeTypeName(favorite.tree_type)} • {favorite.borough} {favorite.district}
@@ -373,7 +340,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                     {favorite.addedAt && (
                       <div style={{
                         fontSize: '11px',
-                        color: '#999'
+                        color: 'var(--text-tertiary)'
                       }}>
                         {new Date(favorite.addedAt.seconds * 1000).toLocaleDateString('ko-KR')} 저장
                       </div>
@@ -381,36 +348,16 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                   </div>
 
                   {/* 삭제 버튼 */}
-                  <button
+                  <IconButton
+                    icon="delete"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRemoveFavorite(favorite);
                     }}
-                    style={{
-                      background: '#f8f9fa',
-                      border: 'none',
-                      borderRadius: '4px',
-                      width: '28px',
-                      height: '28px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      color: '#999',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = '#e74c3c';
-                      e.target.style.color = 'white';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = '#f8f9fa';
-                      e.target.style.color = '#999';
-                    }}
-                  >
-                    🗑️
-                  </button>
+                    variant="danger"
+                    size="small"
+                    ariaLabel="삭제"
+                  />
                 </div>
               ))}
             </div>
