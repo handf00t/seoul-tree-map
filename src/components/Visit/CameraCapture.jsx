@@ -142,6 +142,8 @@ const CameraCapture = ({ onCapture, onClose }) => {
               style={{
                 display: 'flex',
                 gap: '12px',
+                width: '100%',
+                maxWidth: '500px',
                 padding: '0 20px'
               }}
             >

@@ -1,11 +1,20 @@
 // src/components/Visit/VisitList.jsx
 import React from 'react';
+import IconButton from '../UI/IconButton';
 
 const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, onDeleteVisit }) => {
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp.seconds * 1000);
     return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  };
+
+  // 익명화된 닉네임 생성
+  const getAnonymousName = (userId) => {
+    const animals = ['너구리', '다람쥐', '고양이', '강아지', '토끼', '여우', '햄스터', '판다', '코알라', '펭귄'];
+    const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const animal = animals[hash % animals.length];
+    return `익명의 ${animal}`;
   };
 
   return (
@@ -123,18 +132,6 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
                     marginBottom: '8px'
                   }}
                 >
-                  {visit.userPhotoURL && (
-                    <img
-                      src={visit.userPhotoURL}
-                      alt={visit.userName}
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        objectFit: 'cover'
-                      }}
-                    />
-                  )}
                   <span
                     style={{
                       fontSize: '14px',
@@ -142,19 +139,20 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
                       color: '#333'
                     }}
                   >
-                    {visit.userName}
+                    {getAnonymousName(visit.userId)}
                   </span>
                   {visit.userId === currentUserId && (
                     <span
                       style={{
                         fontSize: '11px',
                         padding: '2px 6px',
-                        background: '#4ECDC4',
+                        background: 'var(--primary)',
                         color: 'white',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
+                        fontWeight: '600'
                       }}
                     >
-                      나
+                      본인
                     </span>
                   )}
                 </div>
@@ -185,43 +183,22 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
 
               {/* 삭제 버튼 (본인 작성글만) */}
               {visit.userId === currentUserId && onDeleteVisit && (
-                <button
+                <IconButton
+                  icon="delete"
                   onClick={() => {
                     if (window.confirm('이 방문기록을 삭제하시겠습니까?')) {
                       onDeleteVisit(visit.id);
                     }
                   }}
+                  variant="danger"
+                  size="medium"
+                  ariaLabel="삭제"
                   style={{
                     position: 'absolute',
                     top: '40px',
-                    right: '12px',
-                    background: '#fff',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '6px',
-                    width: '36px',
-                    height: '36px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                    color: '#999',
-                    transition: 'all 0.2s ease'
+                    right: '12px'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = '#ff4757';
-                    e.target.style.color = 'white';
-                    e.target.style.borderColor = '#ff4757';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = '#fff';
-                    e.target.style.color = '#999';
-                    e.target.style.borderColor = '#e0e0e0';
-                  }}
-                  title="삭제"
-                >
-                  <svg height="32" width="32" viewBox="0 -960 960 960"  fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
-                </button>
+                />
               )}
             </div>
           ))}

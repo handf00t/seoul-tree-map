@@ -169,7 +169,7 @@ function AppContent() {
               color: 'white',
               boxShadow: '0 3px 8px rgba(78, 205, 196, 0.3)'
             }}>
-              🌳
+              <span className="material-icons" style={{ fontSize: isMobile ? '18px' : '24px' }}>park</span>
             </div>
             
             <div>
@@ -330,7 +330,7 @@ function AppContent() {
               alignItems: 'center',
               gap: '8px'
             }}>
-              🎯 적용된 필터
+              <span className="material-icons" style={{ fontSize: '16px' }}>filter_alt</span> 적용된 필터
               <button
                 onClick={clearFilters}
                 className="badge badge-primary"

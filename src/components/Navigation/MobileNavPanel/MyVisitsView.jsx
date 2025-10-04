@@ -37,7 +37,6 @@ const MyVisitsView = ({
           style={{
             background: 'none',
             border: 'none',
-            fontSize: '24px',
             cursor: 'pointer',
             padding: '4px',
             display: 'flex',
@@ -45,7 +44,7 @@ const MyVisitsView = ({
             color: 'var(--text-secondary)'
           }}
         >
-          ←
+          <span className="material-icons" style={{ fontSize: '24px' }}>arrow_back</span>
         </button>
         <div style={{ flex: 1 }}>
           <h3 style={{
@@ -131,10 +130,10 @@ const MyVisitsView = ({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '32px'
+                        color: 'var(--primary)'
                       }}
                     >
-                      🌳
+                      <span className="material-icons" style={{ fontSize: '40px' }}>park</span>
                     </div>
                   )}
                 </div>

@@ -5,6 +5,9 @@ import { visitService } from '../../../services/firebase';
 import ProfileMenu from './ProfileMenu';
 import MyVisitsView from './MyVisitsView';
 import HomeView from './HomeView';
+import FavoritesView from './FavoritesView';
+import AboutView from './AboutView';
+import AboutDetailSheet from './AboutDetailSheet';
 
 const MobileNavPanel = ({ 
   map, 
@@ -36,6 +39,9 @@ const MobileNavPanel = ({
   const [activeView, setActiveView] = useState('home');
   const [myVisits, setMyVisits] = useState([]);
   const [loadingMyVisits, setLoadingMyVisits] = useState(false);
+
+  // 소개 상세 sheet 관련 state
+  const [selectedAboutSection, setSelectedAboutSection] = useState(null);
 
   const previewFilters = user ? [
     { id: 'my-trees', name: '', color: 'var(--favorite-pink)', icon: <span className="material-icons" style={{ fontSize: '16px' }}>favorite</span> },
@@ -304,11 +310,7 @@ const MobileNavPanel = ({
   };
 
   const handleProfileMenuClick = () => {
-    if (user) {
-      setShowProfileMenu(!showProfileMenu);
-    } else {
-      onFavoritesClick();
-    }
+    setShowProfileMenu(!showProfileMenu);
   };
 
   const handleRemoveFavorite = async (favorite) => {
@@ -445,8 +447,8 @@ const MobileNavPanel = ({
     if (isCollapsed) {
       return '80px';
     }
-    if (activeView === 'myvisits') {
-       return 'calc(85vh - env(safe-area-inset-bottom))'; 
+    if (activeView === 'myvisits' || activeView === 'favorites' || activeView === 'about') {
+       return 'calc(85vh - env(safe-area-inset-bottom))';
     }
     return showProfileMenu ? '70vh' : showSuggestions ? '40vh' : '280px';
   };
@@ -511,6 +513,25 @@ const MobileNavPanel = ({
           handleDeleteMyVisit={handleDeleteMyVisit}
           formatDate={formatDate}
         />
+      ) : activeView === 'favorites' ? (
+        <FavoritesView
+          setActiveView={setActiveView}
+          handleTreeSelect={handleTreeSelect}
+          handleFavoriteDelete={handleFavoriteDelete}
+        />
+      ) : activeView === 'about' ? (
+        <>
+          <AboutView
+            setActiveView={setActiveView}
+            onDetailClick={(section) => setSelectedAboutSection(section)}
+          />
+          {selectedAboutSection && (
+            <AboutDetailSheet
+              section={selectedAboutSection}
+              onClose={() => setSelectedAboutSection(null)}
+            />
+          )}
+        </>
       ) : (
         <HomeView
           query={query}
@@ -532,6 +553,7 @@ const MobileNavPanel = ({
           handleTreeSelect={handleTreeSelect}
           handleFavoriteDelete={handleFavoriteDelete}
           onFavoritesClick={onFavoritesClick}
+          setActiveView={setActiveView}
         />
       )}
     </div>

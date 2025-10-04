@@ -558,50 +558,98 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
             // 확장 모드
             <>
               {/* 액션 버튼들 */}
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                <ActionButton
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                marginBottom: '16px',
+                flexDirection: isMobile ? 'row' : 'row'
+              }}>
+                {/* 방문기록 버튼 (메인 버튼 - 모바일만) */}
+                {isMobile && (
+                  <button
+                    onClick={handleVisitRecord}
+                    style={{
+                      flex: 1,
+                      padding: '12px 16px',
+                      background: 'var(--primary)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '14px',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '4px',
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 2px 8px rgba(78, 205, 196, 0.3)'
+                    }}
+                  >
+                    <svg width="22" height="22" viewBox="0 -960 960 960" fill="currentColor">
+                      <path d="M480-40 192-256q-15-11-23.5-28t-8.5-36v-480q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v480q0 19-8.5 36T768-256L480-40Zm0-100 240-180v-480H240v480l240 180Zm-42-220 226-226-56-58-170 170-84-84-58 56 142 142Zm42-440H240h480-240Z"/>
+                    </svg>
+                    <span style={{ fontSize: '13px' }}>방문기록</span>
+                  </button>
+                )}
+
+                {/* 보조 버튼들 */}
+                <button
                   onClick={handleShare}
                   disabled={shareStatus === 'copying'}
-                  variant="secondary"
-                  fullWidth
-                  icon={
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
-                    </svg>
-                  }
                   style={{
-                    color: shareStatus === 'copied' ? 'var(--primary-light)' : undefined
+                    flex: isMobile ? 0 : 1,
+                    padding: '12px 16px',
+                    background: 'var(--surface-variant)',
+                    color: shareStatus === 'copied' ? 'var(--primary)' : 'var(--text-secondary)',
+                    border: 'none',
+                    borderRadius: '14px',
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    cursor: shareStatus === 'copying' ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '4px',
+                    minWidth: isMobile ? '90px' : 'auto',
+                    transition: 'all 0.2s ease'
                   }}
                 >
-                  {shareStatus === 'copying' ? '복사중' :
-                   shareStatus === 'copied' ? '복사완료' : '공유'}
-                </ActionButton>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
+                  </svg>
+                  <span style={{ fontSize: '13px' }}>
+                    {shareStatus === 'copying' ? '복사중' :
+                     shareStatus === 'copied' ? '완료' : '공유'}
+                  </span>
+                </button>
 
-                <ActionButton
+                <button
                   onClick={handleFavoriteToggle}
                   disabled={favoriteStatus !== 'idle'}
-                  variant={!user ? 'secondary' : isTreeFavorited ? 'error' : 'primary'}
-                  fullWidth
-                  icon={isTreeFavorited ? 'favorite' : 'favorite_border'}
+                  style={{
+                    flex: isMobile ? 0 : 1,
+                    padding: '12px 16px',
+                    background: 'var(--surface-variant)',
+                    color: 'var(--primary)',
+                    border: 'none',
+                    borderRadius: '14px',
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    cursor: favoriteStatus !== 'idle' ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '4px',
+                    minWidth: isMobile ? '90px' : 'auto',
+                    transition: 'all 0.2s ease'
+                  }}
                 >
-                  {!user ? '즐겨찾기' : isTreeFavorited ? '즐겨찾기 해제' : '즐겨찾기'}
-                </ActionButton>
-
-                {/* 방문기록 버튼 (모바일만) */}
-                {isMobile && (
-                  <ActionButton
-                    onClick={handleVisitRecord}
-                    variant="primary"
-                    fullWidth
-                    icon={
-                      <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor">
-                        <path d="M480-40 192-256q-15-11-23.5-28t-8.5-36v-480q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v480q0 19-8.5 36T768-256L480-40Zm0-100 240-180v-480H240v480l240 180Zm-42-220 226-226-56-58-170 170-84-84-58 56 142 142Zm42-440H240h480-240Z"/>
-                      </svg>
-                    }
-                  >
-                    방문기록
-                  </ActionButton>
-                )}
+                  <span className="material-icons" style={{ fontSize: '18px' }}>
+                    {isTreeFavorited ? 'favorite' : 'favorite_border'}
+                  </span>
+                  <span style={{ fontSize: '13px' }}>즐겨찾기</span>
+                </button>
               </div>
 
               {/* 탭 메뉴 (모바일만) */}

@@ -121,7 +121,7 @@ const VisitRecordForm = ({ photo, treeData, onSubmit, onCancel }) => {
             </div>
           )}
 
-          {/* 코멘트 입력 */}
+          {/* 한마디 입력 */}
           <div>
             <label
               style={{
@@ -132,7 +132,7 @@ const VisitRecordForm = ({ photo, treeData, onSubmit, onCancel }) => {
                 marginBottom: '8px'
               }}
             >
-              코멘트 ({comment.length}/14)
+              한마디 ({comment.length}/14)
             </label>
             <input
               type="text"
@@ -191,7 +191,7 @@ const VisitRecordForm = ({ photo, treeData, onSubmit, onCancel }) => {
             style={{
               flex: 2,
               padding: '14px',
-              background: !comment.trim() || isSubmitting ? '#ccc' : '#4ECDC4',
+              background: !comment.trim() || isSubmitting ? '#ccc' : 'var(--primary)',
               color: 'white',
               border: 'none',
               borderRadius: '8px',

@@ -93,13 +93,13 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
   };
 
   const getPlaceIcon = (placeTypes) => {
-    if (placeTypes.includes('region')) return '🏙️';
-    if (placeTypes.includes('district')) return '🏛️';
-    if (placeTypes.includes('locality')) return '🏘️';
-    if (placeTypes.includes('neighborhood')) return '📍';
-    if (placeTypes.includes('address')) return '🏠';
-    if (placeTypes.includes('poi')) return '📌';
-    return '📍';
+    if (placeTypes.includes('region')) return 'location_city';
+    if (placeTypes.includes('district')) return 'account_balance';
+    if (placeTypes.includes('locality')) return 'home_work';
+    if (placeTypes.includes('neighborhood')) return 'place';
+    if (placeTypes.includes('address')) return 'home';
+    if (placeTypes.includes('poi')) return 'push_pin';
+    return 'place';
   };
 
   const handleInputChange = (e) => {
@@ -706,7 +706,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     color: 'var(--surface)',
                     flexShrink: 0
                   }}>
-                    {suggestion.icon}
+                    <span className="material-icons" style={{ fontSize: '16px' }}>{suggestion.icon}</span>
                   </div>
                   
                   <div style={{ flex: 1, minWidth: 0 }}>

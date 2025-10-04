@@ -21,8 +21,37 @@ const HomeView = ({
   userFavorites,
   handleTreeSelect,
   handleFavoriteDelete,
-  onFavoritesClick
+  onFavoritesClick,
+  setActiveView
 }) => {
+  // 나무 색상 (수종별 우선, 타입별 fallback)
+  const getTreeColor = (favorite) => {
+    const speciesColors = {
+      '은행나무': '#FFD700',
+      '느티나무': '#228B22',
+      '플라타너스': '#8FBC8F',
+      '벚나무': '#FFB6C1',
+      '단풍나무': '#FF4500',
+      '소나무': '#006400',
+      '회화나무': '#8B4513',
+      '참나무': '#8B4513',
+      '메타세쿼이아': '#228B22'
+    };
+
+    // 1순위: 수종별 색상
+    if (favorite.species_kr && speciesColors[favorite.species_kr]) {
+      return speciesColors[favorite.species_kr];
+    }
+
+    // 2순위: 타입별 색상
+    switch(favorite.tree_type) {
+      case 'protected': return 'var(--tree-protected)';
+      case 'roadside': return 'var(--primary)';
+      case 'park': return 'var(--tree-park)';
+      default: return 'var(--text-secondary)';
+    }
+  };
+
   return (
     <>
       <div style={{
@@ -91,11 +120,10 @@ const HomeView = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '18px',
               color: user ? 'white' : 'var(--text-secondary)'
             }}
           >
-            ☰
+            <span className="material-icons" style={{ fontSize: '24px' }}>menu</span>
           </button>
         </div>
 
@@ -173,7 +201,7 @@ const HomeView = ({
                   {filter.icon && <span>{filter.icon}</span>}
                   {filter.name}
                   {isActive && (
-                    <span style={{ fontSize: '10px' }}>✓</span>
+                    <span className="material-icons" style={{ fontSize: '12px' }}>check</span>
                   )}
                 </button>
               );
@@ -257,8 +285,7 @@ const HomeView = ({
                         width: '12px',
                         height: '12px',
                         borderRadius: '50%',
-                        background: favorite.tree_type === 'protected' ? 'var(--tree-protected)' :
-                                   favorite.tree_type === 'roadside' ? 'var(--primary)' : 'var(--tree-park)',
+                        background: getTreeColor(favorite),
                         flexShrink: 0
                       }} />
 
@@ -293,7 +320,7 @@ const HomeView = ({
 
                 {userFavorites.length > 3 && (
                   <button
-                    onClick={onFavoritesClick}
+                    onClick={() => setActiveView('favorites')}
                     style={{
                       background: 'none',
                       border: 'none',
@@ -310,14 +337,14 @@ const HomeView = ({
             </div>
           ) : (
             <EmptyState
-              icon="🌳"
+              icon="park"
               description="아직 즐겨찾기한 나무가 없어요"
               variant="dashed"
             />
           )
         ) : (
           <EmptyState
-            icon="💚"
+            icon="favorite"
             title="즐겨찾기 기능"
             description={<>마음에 드는 나무를 저장하고<br/>언제든 다시 찾아보세요</>}
             variant="default"
