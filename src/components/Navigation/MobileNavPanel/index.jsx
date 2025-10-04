@@ -1,5 +1,5 @@
 // components/Navigation/MobileNavPanel/index.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { visitService } from '../../../services/firebase';
 import ProfileMenu from './ProfileMenu';
@@ -54,24 +54,24 @@ const MobileNavPanel = ({
   ];
 
   // 나의 방문 로드
-  const loadMyVisits = async () => {
+  const loadMyVisits = useCallback(async () => {
     if (!user) return;
-    
+
     setLoadingMyVisits(true);
     const result = await visitService.getUserVisits(user.uid);
-    
+
     if (result.success) {
       setMyVisits(result.visits);
     }
     setLoadingMyVisits(false);
-  };
+  }, [user]);
 
   // activeView 변경시 데이터 로드
   useEffect(() => {
-    if (activeView === 'myvisits' && user) {
+    if (activeView === 'myvisits') {
       loadMyVisits();
     }
-  }, [activeView, user]);
+  }, [activeView, loadMyVisits]);
 
   // 날짜 포맷
   const formatDate = (timestamp) => {

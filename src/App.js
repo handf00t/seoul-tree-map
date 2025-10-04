@@ -1,6 +1,7 @@
 // src/App.js - 스플래시 화면 추가
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { clearMapFilters } from './utils/mapFilters';
 import MapContainer from './components/Map/MapContainer';
 import SearchFilterPanel from './components/Search/SearchFilterPanel';
 import MobileNavPanel from './components/Navigation/MobileNavPanel';
@@ -11,10 +12,13 @@ import { UserProfile } from './components/Auth/LoginModal';
 import FavoritesModal from './components/Favorites/FavoritesModal';
 import SplashScreen from './components/SplashScreen/SplashScreen';
 import CurrentLocationButton from './components/Map/CurrentLocationButton';
+import AboutView from './components/Navigation/MobileNavPanel/AboutView';
+import AboutDetailSheet from './components/Navigation/MobileNavPanel/AboutDetailSheet';
+import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 
 function AppContent() {
-  const { user, loading, userFavorites } = useAuth();
+  const { user, loading } = useAuth();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [mapInstance, setMapInstance] = useState(null);
   const [selectedTree, setSelectedTree] = useState(null);
@@ -24,6 +28,8 @@ function AppContent() {
   const [showProfile, setShowProfile] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [selectedAboutSection, setSelectedAboutSection] = useState(null);
   const [activeFilters, setActiveFilters] = useState({ species: [], sizes: [] });
   const [isPopupMinimized, setIsPopupMinimized] = useState(false);
   const [isMapInteracting, setIsMapInteracting] = useState(false);
@@ -86,18 +92,7 @@ function AppContent() {
 
   const clearFilters = useCallback(() => {
     setActiveFilters({ species: [], sizes: [] });
-    
-    if (mapInstance) {
-      const layers = ['protected-trees', 'roadside-trees', 'park-trees'];
-      layers.forEach(layerId => {
-        if (mapInstance.getLayer(layerId)) {
-          const originalFilter = layerId === 'protected-trees' ? ['==', 'tree_type', 'protected'] :
-                               layerId === 'roadside-trees' ? ['==', 'tree_type', 'roadside'] :
-                               ['==', 'tree_type', 'park'];
-          mapInstance.setFilter(layerId, originalFilter);
-        }
-      });
-    }
+    clearMapFilters(mapInstance);
   }, [mapInstance]);
 
   const handleLoginClick = () => {
@@ -179,7 +174,7 @@ function AppContent() {
                 fontWeight: 'bold',
                 color: 'var(--on-surface)'
               }}>
-                서울시 나무지도
+                서울시 나무 지도
               </h1>
               <p style={{ 
                 margin: 0, 
@@ -187,13 +182,40 @@ function AppContent() {
                 opacity: 0.7,
                 color: 'var(--on-surface-variant)'
               }}>
-                Seoul Urban Forest Explorer
+                Seoul Urban Tree Explorer
               </p>
             </div>
           </div>
 
           {/* 헤더 우측 컨트롤 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* 소개 버튼 (PC만) */}
+            <button
+              onClick={() => setShowAbout(true)}
+              style={{
+                background: 'var(--surface-variant)',
+                color: 'var(--on-surface-variant)',
+                border: 'none',
+                borderRadius: 'var(--radius-lg)',
+                height: '40px',
+                padding: '10px 16px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'all 0.2s ease',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+              onMouseEnter={(e) => e.target.style.background = 'var(--surface)'}
+              onMouseLeave={(e) => e.target.style.background = 'var(--surface-variant)'}
+            >
+              <span className="material-icons" style={{ fontSize: '18px' }}>info</span>
+              <span>소개</span>
+            </button>
+
             {/* 로그인/프로필 버튼 (PC만) */}
             <div style={{ position: 'relative' }} className="profile-container">
                 <button
@@ -250,7 +272,6 @@ function AppContent() {
                   />
                 )}
               </div>
-            )}
           </div>
         </div>
       </header>
@@ -274,12 +295,14 @@ function AppContent() {
           }}
         />
 
-        {/* 현재 위치 버튼 */}
-        <CurrentLocationButton 
-          map={mapInstance}
-          isMobile={isMobile}
-          minimizedPopupHeight={isPopupMinimized ? 10 : 240}
-        />
+        {/* 현재 위치 버튼 (모바일만) */}
+        {isMobile && (
+          <CurrentLocationButton
+            map={mapInstance}
+            isMobile={isMobile}
+            minimizedPopupHeight={isPopupMinimized ? 10 : 240}
+          />
+        )}
         
         {/* PC용 검색 패널 (완전 분리) */}
         {!isMobile && (
@@ -397,6 +420,74 @@ function AppContent() {
           }}
           map={mapInstance}
         />
+
+        {/* 소개 모달 (PC) */}
+        {showAbout && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 10000,
+              padding: '20px'
+            }}
+            onClick={() => {
+              setShowAbout(false);
+              setSelectedAboutSection(null);
+            }}
+          >
+            <div
+              style={{
+                background: 'white',
+                borderRadius: '24px',
+                maxWidth: '600px',
+                width: '100%',
+                maxHeight: '85vh',
+                overflow: 'hidden',
+                position: 'relative'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{ position: 'relative', height: '100%' }}>
+                <AboutView
+                  setActiveView={(view) => {
+                    if (view === 'home') {
+                      setShowAbout(false);
+                      setSelectedAboutSection(null);
+                    }
+                  }}
+                  onDetailClick={(section) => setSelectedAboutSection(section)}
+                />
+                {selectedAboutSection && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: 'white',
+                      borderRadius: '24px',
+                      overflow: 'hidden',
+                      zIndex: 10
+                    }}
+                  >
+                    <AboutDetailSheet
+                      section={selectedAboutSection}
+                      onClose={() => setSelectedAboutSection(null)}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
@@ -404,9 +495,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

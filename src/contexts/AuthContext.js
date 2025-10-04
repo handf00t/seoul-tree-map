@@ -77,13 +77,15 @@ export const AuthProvider = ({ children }) => {
     }
     
     const isInFavorites = userFavorites.some(fav => fav.source_id === treeData.source_id);
-    
-    console.log('isFavorite 체크:', {
-      treeSourceId: treeData.source_id,
-      favoriteSourceIds: userFavorites.map(f => f.source_id),
-      result: isInFavorites
-    });
-    
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('isFavorite 체크:', {
+        treeSourceId: treeData.source_id,
+        favoriteSourceIds: userFavorites.map(f => f.source_id),
+        result: isInFavorites
+      });
+    }
+
     return isInFavorites;
   };
 

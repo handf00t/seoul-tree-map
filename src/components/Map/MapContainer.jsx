@@ -21,7 +21,9 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
     mapRef.current = map;
 
     map.on('load', () => {
-      console.log('지도 로드 완료 - 나무 데이터만 표시');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('지도 로드 완료 - 나무 데이터만 표시');
+      }
 
       // 서울 구 경계 타일셋 소스 추가
       map.addSource('seoul-districts', {
@@ -182,7 +184,9 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
         }
       });
 
-      console.log('나무 레이어 추가 완료');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('나무 레이어 추가 완료');
+      }
 
       // 지도 조작 이벤트 리스너 추가
       if (onMapInteractionChange) {
@@ -213,7 +217,9 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
           const feature = e.features[0];
           const coordinates = feature.geometry.coordinates;
           
-          console.log('나무 클릭:', properties);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('나무 클릭:', properties);
+          }
           
           if (onTreeClick) {
             onTreeClick({
@@ -250,16 +256,20 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
       // 데이터 로드 확인
       map.on('sourcedata', (e) => {
         if (e.sourceId === 'seoul-trees' && e.isSourceLoaded) {
-          console.log('나무 데이터 로드 완료');
+          if (process.env.NODE_ENV === 'development') {
+            console.log('나무 데이터 로드 완료');
+          }
           
           setTimeout(() => {
             const features = map.queryRenderedFeatures({
               layers: ['protected-trees', 'roadside-trees', 'park-trees']
             });
             
-            console.log('현재 화면의 나무 수:', features.length);
-            if (features.length > 0) {
-              console.log('첫 번째 나무 데이터:', features[0].properties);
+            if (process.env.NODE_ENV === 'development') {
+              console.log('현재 화면의 나무 수:', features.length);
+              if (features.length > 0) {
+                console.log('첫 번째 나무 데이터:', features[0].properties);
+              }
             }
           }, 1000);
         }

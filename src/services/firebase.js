@@ -45,7 +45,9 @@ export const authService = {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       await authService.createOrUpdateUser(user);
-      console.log('Google 로그인 성공:', user.displayName);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Google 로그인 성공:', user.displayName);
+      }
       return { success: true, user };
     } catch (error) {
       console.error('Google 로그인 실패:', error);
@@ -56,7 +58,9 @@ export const authService = {
   signOut: async () => {
     try {
       await signOut(auth);
-      console.log('로그아웃 완료');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('로그아웃 완료');
+      }
       return { success: true };
     } catch (error) {
       console.error('로그아웃 실패:', error);
@@ -90,10 +94,14 @@ export const authService = {
         };
         
         await setDoc(userRef, userData);
+      if (process.env.NODE_ENV === 'development') {
         console.log('신규 사용자 생성:', user.displayName);
+      }
       } else {
         await updateDoc(userRef, userData);
+      if (process.env.NODE_ENV === 'development') {
         console.log('기존 사용자 업데이트:', user.displayName);
+      }
       }
       
       return userData;
@@ -147,7 +155,9 @@ export const treeService = {
         ...favoriteTree
       });
 
-      console.log('즐겨찾기 추가 완료:', favoriteTree.species_kr);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('즐겨찾기 추가 완료:', favoriteTree.species_kr);
+      }
       return { success: true, treeId };
     } catch (error) {
       console.error('즐겨찾기 추가 실패:', error);
@@ -167,7 +177,9 @@ export const treeService = {
       const favoriteRef = doc(db, 'favorites', `${userId}_${treeId}`);
       await deleteDoc(favoriteRef);
 
-      console.log('즐겨찾기 제거 완료:', treeId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('즐겨찾기 제거 완료:', treeId);
+      }
       return { success: true };
     } catch (error) {
       console.error('즐겨찾기 제거 실패:', error);
@@ -225,18 +237,26 @@ export const treeService = {
 export const visitService = {
   uploadVisitPhoto: async (userId, treeId, photoBlob) => {
     try {
-      console.log('사진 업로드 시작:', { userId, treeId, size: photoBlob.size });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('사진 업로드 시작:', { userId, treeId, size: photoBlob.size });
+      }
       
       const timestamp = Date.now();
       const storageRef = ref(storage, `visits/${userId}/${treeId}_${timestamp}.jpg`);
       
-      console.log('Storage 경로:', storageRef.fullPath);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Storage 경로:', storageRef.fullPath);
+      }
       
       const snapshot = await uploadBytes(storageRef, photoBlob);
-      console.log('업로드 완료, URL 가져오는 중...');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('업로드 완료, URL 가져오는 중...');
+      }
       
       const photoURL = await getDownloadURL(snapshot.ref);
-      console.log('사진 URL:', photoURL);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('사진 URL:', photoURL);
+      }
       
       return { success: true, photoURL };
     } catch (error) {
@@ -247,7 +267,9 @@ export const visitService = {
 
   addVisit: async (userId, userName, userPhotoURL, treeData, photoURL, comment) => {
     try {
-      console.log('방문기록 저장 시작:', { userId, treeId: treeData.source_id });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('방문기록 저장 시작:', { userId, treeId: treeData.source_id });
+      }
       
       const visitId = `${userId}_${treeData.source_id}_${Date.now()}`;
       const visitRef = doc(db, 'visits', visitId);
@@ -273,14 +295,18 @@ export const visitService = {
       };
 
       await setDoc(visitRef, visitData);
-      console.log('Firestore 저장 완료');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Firestore 저장 완료');
+      }
 
       const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, {
         visitedTreeIds: arrayUnion(treeData.source_id),
         lastActivityAt: serverTimestamp()
       });
-      console.log('사용자 기록 업데이트 완료');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('사용자 기록 업데이트 완료');
+      }
 
       return { success: true, visitId };
     } catch (error) {
@@ -308,7 +334,9 @@ export const visitService = {
         visits = visits.filter(v => v.userId === userId);
       }
 
-      console.log(`방문기록 조회 완료: ${visits.length}개`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`방문기록 조회 완료: ${visits.length}개`);
+      }
       return { success: true, visits };
     } catch (error) {
       console.error('방문기록 조회 실패:', error);
@@ -330,7 +358,9 @@ export const visitService = {
       }
 
       await deleteDoc(visitRef);
-      console.log('방문기록 삭제 완료:', visitId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('방문기록 삭제 완료:', visitId);
+      }
       return { success: true };
     } catch (error) {
       console.error('방문기록 삭제 실패:', error);
@@ -353,7 +383,9 @@ export const visitService = {
         ...doc.data()
       }));
 
-      console.log(`사용자 방문기록 조회 완료: ${visits.length}개`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`사용자 방문기록 조회 완료: ${visits.length}개`);
+      }
       return { success: true, visits };
     } catch (error) {
       console.error('사용자 방문기록 조회 실패:', error);
