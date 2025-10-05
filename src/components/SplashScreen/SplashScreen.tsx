@@ -1,10 +1,21 @@
-// components/SplashScreen/SplashScreen.jsx
+// components/SplashScreen/SplashScreen.tsx
 import React, { useState } from 'react';
 
-const SplashScreen = ({ onComplete }) => {
-  const [isExiting, setIsExiting] = useState(false);
+interface SplashScreenProps {
+  onComplete?: () => void;
+}
 
-  const leaves = [
+interface Leaf {
+  id: number;
+  left: string;
+  delay: number;
+  duration: number;
+}
+
+const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
+  const [isExiting, setIsExiting] = useState<boolean>(false);
+
+  const leaves: Leaf[] = [
     { id: 1, left: '15%', delay: 0, duration: 2 },
     { id: 2, left: '35%', delay: 0.2, duration: 2.3 },
     { id: 3, left: '55%', delay: 0.4, duration: 1.8 },
@@ -89,15 +100,15 @@ const SplashScreen = ({ onComplete }) => {
             .splash-tree-icon {
               font-size: 100px !important;
             }
-            
+
             .splash-title h1 {
               font-size: 28px !important;
             }
-            
+
             .splash-title p {
               font-size: 12px !important;
             }
-            
+
             .splash-leaf {
               font-size: 32px !important;
             }
@@ -111,7 +122,7 @@ const SplashScreen = ({ onComplete }) => {
         `}
       </style>
 
-      <div 
+      <div
         className={isExiting ? 'splash-exit' : ''}
         onClick={handleClick}
         style={{

@@ -4,6 +4,9 @@ const CACHE_NAME = 'seoul-tree-map-v1';
 const TILE_CACHE_NAME = 'mapbox-tiles-v1';
 const MAX_TILE_AGE = 7 * 24 * 60 * 60 * 1000; // 7일
 
+// 디버그 모드 (필요할 때만 true로 변경)
+const DEBUG_MODE = false;
+
 // 캐시할 정적 리소스
 const STATIC_ASSETS = [
   '/',
@@ -80,10 +83,10 @@ self.addEventListener('fetch', (event) => {
 
           // 캐시가 유효한 경우
           if (now - cachedTime < MAX_TILE_AGE) {
-            console.log('[Service Worker] Serving tile from cache:', url);
+            if (DEBUG_MODE) console.log('[Service Worker] Serving tile from cache:', url);
             return cachedResponse;
           } else {
-            console.log('[Service Worker] Tile cache expired:', url);
+            if (DEBUG_MODE) console.log('[Service Worker] Tile cache expired:', url);
           }
         }
 
@@ -93,13 +96,13 @@ self.addEventListener('fetch', (event) => {
 
           // 성공적인 응답만 캐시
           if (networkResponse && networkResponse.status === 200) {
-            console.log('[Service Worker] Caching new tile:', url);
+            if (DEBUG_MODE) console.log('[Service Worker] Caching new tile:', url);
             cache.put(request, networkResponse.clone());
           }
 
           return networkResponse;
         } catch (error) {
-          console.log('[Service Worker] Tile fetch failed, using stale cache:', url);
+          if (DEBUG_MODE) console.log('[Service Worker] Tile fetch failed, using stale cache:', url);
           // 네트워크 실패 시 만료된 캐시라도 반환
           if (cachedResponse) {
             return cachedResponse;

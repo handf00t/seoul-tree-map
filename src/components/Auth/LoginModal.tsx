@@ -1,16 +1,26 @@
-// components/Auth/LoginModal.jsx
+// components/Auth/LoginModal.tsx
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 
-const LoginModal = ({ isVisible, onClose }) => {
+interface LoginModalProps {
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+interface UserProfileProps {
+  onFavoritesClick: () => void;
+  onClose: () => void;
+}
+
+const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
   const { signInWithGoogle } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     const result = await signInWithGoogle();
     setIsLoading(false);
-    
+
     if (result.success) {
       onClose();
     } else {
@@ -36,7 +46,7 @@ const LoginModal = ({ isVisible, onClose }) => {
           animation: 'fadeIn 0.3s ease-out'
         }}
       />
-      
+
       {/* 로그인 모달 */}
       <div style={{
         position: 'fixed',
@@ -100,10 +110,10 @@ const LoginModal = ({ isVisible, onClose }) => {
               marginBottom: '16px'
             }}
             onMouseEnter={(e) => {
-              if (!isLoading) e.target.style.background = 'var(--google-blue-dark)';
+              if (!isLoading) e.currentTarget.style.background = 'var(--google-blue-dark)';
             }}
             onMouseLeave={(e) => {
-              if (!isLoading) e.target.style.background = 'var(--google-blue)';
+              if (!isLoading) e.currentTarget.style.background = 'var(--google-blue)';
             }}
           >
             {isLoading ? (
@@ -185,18 +195,18 @@ const LoginModal = ({ isVisible, onClose }) => {
             from { opacity: 0; }
             to { opacity: 1; }
           }
-          
+
           @keyframes modalSlideIn {
-            from { 
+            from {
               opacity: 0;
               transform: translate(-50%, -50%) scale(0.9);
             }
-            to { 
+            to {
               opacity: 1;
               transform: translate(-50%, -50%) scale(1);
             }
           }
-          
+
           @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -207,10 +217,10 @@ const LoginModal = ({ isVisible, onClose }) => {
   );
 };
 
-// components/Auth/UserProfile.jsx
-export const UserProfile = ({ onFavoritesClick, onClose }) => {
+// components/Auth/UserProfile.tsx
+export const UserProfile: React.FC<UserProfileProps> = ({ onFavoritesClick, onClose }) => {
   const { user, signOut, userFavorites } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSignOut = async () => {
     setIsLoading(true);
@@ -244,8 +254,8 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
           gap: '12px'
         }}>
           <img
-            src={user.photoURL}
-            alt={user.displayName}
+            src={user.photoURL || ''}
+            alt={user.displayName || ''}
             style={{
               width: '40px',
               height: '40px',
@@ -290,8 +300,8 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
             gap: '8px',
             transition: 'background 0.2s'
           }}
-          onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
-          onMouseLeave={(e) => e.target.style.background = 'none'}
+          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-variant)'}
+          onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
         >
           <span className="material-icons">star</span> 즐겨찾기한 나무  {userFavorites.length}개
 
@@ -316,10 +326,10 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
             opacity: isLoading ? 0.6 : 1
           }}
           onMouseEnter={(e) => {
-            if (!isLoading) e.target.style.background = 'var(--surface-variant)';
+            if (!isLoading) e.currentTarget.style.background = 'var(--surface-variant)';
           }}
           onMouseLeave={(e) => {
-            if (!isLoading) e.target.style.background = 'none';
+            if (!isLoading) e.currentTarget.style.background = 'none';
           }}
         >
           {isLoading ? '로그아웃 중...' : <><span className="material-icons">logout</span> 로그아웃</>}
@@ -329,11 +339,11 @@ export const UserProfile = ({ onFavoritesClick, onClose }) => {
       <style>
         {`
           @keyframes slideDown {
-            from { 
+            from {
               opacity: 0;
               transform: translateY(-10px);
             }
-            to { 
+            to {
               opacity: 1;
               transform: translateY(0);
             }
