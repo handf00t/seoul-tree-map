@@ -1,6 +1,7 @@
 // Visit record related type definitions
 
 import { Coordinates } from './tree';
+import { Timestamp } from 'firebase/firestore';
 
 export interface TreeInfo {
   species_kr: string;
@@ -13,12 +14,12 @@ export interface TreeInfo {
 export interface Visit {
   id: string;
   userId: string;
-  userName: string | null;
-  userPhotoURL: string | null;
+  userName: string;
+  userPhotoURL: string;
   treeId: string;
   photoURL: string;
   comment: string;
-  createdAt: any; // Firebase Timestamp
+  createdAt: Timestamp;
   treeInfo: TreeInfo;
 }
 
