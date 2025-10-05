@@ -1,5 +1,18 @@
-// components/UI/EmptyState.jsx
-const EmptyState = ({
+// components/UI/EmptyState.tsx
+import React, { CSSProperties, ReactNode } from 'react';
+
+type EmptyStateVariant = 'default' | 'dashed' | 'plain';
+
+interface EmptyStateProps {
+  icon?: string | ReactNode;
+  title?: string;
+  description?: string | ReactNode;
+  action?: ReactNode;
+  variant?: EmptyStateVariant;
+  style?: CSSProperties;
+}
+
+const EmptyState: React.FC<EmptyStateProps> = ({
   icon,
   title,
   description,
@@ -7,8 +20,8 @@ const EmptyState = ({
   variant = 'default',
   style = {}
 }) => {
-  const getVariantStyles = () => {
-    const variants = {
+  const getVariantStyles = (): CSSProperties => {
+    const variants: Record<EmptyStateVariant, CSSProperties> = {
       default: {
         background: 'var(--surface-variant)',
         border: '1px solid var(--outline)',
@@ -24,7 +37,7 @@ const EmptyState = ({
         border: 'none'
       }
     };
-    return variants[variant] || variants.default;
+    return variants[variant];
   };
 
   const variantStyles = getVariantStyles();

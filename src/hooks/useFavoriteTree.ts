@@ -1,12 +1,25 @@
-// src/hooks/useFavoriteTree.js
+// src/hooks/useFavoriteTree.ts
 import { useState, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { TreeData } from '../types';
 
-export const useFavoriteTree = ({ onLoginRequest }) => {
+type FavoriteStatus = 'idle' | 'adding' | 'removing';
+
+interface UseFavoriteTreeParams {
+  onLoginRequest?: () => void;
+}
+
+interface UseFavoriteTreeReturn {
+  favoriteStatus: FavoriteStatus;
+  toggleFavorite: (treeData: TreeData) => Promise<void>;
+  isFavorited: (treeData: TreeData | null) => boolean;
+}
+
+export const useFavoriteTree = ({ onLoginRequest }: UseFavoriteTreeParams): UseFavoriteTreeReturn => {
   const { user, addToFavorites, removeFromFavorites, isFavorite, recordTreeView } = useAuth();
-  const [favoriteStatus, setFavoriteStatus] = useState('idle'); // 'idle' | 'adding' | 'removing'
+  const [favoriteStatus, setFavoriteStatus] = useState<FavoriteStatus>('idle');
 
-  const toggleFavorite = useCallback(async (treeData) => {
+  const toggleFavorite = useCallback(async (treeData: TreeData) => {
     if (!user) {
       onLoginRequest?.();
       return;
@@ -40,6 +53,6 @@ export const useFavoriteTree = ({ onLoginRequest }) => {
   return {
     favoriteStatus,
     toggleFavorite,
-    isFavorited: (treeData) => user && treeData ? isFavorite(treeData) : false
+    isFavorited: (treeData: TreeData | null) => user && treeData ? isFavorite(treeData) : false
   };
 };

@@ -1,5 +1,21 @@
-// components/UI/ActionButton.jsx
-const ActionButton = ({
+// components/UI/ActionButton.tsx
+import React, { CSSProperties, ReactNode } from 'react';
+
+type ActionButtonVariant = 'primary' | 'secondary' | 'error' | 'ghost';
+type ActionButtonSize = 'small' | 'medium' | 'large';
+
+interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  variant?: ActionButtonVariant;
+  size?: ActionButtonSize;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  icon?: string | ReactNode;
+  style?: CSSProperties;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({
   children,
   onClick,
   variant = 'secondary',
@@ -10,8 +26,8 @@ const ActionButton = ({
   style = {},
   ...props
 }) => {
-  const getVariantStyles = () => {
-    const variants = {
+  const getVariantStyles = (): CSSProperties => {
+    const variants: Record<ActionButtonVariant, CSSProperties> = {
       primary: {
         background: 'var(--primary)',
         color: 'var(--surface)',
@@ -33,11 +49,11 @@ const ActionButton = ({
         border: '1px solid var(--outline)'
       }
     };
-    return variants[variant] || variants.secondary;
+    return variants[variant];
   };
 
-  const getSizeStyles = () => {
-    const sizes = {
+  const getSizeStyles = (): CSSProperties => {
+    const sizes: Record<ActionButtonSize, CSSProperties> = {
       small: {
         height: '36px',
         fontSize: '12px',
@@ -54,7 +70,7 @@ const ActionButton = ({
         padding: '0 20px'
       }
     };
-    return sizes[size] || sizes.medium;
+    return sizes[size];
   };
 
   const variantStyles = getVariantStyles();

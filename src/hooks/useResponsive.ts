@@ -1,7 +1,12 @@
-// src/hooks/useResponsive.js
+// src/hooks/useResponsive.ts
 import { useEffect, useState } from 'react';
 
-export const useResponsive = (breakpoint = 768) => {
+interface UseResponsiveReturn {
+  isMobile: boolean;
+  isDesktop: boolean;
+}
+
+export const useResponsive = (breakpoint: number = 768): UseResponsiveReturn => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= breakpoint);
 
   useEffect(() => {

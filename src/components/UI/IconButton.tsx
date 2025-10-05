@@ -1,5 +1,20 @@
-// components/UI/IconButton.jsx
-const IconButton = ({
+// components/UI/IconButton.tsx
+import React, { CSSProperties } from 'react';
+
+type IconButtonVariant = 'default' | 'close' | 'primary' | 'danger' | 'ghost';
+type IconButtonSize = 'small' | 'medium' | 'large' | 'xlarge';
+
+interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  icon: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  variant?: IconButtonVariant;
+  size?: IconButtonSize;
+  ariaLabel?: string;
+  disabled?: boolean;
+  style?: CSSProperties;
+}
+
+const IconButton: React.FC<IconButtonProps> = ({
   icon,
   onClick,
   variant = 'default',
@@ -9,8 +24,8 @@ const IconButton = ({
   disabled = false,
   ...props
 }) => {
-  const getVariantStyles = () => {
-    const variants = {
+  const getVariantStyles = (): CSSProperties => {
+    const variants: Record<IconButtonVariant, CSSProperties> = {
       default: {
         background: 'var(--surface-variant)',
         color: 'var(--text-secondary)',
@@ -39,11 +54,11 @@ const IconButton = ({
         border: 'none'
       }
     };
-    return variants[variant] || variants.default;
+    return variants[variant];
   };
 
-  const getSizeStyles = () => {
-    const sizes = {
+  const getSizeStyles = (): CSSProperties => {
+    const sizes: Record<IconButtonSize, CSSProperties> = {
       small: {
         width: '24px',
         height: '24px',
@@ -65,13 +80,13 @@ const IconButton = ({
         fontSize: '24px'
       }
     };
-    return sizes[size] || sizes.medium;
+    return sizes[size];
   };
 
   const variantStyles = getVariantStyles();
   const sizeStyles = getSizeStyles();
 
-  const handleMouseEnter = (e) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (variant === 'danger') {
       e.currentTarget.style.background = 'var(--error)';
       e.currentTarget.style.color = 'white';
@@ -79,7 +94,7 @@ const IconButton = ({
     }
   };
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (variant === 'danger') {
       e.currentTarget.style.background = 'var(--surface)';
       e.currentTarget.style.color = 'var(--text-tertiary)';
@@ -107,7 +122,7 @@ const IconButton = ({
       }}
       {...props}
     >
-      <span className="material-icons" style={{ fontSize: sizeStyles.fontSize }}>
+      <span className="material-icons" style={{ fontSize: sizeStyles.fontSize as string }}>
         {icon}
       </span>
     </button>

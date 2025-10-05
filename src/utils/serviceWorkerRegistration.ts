@@ -1,7 +1,12 @@
-// src/utils/serviceWorkerRegistration.js
+// src/utils/serviceWorkerRegistration.ts
 // Service Worker 등록 및 관리 유틸리티
 
-export function register() {
+interface CacheInfo {
+  tileCount: number;
+  cacheName: string;
+}
+
+export function register(): void {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
@@ -32,7 +37,7 @@ export function register() {
   }
 }
 
-export function unregister() {
+export function unregister(): void {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
       .then((registration) => {
@@ -46,12 +51,12 @@ export function unregister() {
 }
 
 // 타일 캐시 삭제
-export async function clearTileCache() {
+export async function clearTileCache(): Promise<boolean> {
   if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
     return new Promise((resolve, reject) => {
       const messageChannel = new MessageChannel();
 
-      messageChannel.port1.onmessage = (event) => {
+      messageChannel.port1.onmessage = (event: MessageEvent) => {
         if (event.data.success) {
           console.log('✅ Tile cache cleared');
           resolve(true);
@@ -60,7 +65,7 @@ export async function clearTileCache() {
         }
       };
 
-      navigator.serviceWorker.controller.postMessage(
+      navigator.serviceWorker.controller!.postMessage(
         { type: 'CLEAR_TILE_CACHE' },
         [messageChannel.port2]
       );
@@ -70,17 +75,17 @@ export async function clearTileCache() {
 }
 
 // 캐시 크기 확인
-export async function getCacheSize() {
+export async function getCacheSize(): Promise<CacheInfo> {
   if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
     return new Promise((resolve, reject) => {
       const messageChannel = new MessageChannel();
 
-      messageChannel.port1.onmessage = (event) => {
+      messageChannel.port1.onmessage = (event: MessageEvent) => {
         console.log('📊 Cache info:', event.data);
         resolve(event.data);
       };
 
-      navigator.serviceWorker.controller.postMessage(
+      navigator.serviceWorker.controller!.postMessage(
         { type: 'GET_CACHE_SIZE' },
         [messageChannel.port2]
       );

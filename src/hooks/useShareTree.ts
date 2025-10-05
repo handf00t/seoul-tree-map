@@ -1,10 +1,18 @@
-// src/hooks/useShareTree.js
+// src/hooks/useShareTree.ts
 import { useState, useCallback } from 'react';
+import { TreeData } from '../types';
 
-export const useShareTree = () => {
-  const [shareStatus, setShareStatus] = useState('idle'); // 'idle' | 'copying' | 'copied' | 'failed'
+type ShareStatus = 'idle' | 'copying' | 'copied' | 'failed';
 
-  const shareTree = useCallback(async (treeData) => {
+interface UseShareTreeReturn {
+  shareStatus: ShareStatus;
+  shareTree: (treeData: TreeData) => Promise<void>;
+}
+
+export const useShareTree = (): UseShareTreeReturn => {
+  const [shareStatus, setShareStatus] = useState<ShareStatus>('idle');
+
+  const shareTree = useCallback(async (treeData: TreeData) => {
     if (!treeData || !treeData.clickCoordinates) return;
 
     setShareStatus('copying');

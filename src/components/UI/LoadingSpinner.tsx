@@ -1,5 +1,16 @@
-// components/UI/LoadingSpinner.jsx
-const LoadingSpinner = ({
+// components/UI/LoadingSpinner.tsx
+import React, { CSSProperties } from 'react';
+
+type LoadingSpinnerSize = 'small' | 'medium' | 'large';
+
+interface LoadingSpinnerProps {
+  size?: LoadingSpinnerSize;
+  text?: string;
+  centered?: boolean;
+  style?: CSSProperties;
+}
+
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'medium',
   text = '',
   centered = true,
@@ -23,12 +34,12 @@ const LoadingSpinner = ({
         borderWidth: '4px'
       }
     };
-    return sizes[size] || sizes.medium;
+    return sizes[size];
   };
 
   const sizeStyles = getSizeStyles();
 
-  const spinnerStyle = {
+  const spinnerStyle: CSSProperties = {
     width: sizeStyles.width,
     height: sizeStyles.height,
     border: `${sizeStyles.borderWidth} solid var(--surface-dim)`,
@@ -38,7 +49,7 @@ const LoadingSpinner = ({
     margin: text ? '0 auto 12px' : '0 auto'
   };
 
-  const containerStyle = centered ? {
+  const containerStyle: CSSProperties = centered ? {
     padding: '60px 20px',
     textAlign: 'center',
     color: 'var(--text-secondary)',
