@@ -5,9 +5,12 @@ import { visitService } from '../../services/firebase';
 import CameraCapture from '../Visit/CameraCapture';
 import VisitRecordForm from '../Visit/VisitRecordForm';
 import VisitList from '../Visit/VisitList';
-import IconButton from '../UI/IconButton';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import ActionButton from '../UI/ActionButton';
+import PopupHeader from './TreePopup/PopupHeader';
+import TabMenu from './TreePopup/TabMenu';
+import TreeInfoBox from './TreePopup/TreeInfoBox';
+import BenefitsSection from './TreePopup/BenefitsSection';
 
 const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMapInteracting, onLoginRequest }) => {
   const { user, addToFavorites, removeFromFavorites, isFavorite, recordTreeView } = useAuth();
@@ -216,14 +219,6 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     }
   };
 
-  const getTreeType = (type) => {
-    switch(type) {
-      case 'protected': return '보호수';
-      case 'roadside': return '가로수';
-      case 'park': return '공원수목';
-      default: return type;
-    }
-  };
 
   const handleExpand = (openBenefits = false) => {
     setIsMinimized(false);
@@ -410,64 +405,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
           onClick={isMinimized ? handleExpand : undefined}
         >
           {/* 헤더 */}
-          <div style={{ marginBottom: isMinimized ? '8px' : '16px' }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: isMinimized ? '4px' : '8px'
-            }}>
-              <h2 style={{
-                margin: 0,
-                fontSize: isMobile ? '22px' : '28px',
-                fontWeight: '700',
-                color: 'var(--text-primary)',
-                lineHeight: '1.2'
-              }}>
-                {treeData.species_kr || '미상'}
-              </h2>
-
-              <IconButton
-                icon="close"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
-                variant="close"
-                size="medium"
-                ariaLabel="닫기"
-              />
-            </div>
-            
-            <div style={{
-              fontSize: isMinimized ? '12px' : (isMobile ? '14px' : '16px'),
-              color: 'var(--text-secondary)',
-              marginBottom: isMinimized ? '0' : '4px'
-            }}>
-              {getTreeType(treeData.tree_type)}
-              {isMinimized && (
-                <span style={{ marginLeft: '8px', color: 'var(--text-tertiary)' }}>
-                  {treeData.borough} {treeData.district}
-                </span>
-              )}
-            </div>
-
-            {!isMinimized && (
-              <div style={{
-                fontSize: isMobile ? '13px' : '15px',
-                color: 'var(--text-tertiary)',
-                lineHeight: '1.4'
-              }}>
-                {treeData.borough}
-                {treeData.district && ` ${treeData.district}`}
-                {treeData.address && (
-                  <div style={{ marginTop: '2px' }}>
-                    {treeData.address}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <PopupHeader
+            treeData={treeData}
+            isMobile={isMobile}
+            isMinimized={isMinimized}
+            onClose={onClose}
+          />
 
           {isMinimized ? (
             // 간소화 모드
@@ -654,48 +597,10 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
 
               {/* 탭 메뉴 (모바일만) */}
               {isMobile && (
-                <div style={{
-                  display: 'flex',
-                  borderBottom: '2px solid var(--divider)',
-                  marginBottom: '16px'
-                }}>
-                  <button
-                    onClick={() => setActiveTab('info')}
-                    style={{
-                      flex: 1,
-                      padding: '12px',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: activeTab === 'info' ? '2px solid var(--primary)' : '2px solid transparent',
-                      color: activeTab === 'info' ? 'var(--primary)' : 'var(--text-tertiary)',
-                      fontSize: '15px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      marginBottom: '-2px',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    정보
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('visits')}
-                    style={{
-                      flex: 1,
-                      padding: '12px',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: activeTab === 'visits' ? '2px solid var(--primary)' : '2px solid transparent',
-                      color: activeTab === 'visits' ? 'var(--primary)' : 'var(--text-tertiary)',
-                      fontSize: '15px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      marginBottom: '-2px',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    방문록
-                  </button>
-                </div>
+                <TabMenu
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                />
               )}
 
               {/* 탭 컨텐츠 */}
@@ -715,208 +620,14 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
               ) : (
                 // 정보 탭 (기존 내용)
                 <>
-                  {(hasValidData(treeData.height_m) || hasValidData(treeData.dbh_cm) || treeData.source_id) && (
-                    <div style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '16px',
-                      padding: '16px',
-                      background: 'var(--primary-surface)',
-                      borderRadius: '8px',
-                      marginBottom: '16px',
-                      fontSize: '14px',
-                      border: '1px solid var(--primary-border)'
-                    }}>
-                      {hasValidData(treeData.height_m) && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: 'var(--text-secondary)' }}>높이</span>
-                          <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
-                            {Math.round(treeData.height_m)}m
-                          </span>
-                        </div>
-                      )}
-                      {hasValidData(treeData.dbh_cm) && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: 'var(--text-secondary)' }}>직경</span>
-                          <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
-                            {Math.round(treeData.dbh_cm)}cm
-                          </span>
-                        </div>
-                      )}
-                      {treeData.source_id && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: 'var(--text-secondary)' }}>나무번호</span>
-                          <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
-                            {treeData.source_id}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  <TreeInfoBox treeData={treeData} />
 
-                  {hasBenefitsData && (
-                    <div style={{ marginBottom: '16px' }}>
-                      <button
-                        onClick={() => setShowBenefits(!showBenefits)}
-                        style={{
-                          width: '100%',
-                          padding: '14px 16px',
-                          background: showBenefits ? 'var(--primary)' : 'var(--surface-variant)',
-                          color: showBenefits ? 'var(--surface)' : 'var(--text-primary)',
-                          border: showBenefits ? 'none' : '1px solid var(--outline)',
-                          borderRadius: '8px',
-                          fontSize: '15px',
-                          fontWeight: '600',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          transition: 'all 0.2s ease'
-                        }}
-                      >
-                        <span>
-                          연간 생태적 편익 {treeData.total_annual_value_krw ? formatKRW(treeData.total_annual_value_krw) : '정보 없음'}
-                        </span>
-                        <span className="material-icons" style={{
-                          transform: showBenefits ? 'rotate(180deg)' : 'rotate(0deg)',
-                          transition: 'transform 0.2s ease',
-                          fontSize: '12px'
-                        }}>
-                          expand_more
-                        </span>
-                      </button>
-                    </div>
-                  )}
-
-                  {showBenefits && hasBenefitsData && (
-                    <div style={{
-                      background: 'var(--primary-surface)',
-                      padding: '16px',
-                      borderRadius: '8px',
-                      marginBottom: '16px',
-                      border: '1px solid var(--primary-border)'
-                    }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        {hasValidData(treeData.stormwater_liters_year) && (
-                          <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '10px 12px',
-                            background: 'var(--surface)',
-                            borderRadius: '6px',
-                            border: '1px solid var(--primary-border)'
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>빗물 흡수</span>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
-                                {formatNumber(treeData.stormwater_liters_year)}L
-                              </div>
-                              {hasValidData(treeData.stormwater_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
-                                  {formatKRW(treeData.stormwater_value_krw_year)}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {hasValidData(treeData.energy_kwh_year) && (
-                          <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '10px 12px',
-                            background: 'var(--surface)',
-                            borderRadius: '6px',
-                            border: '1px solid var(--primary-border)'
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>에너지 절약</span>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
-                                {formatNumber(treeData.energy_kwh_year)}kWh
-                              </div>
-                              {hasValidData(treeData.energy_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
-                                  {formatKRW(treeData.energy_value_krw_year)}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {hasValidData(treeData.air_pollution_kg_year) && (
-                          <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '10px 12px',
-                            background: 'var(--surface)',
-                            borderRadius: '6px',
-                            border: '1px solid var(--primary-border)'
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>대기 정화</span>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
-                                {formatNumber(treeData.air_pollution_kg_year * 1000)}g
-                              </div>
-                              {hasValidData(treeData.air_pollution_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
-                                  {formatKRW(treeData.air_pollution_value_krw_year)}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {hasValidData(treeData.carbon_storage_kg_year) && (
-                          <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '10px 12px',
-                            background: 'var(--surface)',
-                            borderRadius: '6px',
-                            border: '1px solid var(--primary-border)'
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>탄소 흡수</span>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--primary-dark)' }}>
-                                {formatNumber(treeData.carbon_storage_kg_year)}kg
-                              </div>
-                              {hasValidData(treeData.carbon_value_krw_year) && (
-                                <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
-                                  {formatKRW(treeData.carbon_value_krw_year)}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <div style={{
-                        padding: '12px',
-                        marginTop: '12px',
-                        fontSize: '12px',
-                        color: 'var(--text-secondary)',
-                        lineHeight: '1.4',
-                        background: 'var(--overlay-light)',
-                        borderRadius: '6px',
-                        border: '1px solid var(--primary-border)'
-                      }}>
-                        <strong>편익 산정 기준:</strong> 한국 기후조건, 산림청 공익기능 평가 기준,
-                        환경부 대기오염 피해비용, K-ETS 탄소가격 등을 반영하여 계산된 연간 추정값입니다.
-                      </div>
-                    </div>
-                  )}
+                  <BenefitsSection
+                    treeData={treeData}
+                    showBenefits={showBenefits}
+                    onToggle={() => setShowBenefits(!showBenefits)}
+                    hasBenefitsData={hasBenefitsData}
+                  />
                 </>
               )}
             </>
