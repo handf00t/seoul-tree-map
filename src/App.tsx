@@ -1,5 +1,5 @@
-// src/App.js - 스플래시 화면 추가
-import { useState, useCallback, useEffect } from 'react';
+// src/App.tsx - 스플래시 화면 추가
+import React, { useState, useCallback, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { clearMapFilters } from './utils/mapFilters';
 import MapContainer from './components/Map/MapContainer';
@@ -15,27 +15,37 @@ import CurrentLocationButton from './components/Map/CurrentLocationButton';
 import AboutView from './components/Navigation/MobileNavPanel/AboutView';
 import AboutDetailSheet from './components/Navigation/MobileNavPanel/AboutDetailSheet';
 import ErrorBoundary from './components/ErrorBoundary';
+import { TreeData } from './types';
 import './App.css';
+
+// Mapbox GL Map 타입
+type MapboxMap = mapboxgl.Map;
+
+interface FilterState {
+  species: string[];
+  sizes: string[];
+}
+
+type AboutSection = 'overview' | 'features' | 'data' | 'tech' | null;
 
 function AppContent() {
   const { user, loading } = useAuth();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [mapInstance, setMapInstance] = useState(null);
-  const [selectedTree, setSelectedTree] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const [showFavorites, setShowFavorites] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
-  const [showAbout, setShowAbout] = useState(false);
-  const [selectedAboutSection, setSelectedAboutSection] = useState(null);
-  const [activeFilters, setActiveFilters] = useState({ species: [], sizes: [] });
-  const [isPopupMinimized, setIsPopupMinimized] = useState(false);
-  const [isMapInteracting, setIsMapInteracting] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
+  const [mapInstance, setMapInstance] = useState<MapboxMap | null>(null);
+  const [selectedTree, setSelectedTree] = useState<TreeData | null>(null);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [showProfile, setShowProfile] = useState<boolean>(false);
+  const [showFavorites, setShowFavorites] = useState<boolean>(false);
+  const [showAbout, setShowAbout] = useState<boolean>(false);
+  const [selectedAboutSection, setSelectedAboutSection] = useState<AboutSection>(null);
+  const [activeFilters, setActiveFilters] = useState<FilterState>({ species: [], sizes: [] });
+  const [isPopupMinimized, setIsPopupMinimized] = useState<boolean>(false);
+  const [isMapInteracting, setIsMapInteracting] = useState<boolean>(false);
 
   // 스플래시 화면 상태 추가
-  const [showSplash, setShowSplash] = useState(
+  const [showSplash, setShowSplash] = useState<boolean>(
     !localStorage.getItem('hasVisitedBefore')
   );
 
@@ -48,11 +58,11 @@ function AppContent() {
     const urlParams = new URLSearchParams(window.location.search);
     const lat = urlParams.get('lat');
     const lng = urlParams.get('lng');
-    
+
     if (lat && lng && mapInstance) {
-      const sharedTreeData = {
+      const sharedTreeData: TreeData = {
         species_kr: urlParams.get('species') || '미상',
-        tree_type: urlParams.get('type') || 'unknown',
+        tree_type: (urlParams.get('type') as TreeData['tree_type']) || 'unknown',
         source_id: urlParams.get('id') || '',
         borough: urlParams.get('borough') || '',
         district: urlParams.get('district') || '',
@@ -68,14 +78,13 @@ function AppContent() {
     }
   }, [mapInstance]);
 
-  const handleMapLoad = useCallback((map) => {
+  const handleMapLoad = useCallback((map: MapboxMap) => {
     setMapInstance(map);
   }, []);
 
-  const handleTreeClick = useCallback((treeData) => {
+  const handleTreeClick = useCallback((treeData: TreeData) => {
     setSelectedTree(treeData);
     setShowPopup(true);
-    setShowSearch(false);
   }, []);
 
   const handleClosePopup = useCallback(() => {
@@ -86,7 +95,7 @@ function AppContent() {
     }, 300);
   }, []);
 
-  const handleFilterApply = useCallback((filters) => {
+  const handleFilterApply = useCallback((filters: FilterState) => {
     setActiveFilters(filters);
   }, []);
 
@@ -103,7 +112,7 @@ function AppContent() {
     }
   };
 
-  const getActiveFilterCount = () => {
+  const getActiveFilterCount = (): number => {
     return activeFilters.species.length + activeFilters.sizes.length;
   };
 
@@ -114,8 +123,8 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (showProfile && !event.target.closest('.profile-container')) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showProfile && !(event.target as Element).closest('.profile-container')) {
         setShowProfile(false);
       }
     };
@@ -143,9 +152,9 @@ function AppContent() {
         position: 'relative',
         borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
       }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'space-between',
           maxWidth: '1200px',
           margin: '0 auto'
@@ -166,19 +175,19 @@ function AppContent() {
             }}>
               <span className="material-icons" style={{ fontSize: isMobile ? '18px' : '24px' }}>park</span>
             </div>
-            
+
             <div>
-              <h1 style={{ 
-                margin: 0, 
-                fontSize: '20px', 
+              <h1 style={{
+                margin: 0,
+                fontSize: '20px',
                 fontWeight: 'bold',
                 color: 'var(--on-surface)'
               }}>
                 서울시 나무 지도
               </h1>
-              <p style={{ 
-                margin: 0, 
-                fontSize: '12px', 
+              <p style={{
+                margin: 0,
+                fontSize: '12px',
                 opacity: 0.7,
                 color: 'var(--on-surface-variant)'
               }}>
@@ -209,8 +218,8 @@ function AppContent() {
                 transition: 'all 0.2s ease',
                 boxShadow: 'var(--shadow-sm)'
               }}
-              onMouseEnter={(e) => e.target.style.background = 'var(--surface)'}
-              onMouseLeave={(e) => e.target.style.background = 'var(--surface-variant)'}
+              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--surface)')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--surface-variant)')}
             >
               <span className="material-icons" style={{ fontSize: '18px' }}>info</span>
               <span>소개</span>
@@ -244,8 +253,8 @@ function AppContent() {
                   ) : user ? (
                     <>
                       <img
-                        src={user.photoURL}
-                        alt={user.displayName}
+                        src={user.photoURL || ''}
+                        alt={user.displayName || ''}
                         style={{
                           width: '24px',
                           height: '24px',
@@ -263,7 +272,7 @@ function AppContent() {
 
                 {/* PC용 사용자 프로필 드롭다운 */}
                 {showProfile && user && (
-                  <UserProfile 
+                  <UserProfile
                     onFavoritesClick={() => {
                       setShowProfile(false);
                       setShowFavorites(true);
@@ -278,13 +287,13 @@ function AppContent() {
       )}
 
       {/* 메인 지도 영역 */}
-      <main style={{ 
-        height: isMobile ? '100vh' : 'calc(100vh - 96px)', 
+      <main style={{
+        height: isMobile ? '100vh' : 'calc(100vh - 96px)',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        <MapContainer 
-          onMapLoad={handleMapLoad} 
+        <MapContainer
+          onMapLoad={handleMapLoad}
           onTreeClick={handleTreeClick}
           selectedTree={selectedTree}
           onMapInteractionChange={setIsMapInteracting}
@@ -303,11 +312,11 @@ function AppContent() {
             minimizedPopupHeight={isPopupMinimized ? 10 : 240}
           />
         )}
-        
+
         {/* PC용 검색 패널 (완전 분리) */}
         {!isMobile && (
-          <SearchFilterPanel 
-            map={mapInstance} 
+          <SearchFilterPanel
+            map={mapInstance}
             activeFilterCount={getActiveFilterCount()}
             onFilterApply={handleFilterApply}
           />
@@ -315,7 +324,7 @@ function AppContent() {
 
         {/* 모바일용 네비게이션 패널 (완전 분리) */}
         {isMobile && (
-          <MobileNavPanel 
+          <MobileNavPanel
             map={mapInstance}
             onFilterClick={() => setShowFilter(true)}
             activeFilterCount={getActiveFilterCount()}
@@ -367,7 +376,7 @@ function AppContent() {
                 초기화
               </button>
             </div>
-            
+
             {activeFilters.species.length > 0 && (
               <div style={{ marginBottom: '4px' }}>
                 <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>수종: </span>
@@ -376,7 +385,7 @@ function AppContent() {
                 </span>
               </div>
             )}
-            
+
             {activeFilters.sizes.length > 0 && (
               <div>
                 <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>크기: </span>
@@ -389,7 +398,7 @@ function AppContent() {
         )}
 
         {/* 공통 모달들 */}
-        <TreePopup 
+        <TreePopup
           treeData={selectedTree}
           isVisible={showPopup}
           onClose={handleClosePopup}
@@ -414,7 +423,7 @@ function AppContent() {
         <FavoritesModal
           isVisible={showFavorites}
           onClose={() => setShowFavorites(false)}
-          onTreeSelect={(treeData) => {
+          onTreeSelect={(treeData: TreeData) => {
             setSelectedTree(treeData);
             setShowPopup(true);
           }}
@@ -456,13 +465,13 @@ function AppContent() {
             >
               <div style={{ position: 'relative' }}>
                 <AboutView
-                  setActiveView={(view) => {
+                  setActiveView={(view: string) => {
                     if (view === 'home') {
                       setShowAbout(false);
                       setSelectedAboutSection(null);
                     }
                   }}
-                  onDetailClick={(section) => setSelectedAboutSection(section)}
+                  onDetailClick={(section: AboutSection) => setSelectedAboutSection(section)}
                 />
                 {selectedAboutSection && (
                   <div
