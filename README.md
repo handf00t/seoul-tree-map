@@ -1,70 +1,166 @@
-# Getting Started with Create React App
+# 🌳 서울 나무 지도
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+서울시 보호수, 가로수, 공원수목의 위치와 생태적 편익 정보를 제공하는 인터랙티브 지도 웹 애플리케이션
 
-## Available Scripts
+## 📋 주요 기능
 
-In the project directory, you can run:
+### 🗺️ 지도 기반 탐색
+- Mapbox GL JS 기반 인터랙티브 지도
+- 서울시 전역의 나무 위치 표시
+- 나무 종류별 필터링 (보호수, 가로수, 공원수목)
+- 검색을 통한 나무 찾기
 
-### `npm start`
+### 🌲 나무 정보
+- 나무 종, 높이, 직경 등 기본 정보
+- 연간 생태적 편익 정보
+  - 빗물 흡수량
+  - 에너지 절약량
+  - 대기 정화량
+  - 탄소 흡수량
+  - 편익의 경제적 가치 (원화)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 👤 사용자 기능
+- Google 계정 로그인
+- 즐겨찾기 나무 관리
+- 나무 방문 기록 (사진, 코멘트)
+- 내 방문 기록 조회
+- 나무 정보 공유
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 📱 반응형 디자인
+- 모바일 최적화 UI
+- 데스크톱 지원
+- 탭 기반 네비게이션 (모바일)
 
-### `npm test`
+## 🛠️ 기술 스택
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend
+- **React** - UI 라이브러리
+- **Mapbox GL JS** - 지도 렌더링
+- **Material Icons** - 아이콘
 
-### `npm run build`
+### Backend & Services
+- **Firebase Authentication** - 사용자 인증
+- **Firebase Firestore** - 데이터베이스
+- **Firebase Storage** - 이미지 저장
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 개발 도구
+- Create React App
+- ESLint
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📁 프로젝트 구조
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+src/
+├── components/          # React 컴포넌트
+│   ├── Auth/           # 로그인 관련
+│   ├── Map/            # 지도 컴포넌트
+│   ├── Popup/          # 나무 정보 팝업
+│   │   └── TreePopup/  # 팝업 서브 컴포넌트
+│   ├── Navigation/     # 네비게이션
+│   │   └── MobileNavPanel/
+│   ├── Search/         # 검색 기능
+│   ├── Visit/          # 방문 기록
+│   ├── UI/             # 재사용 가능한 UI 컴포넌트
+│   └── ...
+├── contexts/           # React Context
+├── hooks/              # Custom Hooks
+├── services/           # Firebase 서비스
+├── utils/              # 유틸리티 함수
+└── App.js              # 메인 앱 컴포넌트
+```
 
-### `npm run eject`
+## 🚀 시작하기
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 필수 요구사항
+- Node.js 14+
+- npm 또는 yarn
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 설치
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+# 저장소 클론
+git clone [repository-url]
+cd seoul-tree-map
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# 의존성 설치
+npm install
+```
 
-## Learn More
+### 환경 변수 설정
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`.env` 파일을 생성하고 Firebase 설정을 추가하세요:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```env
+REACT_APP_MAPBOX_TOKEN=your_mapbox_token
+REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+REACT_APP_FIREBASE_PROJECT_ID=your_firebase_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+REACT_APP_FIREBASE_APP_ID=your_firebase_app_id
+```
 
-### Code Splitting
+### 개발 서버 실행
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm start
+```
 
-### Analyzing the Bundle Size
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 빌드
 
-### Making a Progressive Web App
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+프로덕션 빌드가 `build/` 폴더에 생성됩니다.
 
-### Advanced Configuration
+## 🎨 주요 컴포넌트
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### TreePopup
+나무 상세 정보를 표시하는 팝업 컴포넌트 (640줄)
+- 모듈화된 서브 컴포넌트 구조
+- `BenefitsSection`, `TreeInfoBox`, `PopupHeader`, `TabMenu` 등
 
-### Deployment
+### MapContainer
+Mapbox 지도를 렌더링하고 나무 데이터를 표시
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### MobileNavPanel
+모바일 네비게이션 패널
+- HomeView, FavoritesView, MyVisitsView, AboutView, ProfileMenu
 
-### `npm run build` fails to minify
+## 🔧 커스텀 훅
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- `useResponsive` - 반응형 화면 크기 감지
+- `useDragMinimize` - 드래그 제스처로 팝업 최소화
+- `useShareTree` - 나무 정보 공유
+- `useFavoriteTree` - 즐겨찾기 관리
+
+## 🎯 최근 개선 사항
+
+- TreePopup 컴포넌트 리팩토링 (929줄 → 640줄, 31% 감소)
+- BenefitItem 컴포넌트 재사용으로 중복 코드 제거
+- useMemo를 활용한 성능 최적화
+- 모바일 UX 개선 (탭 네비게이션)
+
+## 📝 개발 가이드
+
+### 코드 스타일
+- 함수형 컴포넌트 사용
+- Hooks 활용
+- 인라인 스타일 (CSS-in-JS)
+- CSS 변수 사용 (`var(--primary)` 등)
+
+### 네이밍 컨벤션
+- 컴포넌트: PascalCase (예: `TreePopup.jsx`)
+- 유틸/서비스: camelCase (예: `treeDataUtils.js`)
+- 커스텀 훅: use + PascalCase (예: `useResponsive.js`)
+
+## 📄 라이선스
+
+MIT License
+
+## 👥 기여
+
+이슈와 PR을 환영합니다!

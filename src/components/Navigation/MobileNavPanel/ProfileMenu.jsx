@@ -315,56 +315,6 @@ const ProfileMenu = ({
           </div>
           <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
         </button>
-
-        <button
-          style={{
-            padding: '16px 20px',
-            background: 'var(--surface)',
-            border: '1px solid var(--outline)',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            color: 'var(--text-primary)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            opacity: 0.6,
-            transition: 'all 0.2s ease'
-          }}
-          disabled
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span className="material-icons" style={{ fontSize: '20px' }}>settings</span>
-            <span>설정</span>
-          </div>
-          <span style={{ color: 'var(--text-disabled)', fontSize: '12px' }}>준비중</span>
-        </button>
-
-        <button
-          style={{
-            padding: '16px 20px',
-            background: 'var(--surface)',
-            border: '1px solid var(--outline)',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            color: 'var(--text-primary)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            opacity: 0.6,
-            transition: 'all 0.2s ease'
-          }}
-          disabled
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span className="material-icons" style={{ fontSize: '20px' }}>help</span>
-            <span>도움말</span>
-          </div>
-          <span style={{ color: 'var(--text-disabled)', fontSize: '12px' }}>준비중</span>
-        </button>
       </div>
 
       <button

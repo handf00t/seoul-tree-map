@@ -1,5 +1,5 @@
 // src/components/Popup/TreePopup.jsx - 모바일 탭 구조 추가 (PC는 기존 유지)
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { visitService } from '../../services/firebase';
 import CameraCapture from '../Visit/CameraCapture';
@@ -35,7 +35,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
   const [showVisitForm, setShowVisitForm] = useState(false);
   const [loadingVisits, setLoadingVisits] = useState(false);
 
-  const isTreeFavorited = user && treeData ? isFavorite(treeData) : false;
+  const isTreeFavorited = useMemo(() => {
+    return user && treeData ? isFavorite(treeData) : false;
+  }, [user, treeData, isFavorite]);
 
   const hasBenefitsData = treeData && (
     treeData.total_annual_value_krw ||
