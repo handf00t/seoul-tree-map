@@ -1,5 +1,7 @@
 // MobileNavPanel/ProfileMenu.jsx
+import { useState } from 'react';
 import IconButton from '../../UI/IconButton';
+import { clearTileCache, getCacheSize } from '../../../utils/serviceWorkerRegistration';
 
 const ProfileMenu = ({
   user,
@@ -9,10 +11,42 @@ const ProfileMenu = ({
   setActiveView,
   signOut
 }) => {
+  const [cacheInfo, setCacheInfo] = useState(null);
+  const [isClearing, setIsClearing] = useState(false);
+
   const handleSignOut = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       await signOut();
       setShowProfileMenu(false);
+    }
+  };
+
+  const handleCheckCache = async () => {
+    try {
+      const info = await getCacheSize();
+      setCacheInfo(info);
+      alert(`캐시된 타일: ${info.tileCount}개`);
+    } catch (error) {
+      console.error('캐시 정보 확인 실패:', error);
+      alert('캐시 정보를 가져올 수 없습니다.');
+    }
+  };
+
+  const handleClearCache = async () => {
+    if (!window.confirm('지도 타일 캐시를 삭제하시겠습니까?\n다음 접속 시 데이터를 다시 다운로드합니다.')) {
+      return;
+    }
+
+    setIsClearing(true);
+    try {
+      await clearTileCache();
+      setCacheInfo(null);
+      alert('캐시가 삭제되었습니다.');
+    } catch (error) {
+      console.error('캐시 삭제 실패:', error);
+      alert('캐시 삭제에 실패했습니다.');
+    } finally {
+      setIsClearing(false);
     }
   };
 
@@ -84,6 +118,7 @@ const ProfileMenu = ({
           </button>
 
           <button
+            onClick={handleCheckCache}
             style={{
               padding: '16px 20px',
               background: 'var(--surface)',
@@ -102,10 +137,37 @@ const ProfileMenu = ({
             onMouseLeave={(e) => e.target.style.background = 'var(--surface)'}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span className="material-icons" style={{ fontSize: '20px' }}>language</span>
-              <span>언어</span>
+              <span className="material-icons" style={{ fontSize: '20px' }}>storage</span>
+              <span>캐시 확인</span>
             </div>
-            <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>한국어</span>
+            {cacheInfo && <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{cacheInfo.tileCount}개</span>}
+          </button>
+
+          <button
+            onClick={handleClearCache}
+            disabled={isClearing}
+            style={{
+              padding: '16px 20px',
+              background: 'var(--surface)',
+              border: '1px solid var(--outline)',
+              borderRadius: '12px',
+              fontSize: '16px',
+              fontWeight: '600',
+              color: 'var(--text-primary)',
+              cursor: isClearing ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              transition: 'all 0.2s ease',
+              opacity: isClearing ? 0.5 : 1
+            }}
+            onMouseEnter={(e) => !isClearing && (e.target.style.background = 'var(--surface-variant)')}
+            onMouseLeave={(e) => !isClearing && (e.target.style.background = 'var(--surface)')}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span className="material-icons" style={{ fontSize: '20px' }}>delete_sweep</span>
+              <span>{isClearing ? '삭제 중...' : '캐시 삭제'}</span>
+            </div>
           </button>
 
           <button

@@ -449,12 +449,12 @@ function AppContent() {
                 maxWidth: '600px',
                 width: '100%',
                 maxHeight: '85vh',
-                overflow: 'hidden',
+                overflow: 'auto',
                 position: 'relative'
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div style={{ position: 'relative', height: '100%' }}>
+              <div style={{ position: 'relative' }}>
                 <AboutView
                   setActiveView={(view) => {
                     if (view === 'home') {
@@ -474,7 +474,7 @@ function AppContent() {
                       bottom: 0,
                       background: 'white',
                       borderRadius: '24px',
-                      overflow: 'hidden',
+                      overflow: 'auto',
                       zIndex: 10
                     }}
                   >

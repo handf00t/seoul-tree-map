@@ -1,5 +1,6 @@
 // components/Search/SearchFilterPanel.jsx - PC 전용 인라인 필터
 import React, { useState, useRef, useEffect } from 'react';
+import { availableSpecies, sizeCategories } from '../../constants/treeData';
 
 const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
   const [query, setQuery] = useState('');
@@ -8,29 +9,6 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showFilterExpanded, setShowFilterExpanded] = useState(false);
   const debounceRef = useRef(null);
-
-  // 서울시 주요 수종 목록
-  const availableSpecies = [
-    { name: '은행나무', color: '#FFD700' },
-    { name: '느티나무', color: '#228B22' },
-    { name: '플라타너스', color: '#8FBC8F' },
-    { name: '벚나무', color: '#FFB6C1' },
-    { name: '단풍나무', color: '#FF4500' },
-    { name: '소나무', color: '#006400' },
-    { name: '회화나무', color: '#8B4513' },
-    { name: '참나무', color: '#8B4513' },
-    { name: '메타세쿼이아', color: '#228B22' },
-    { name: '기타', color: '#84cc16' }
-  ];
-
-  // DBH 크기별 분류
-  const sizeCategories = [
-    { id: 'small', label: '소형 (15cm 미만)', range: [0, 15], color: '#90EE90' },
-    { id: 'medium-small', label: '중소형 (15-30cm)', range: [15, 30], color: '#32CD32' },
-    { id: 'medium', label: '중형 (30-50cm)', range: [30, 50], color: '#228B22' },
-    { id: 'medium-large', label: '중대형 (50-80cm)', range: [50, 80], color: '#006400' },
-    { id: 'large', label: '대형 (80cm 이상)', range: [80, 999], color: '#013220' }
-  ];
 
   const [selectedSpecies, setSelectedSpecies] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
