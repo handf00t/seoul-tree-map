@@ -1,21 +1,29 @@
-// src/utils/treeDataUtils.js
+// src/utils/treeDataUtils.ts
 // Utility functions for tree data formatting and validation
 
-export const formatNumber = (num) => {
+interface BenefitItem {
+  key: string;
+  label: string;
+  value: number;
+  valueLabel: string;
+  krw: number;
+}
+
+export const formatNumber = (num: number | null | undefined): string => {
   if (!num || num === 0) return '0';
   return Math.round(num).toLocaleString();
 };
 
-export const formatKRW = (amount) => {
+export const formatKRW = (amount: number | null | undefined): string => {
   if (!amount || amount === 0) return '0원';
   return `${formatNumber(amount)}원`;
 };
 
-export const hasValidData = (value) => {
+export const hasValidData = (value: any): boolean => {
   return value != null && value !== 0 && value !== '' && !isNaN(value) && value > 0;
 };
 
-export const getTreeType = (type) => {
+export const getTreeType = (type: string): string => {
   switch(type) {
     case 'protected': return '보호수';
     case 'roadside': return '가로수';
@@ -24,7 +32,7 @@ export const getTreeType = (type) => {
   }
 };
 
-export const hasBenefitsData = (treeData) => {
+export const hasBenefitsData = (treeData: any): boolean => {
   return treeData && (
     treeData.total_annual_value_krw ||
     treeData.stormwater_liters_year ||
@@ -34,7 +42,7 @@ export const hasBenefitsData = (treeData) => {
   );
 };
 
-export const getBenefitsArray = (treeData) => {
+export const getBenefitsArray = (treeData: any): BenefitItem[] => {
   if (!treeData) return [];
 
   return [

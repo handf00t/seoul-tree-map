@@ -1,23 +1,30 @@
-// src/utils/mapFilters.js
+// src/utils/mapFilters.ts
 // Centralized map filter logic to avoid duplication
+
+import { Map } from 'mapbox-gl';
 
 const TREE_LAYERS = ['protected-trees', 'roadside-trees', 'park-trees'];
 
-const getLayerType = (layerId) => {
+const getLayerType = (layerId: string): string => {
   if (layerId === 'protected-trees') return 'protected';
   if (layerId === 'roadside-trees') return 'roadside';
   return 'park';
 };
 
-const getOriginalFilter = (layerId) => {
+const getOriginalFilter = (layerId: string): any[] => {
   return ['==', 'tree_type', getLayerType(layerId)];
 };
 
+interface MapFilters {
+  species?: string[];
+  sizes?: string[];
+  userFilter?: any;
+}
+
 /**
  * Clear all filters and reset to original state
- * @param {mapboxgl.Map} map - Mapbox map instance
  */
-export const clearMapFilters = (map) => {
+export const clearMapFilters = (map: Map | null): void => {
   if (!map) return;
 
   TREE_LAYERS.forEach(layerId => {
@@ -29,10 +36,8 @@ export const clearMapFilters = (map) => {
 
 /**
  * Apply filters to map layers
- * @param {mapboxgl.Map} map - Mapbox map instance
- * @param {Object} filters - Filter configuration { species: [], sizes: [], userFilter?: object }
  */
-export const applyMapFilters = (map, filters) => {
+export const applyMapFilters = (map: Map | null, filters: MapFilters): void => {
   if (!map) return;
 
   const { species = [], sizes = [], userFilter = null } = filters;
@@ -42,7 +47,7 @@ export const applyMapFilters = (map, filters) => {
 
     const layerType = getLayerType(layerId);
     const baseFilter = ['==', 'tree_type', layerType];
-    const filterConditions = [baseFilter];
+    const filterConditions: any[] = [baseFilter];
 
     // Add species filter
     if (species.length > 0) {
@@ -88,10 +93,8 @@ export const applyMapFilters = (map, filters) => {
 
 /**
  * Apply user favorites filter (My Trees)
- * @param {mapboxgl.Map} map - Mapbox map instance
- * @param {Array} favoriteIds - Array of favorite tree IDs
  */
-export const applyFavoritesFilter = (map, favoriteIds) => {
+export const applyFavoritesFilter = (map: Map | null, favoriteIds: string[]): void => {
   if (!map || !favoriteIds || favoriteIds.length === 0) {
     clearMapFilters(map);
     return;
@@ -113,6 +116,5 @@ export const applyFavoritesFilter = (map, favoriteIds) => {
 
 /**
  * Get layer IDs
- * @returns {Array} Array of tree layer IDs
  */
-export const getTreeLayers = () => TREE_LAYERS;
+export const getTreeLayers = (): string[] => TREE_LAYERS;
