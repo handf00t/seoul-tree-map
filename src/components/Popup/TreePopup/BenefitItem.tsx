@@ -1,7 +1,14 @@
-// src/components/Popup/TreePopup/BenefitItem.jsx
+// src/components/Popup/TreePopup/BenefitItem.tsx
+import React from 'react';
 import { formatKRW, hasValidData } from '../../../utils/treeDataUtils';
 
-const BenefitItem = ({ label, valueLabel, krwValue }) => {
+interface BenefitItemProps {
+  label: string;
+  valueLabel: string;
+  krwValue?: number;
+}
+
+const BenefitItem: React.FC<BenefitItemProps> = ({ label, valueLabel, krwValue }) => {
   return (
     <div style={{
       display: 'flex',
@@ -27,7 +34,7 @@ const BenefitItem = ({ label, valueLabel, krwValue }) => {
         </div>
         {hasValidData(krwValue) && (
           <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
-            {formatKRW(krwValue)}
+            {formatKRW(krwValue!)}
           </div>
         )}
       </div>

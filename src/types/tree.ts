@@ -8,11 +8,15 @@ export interface Coordinates {
 export type TreeType = 'protected' | 'roadside' | 'park';
 
 export interface TreeBenefits {
-  rainfall_interception: number;
-  energy_savings: number;
-  air_quality: number;
-  co2_sequestration: number;
-  total_value_krw: number;
+  stormwater_liters_year?: number;
+  stormwater_value_krw_year?: number;
+  energy_kwh_year?: number;
+  energy_value_krw_year?: number;
+  air_pollution_kg_year?: number;
+  air_pollution_value_krw_year?: number;
+  carbon_storage_kg_year?: number;
+  carbon_value_krw_year?: number;
+  total_annual_value_krw?: number;
 }
 
 export interface TreeData {

@@ -1,5 +1,14 @@
-// src/components/Popup/TreePopup/TabMenu.jsx
-const TabMenu = ({ activeTab, onTabChange }) => {
+// src/components/Popup/TreePopup/TabMenu.tsx
+import React from 'react';
+
+type TabType = 'info' | 'visits';
+
+interface TabMenuProps {
+  activeTab: TabType;
+  onTabChange: (tab: TabType) => void;
+}
+
+const TabMenu: React.FC<TabMenuProps> = ({ activeTab, onTabChange }) => {
   return (
     <div style={{
       display: 'flex',
@@ -47,3 +56,4 @@ const TabMenu = ({ activeTab, onTabChange }) => {
 };
 
 export default TabMenu;
+export type { TabType };

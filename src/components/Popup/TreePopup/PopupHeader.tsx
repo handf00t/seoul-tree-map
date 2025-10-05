@@ -1,7 +1,16 @@
-// src/components/Popup/TreePopup/PopupHeader.jsx
+// src/components/Popup/TreePopup/PopupHeader.tsx
+import React from 'react';
 import IconButton from '../../UI/IconButton';
+import { TreeData, TreeType } from '../../../types';
 
-const getTreeType = (type) => {
+interface PopupHeaderProps {
+  treeData: TreeData;
+  isMobile: boolean;
+  isMinimized: boolean;
+  onClose: () => void;
+}
+
+const getTreeType = (type: TreeType): string => {
   switch(type) {
     case 'protected': return '보호수';
     case 'roadside': return '가로수';
@@ -10,7 +19,7 @@ const getTreeType = (type) => {
   }
 };
 
-const PopupHeader = ({ treeData, isMobile, isMinimized, onClose }) => {
+const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimized, onClose }) => {
   return (
     <div style={{ marginBottom: isMinimized ? '8px' : '16px' }}>
       <div style={{

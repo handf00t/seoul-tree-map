@@ -1,8 +1,17 @@
-// src/components/Popup/TreePopup/BenefitsSection.jsx
+// src/components/Popup/TreePopup/BenefitsSection.tsx
+import React from 'react';
 import BenefitItem from './BenefitItem';
 import { formatNumber, formatKRW, hasValidData } from '../../../utils/treeDataUtils';
+import { TreeData } from '../../../types';
 
-const BenefitsSection = ({ treeData, showBenefits, onToggle, hasBenefitsData }) => {
+interface BenefitsSectionProps {
+  treeData: TreeData;
+  showBenefits: boolean;
+  onToggle: () => void;
+  hasBenefitsData: boolean;
+}
+
+const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefits, onToggle, hasBenefitsData }) => {
   return (
     <>
       {hasBenefitsData && (
@@ -26,7 +35,7 @@ const BenefitsSection = ({ treeData, showBenefits, onToggle, hasBenefitsData }) 
             }}
           >
             <span>
-              연간 생태적 편익 {treeData.total_annual_value_krw ? formatKRW(treeData.total_annual_value_krw) : '정보 없음'}
+              연간 생태적 편익 {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw) : '정보 없음'}
             </span>
             <span className="material-icons" style={{
               transform: showBenefits ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -39,7 +48,7 @@ const BenefitsSection = ({ treeData, showBenefits, onToggle, hasBenefitsData }) 
         </div>
       )}
 
-      {showBenefits && hasBenefitsData && (
+      {showBenefits && hasBenefitsData && treeData.benefits && (
         <div style={{
           background: 'var(--primary-surface)',
           padding: '16px',
@@ -48,35 +57,35 @@ const BenefitsSection = ({ treeData, showBenefits, onToggle, hasBenefitsData }) 
           border: '1px solid var(--primary-border)'
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {hasValidData(treeData.stormwater_liters_year) && (
+            {hasValidData(treeData.benefits.stormwater_liters_year) && (
               <BenefitItem
                 label="빗물 흡수"
-                valueLabel={`${formatNumber(treeData.stormwater_liters_year)}L`}
-                krwValue={treeData.stormwater_value_krw_year}
+                valueLabel={`${formatNumber(treeData.benefits.stormwater_liters_year!)}L`}
+                krwValue={treeData.benefits.stormwater_value_krw_year}
               />
             )}
 
-            {hasValidData(treeData.energy_kwh_year) && (
+            {hasValidData(treeData.benefits.energy_kwh_year) && (
               <BenefitItem
                 label="에너지 절약"
-                valueLabel={`${formatNumber(treeData.energy_kwh_year)}kWh`}
-                krwValue={treeData.energy_value_krw_year}
+                valueLabel={`${formatNumber(treeData.benefits.energy_kwh_year!)}kWh`}
+                krwValue={treeData.benefits.energy_value_krw_year}
               />
             )}
 
-            {hasValidData(treeData.air_pollution_kg_year) && (
+            {hasValidData(treeData.benefits.air_pollution_kg_year) && (
               <BenefitItem
                 label="대기 정화"
-                valueLabel={`${formatNumber(treeData.air_pollution_kg_year * 1000)}g`}
-                krwValue={treeData.air_pollution_value_krw_year}
+                valueLabel={`${formatNumber(treeData.benefits.air_pollution_kg_year! * 1000)}g`}
+                krwValue={treeData.benefits.air_pollution_value_krw_year}
               />
             )}
 
-            {hasValidData(treeData.carbon_storage_kg_year) && (
+            {hasValidData(treeData.benefits.carbon_storage_kg_year) && (
               <BenefitItem
                 label="탄소 흡수"
-                valueLabel={`${formatNumber(treeData.carbon_storage_kg_year)}kg`}
-                krwValue={treeData.carbon_value_krw_year}
+                valueLabel={`${formatNumber(treeData.benefits.carbon_storage_kg_year!)}kg`}
+                krwValue={treeData.benefits.carbon_value_krw_year}
               />
             )}
           </div>

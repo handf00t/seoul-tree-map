@@ -1,7 +1,13 @@
-// src/components/Popup/TreePopup/TreeInfoBox.jsx
+// src/components/Popup/TreePopup/TreeInfoBox.tsx
+import React from 'react';
 import { hasValidData } from '../../../utils/treeDataUtils';
+import { TreeData } from '../../../types';
 
-const TreeInfoBox = ({ treeData }) => {
+interface TreeInfoBoxProps {
+  treeData: TreeData;
+}
+
+const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
   const hasAnyInfo = hasValidData(treeData.height_m) ||
                      hasValidData(treeData.dbh_cm) ||
                      treeData.source_id;
@@ -24,7 +30,7 @@ const TreeInfoBox = ({ treeData }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{ color: 'var(--text-secondary)' }}>높이</span>
           <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
-            {Math.round(treeData.height_m)}m
+            {Math.round(treeData.height_m!)}m
           </span>
         </div>
       )}
@@ -32,7 +38,7 @@ const TreeInfoBox = ({ treeData }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{ color: 'var(--text-secondary)' }}>직경</span>
           <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
-            {Math.round(treeData.dbh_cm)}cm
+            {Math.round(treeData.dbh_cm!)}cm
           </span>
         </div>
       )}
