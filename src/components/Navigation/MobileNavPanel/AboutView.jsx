@@ -28,7 +28,7 @@ const AboutView = ({ setActiveView, onDetailClick }) => {
     {
       id: 'data-source',
       title: '데이터 출처',
-      content: '서울시 공공데이터 포털의 공식 자료를 사용합니다.',
+      content: '서울 열린데이터 광장의 공식 자료를 사용합니다.',
       icon: 'source',
       hasDetail: true
     },

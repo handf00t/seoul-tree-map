@@ -1,7 +1,7 @@
 // src/components/Map/CurrentLocationButton.jsx
 import React, { useState } from 'react';
 
-const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight }) => {
+const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight, isHidden, isPanelCollapsed }) => {
   const [isLocating, setIsLocating] = useState(false);
 
   const handleCurrentLocation = () => {
@@ -55,6 +55,15 @@ const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight }) => {
 
   const getBottomPosition = () => {
     if (isMobile) {
+      // 팝업이 표시되어 패널이 숨겨진 경우
+      if (isHidden) {
+        return '20px';
+      }
+      // 패널이 사용자에 의해 접힌 경우
+      if (isPanelCollapsed) {
+        return '100px'; // 접힌 패널(80px) + 여유 공간
+      }
+      // 일반 상태 (패널이 펼쳐진 경우)
       return `${80 + minimizedPopupHeight}px`;
     }
     return '20px';

@@ -9,16 +9,17 @@ import FavoritesView from './FavoritesView';
 import AboutView from './AboutView';
 import AboutDetailSheet from './AboutDetailSheet';
 
-const MobileNavPanel = ({ 
-  map, 
-  onFilterClick, 
+const MobileNavPanel = ({
+  map,
+  onFilterClick,
   activeFilterCount,
   activeFilters,
   onFavoritesClick,
   onFilterApply,
   onTreeSelect,
   isHidden = false,
-  minimizedPopupHeight = 0
+  minimizedPopupHeight = 0,
+  onCollapseChange
 }) => {
   const { user, userFavorites, signOut, removeFromFavorites } = useAuth();
   const [query, setQuery] = useState('');
@@ -418,9 +419,9 @@ const MobileNavPanel = ({
 
   const handleTouchEnd = () => {
     if (!isDragging) return;
-    
+
     const deltaY = currentY - startY;
-    
+
     if (deltaY > dragThreshold) {
       if (showProfileMenu) {
         setShowProfileMenu(false);
@@ -428,14 +429,16 @@ const MobileNavPanel = ({
         setShowSuggestions(false);
       } else if (!isCollapsed) {
         setIsCollapsed(true);
+        if (onCollapseChange) onCollapseChange(true);
       }
     }
     else if (deltaY < -dragThreshold) {
       if (isCollapsed) {
         setIsCollapsed(false);
+        if (onCollapseChange) onCollapseChange(false);
       }
     }
-    
+
     setIsDragging(false);
     setStartY(0);
     setCurrentY(0);
@@ -443,12 +446,14 @@ const MobileNavPanel = ({
 
   const handleHandleClick = () => {
     if (isDragging) return;
-    
+
     if (isCollapsed) {
       setIsCollapsed(false);
+      if (onCollapseChange) onCollapseChange(false);
     } else {
       setIsCollapsed(true);
       setShowSuggestions(false);
+      if (onCollapseChange) onCollapseChange(true);
     }
   };
 

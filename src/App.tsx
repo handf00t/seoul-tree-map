@@ -42,6 +42,7 @@ function AppContent() {
   const [activeFilters, setActiveFilters] = useState<FilterState>({ species: [], sizes: [] });
   const [isPopupMinimized, setIsPopupMinimized] = useState<boolean>(false);
   const [isMapInteracting, setIsMapInteracting] = useState<boolean>(false);
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState<boolean>(false);
 
 
   // URL 파라미터에서 공유된 나무 정보 확인
@@ -301,6 +302,8 @@ function AppContent() {
             map={mapInstance}
             isMobile={isMobile}
             minimizedPopupHeight={isPopupMinimized ? 10 : 240}
+            isHidden={showPopup && !isPopupMinimized}
+            isPanelCollapsed={isPanelCollapsed}
           />
         )}
 
@@ -331,6 +334,7 @@ function AppContent() {
             onTreeSelect={handleTreeClick}
             isHidden={showPopup && !isPopupMinimized}
             minimizedPopupHeight={isPopupMinimized ? 180 : 0}
+            onCollapseChange={setIsPanelCollapsed}
           />
         )}
 

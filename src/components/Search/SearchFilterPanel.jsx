@@ -255,8 +255,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
 
         {/* 위치 검색 */}
         <div style={{
-          padding: '16px',
-          borderBottom: showSuggestions && suggestions.length > 0 ? '1px solid var(--outline-variant)' : 'none'
+          padding: '16px'
         }}>
           <div style={{ position: 'relative' }}>
             <input
@@ -284,7 +283,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                 setTimeout(() => setShowSuggestions(false), 200);
               }}
             />
-            
+
             <div style={{
               position: 'absolute',
               left: '14px',
@@ -330,6 +329,112 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
             </div>
           </div>
         </div>
+
+        {/* 검색 결과 - 검색창 바로 아래 */}
+        {showSuggestions && (
+          <div style={{
+            maxHeight: '280px',
+            overflowY: 'auto',
+            borderBottom: '1px solid var(--outline-variant)'
+          }}>
+            {isLoading ? (
+              <div style={{
+                padding: '20px',
+                textAlign: 'center',
+                color: 'var(--on-surface-variant)'
+              }}>
+                <div className="loading-spinner" style={{
+                  width: '24px',
+                  height: '24px',
+                  margin: '0 auto 8px'
+                }} />
+                탐험 지역을 찾는 중...
+              </div>
+            ) : suggestions.length > 0 ? (
+              suggestions.map((suggestion, index) => (
+                <div
+                  key={suggestion.id}
+                  onClick={() => selectLocation(suggestion)}
+                  className="interactive-element"
+                  style={{
+                    padding: '12px 16px',
+                    borderBottom: index < suggestions.length - 1 ? '1px solid var(--outline-variant)' : 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    transition: 'all var(--duration-fast) ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'var(--primary-surface)';
+                    e.currentTarget.style.transform = 'translateX(4px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.transform = 'translateX(0)';
+                  }}
+                >
+                  <div style={{
+                    background: 'var(--primary)',
+                    borderRadius: '50%',
+                    width: '32px',
+                    height: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '14px',
+                    color: 'var(--surface)',
+                    flexShrink: 0
+                  }}>
+                    <span className="material-icons" style={{ fontSize: '16px' }}>{suggestion.icon}</span>
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontWeight: '600',
+                      color: 'var(--on-surface)',
+                      marginBottom: '2px',
+                      fontSize: '14px'
+                    }}>
+                      {suggestion.shortName}
+                    </div>
+                    <div style={{
+                      fontSize: '12px',
+                      color: 'var(--on-surface-variant)',
+                      lineHeight: '1.3',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {suggestion.name}
+                    </div>
+                  </div>
+
+                  <span className="badge" style={{
+                    fontSize: '10px',
+                    color: 'var(--on-surface-variant)',
+                    background: 'var(--surface-variant)',
+                    padding: '2px 6px',
+                    borderRadius: 'var(--radius-md)',
+                    flexShrink: 0
+                  }}>
+                    {suggestion.type}
+                  </span>
+                </div>
+              ))
+            ) : query.length > 1 ? (
+              <div style={{
+                padding: '20px',
+                textAlign: 'center',
+                color: 'var(--on-surface-variant)',
+                fontSize: '14px'
+              }}>
+                <span className="material-icons" style={{ fontSize: '32px', marginBottom: '8px', display: 'block' }}>search</span>
+                탐험할 수 있는 장소를 찾지 못했어요
+              </div>
+            ) : null}
+          </div>
+        )}
 
         {/* 필터 버튼 또는 확장된 필터 */}
         {!showFilterExpanded ? (
@@ -626,111 +731,6 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                 적용
               </button>
             </div>
-          </div>
-        )}
-
-        {/* 검색 결과 */}
-        {showSuggestions && (
-          <div style={{
-            maxHeight: '280px',
-            overflowY: 'auto'
-          }}>
-            {isLoading ? (
-              <div style={{
-                padding: '20px',
-                textAlign: 'center',
-                color: 'var(--on-surface-variant)'
-              }}>
-                <div className="loading-spinner" style={{ 
-                  width: '24px', 
-                  height: '24px',
-                  margin: '0 auto 8px'
-                }} />
-                탐험 지역을 찾는 중...
-              </div>
-            ) : suggestions.length > 0 ? (
-              suggestions.map((suggestion, index) => (
-                <div
-                  key={suggestion.id}
-                  onClick={() => selectLocation(suggestion)}
-                  className="interactive-element"
-                  style={{
-                    padding: '12px 16px',
-                    borderBottom: index < suggestions.length - 1 ? '1px solid var(--outline-variant)' : 'none',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '12px',
-                    transition: 'all var(--duration-fast) ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'var(--primary-surface)';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}
-                >
-                  <div style={{
-                    background: 'var(--primary)',
-                    borderRadius: '50%',
-                    width: '32px',
-                    height: '32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '14px',
-                    color: 'var(--surface)',
-                    flexShrink: 0
-                  }}>
-                    <span className="material-icons" style={{ fontSize: '16px' }}>{suggestion.icon}</span>
-                  </div>
-                  
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{
-                      fontWeight: '600',
-                      color: 'var(--on-surface)',
-                      marginBottom: '2px',
-                      fontSize: '14px'
-                    }}>
-                      {suggestion.shortName}
-                    </div>
-                    <div style={{
-                      fontSize: '12px',
-                      color: 'var(--on-surface-variant)',
-                      lineHeight: '1.3',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {suggestion.name}
-                    </div>
-                  </div>
-                  
-                  <span className="badge" style={{
-                    fontSize: '10px',
-                    color: 'var(--on-surface-variant)',
-                    background: 'var(--surface-variant)',
-                    padding: '2px 6px',
-                    borderRadius: 'var(--radius-md)',
-                    flexShrink: 0
-                  }}>
-                    {suggestion.type}
-                  </span>
-                </div>
-              ))
-            ) : query.length > 1 ? (
-              <div style={{
-                padding: '20px',
-                textAlign: 'center',
-                color: 'var(--on-surface-variant)',
-                fontSize: '14px'
-              }}>
-                <span className="material-icons" style={{ fontSize: '32px', marginBottom: '8px', display: 'block' }}>search</span>
-                탐험할 수 있는 장소를 찾지 못했어요
-              </div>
-            ) : null}
           </div>
         )}
       </div>
