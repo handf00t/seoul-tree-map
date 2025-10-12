@@ -30,9 +30,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
   // 즐겨찾기 제거 핸들러
   const handleRemoveFavorite = async (favorite) => {
     const result = await removeFromFavorites(favorite.id);
-    if (result.success) {
-      console.log('즐겨찾기 제거 완료:', favorite.species_kr);
-    } else {
+    if (!result.success) {
       alert('즐겨찾기 제거에 실패했습니다: ' + result.error);
     }
   };

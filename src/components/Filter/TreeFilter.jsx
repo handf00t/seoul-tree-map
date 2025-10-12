@@ -51,10 +51,12 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
   const applyMapFilters = (filters) => {
     if (!map) return;
 
-    console.log('필터 적용 중:', filters);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('필터 적용 중:', filters);
+    }
 
     const layers = ['protected-trees', 'roadside-trees', 'park-trees'];
-    
+
     layers.forEach(layerId => {
       if (map.getLayer(layerId)) {
         // 기본 필터 배열 (AND 조건)
@@ -67,8 +69,10 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
 
         // 2. 수종 필터
         if (filters.species.length > 0 && filters.species.length < availableSpecies.length) {
-          console.log('수종 필터 적용:', filters.species);
-          
+          if (process.env.NODE_ENV === 'development') {
+            console.log('수종 필터 적용:', filters.species);
+          }
+
           if (filters.species.includes('기타')) {
             // 기타 포함 시 복잡한 로직은 일단 생략하고 선택된 주요 수종만 표시
             const mainSpecies = filters.species.filter(s => s !== '기타');
@@ -81,30 +85,32 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
           }
         }
 
-        // 3. 크기 필터  
+        // 3. 크기 필터
         if (filters.sizes.length > 0 && filters.sizes.length < sizeCategories.length) {
-          console.log('크기 필터 적용:', filters.sizes);
-          
+          if (process.env.NODE_ENV === 'development') {
+            console.log('크기 필터 적용:', filters.sizes);
+          }
+
           const sizeOrConditions = []; // OR 조건들
-          
+
           filters.sizes.forEach(sizeId => {
             const sizeCategory = sizeCategories.find(s => s.id === sizeId);
             if (sizeCategory) {
               const [min, max] = sizeCategory.range;
-              
+
               if (max === 999) {
                 // 대형: 80cm 이상
                 sizeOrConditions.push(['>=', ['get', 'dbh_cm'], min]);
               } else {
                 // 범위: min <= dbh < max
-                sizeOrConditions.push(['all', 
+                sizeOrConditions.push(['all',
                   ['>=', ['get', 'dbh_cm'], min],
                   ['<', ['get', 'dbh_cm'], max]
                 ]);
               }
             }
           });
-          
+
           // 크기 조건들을 OR로 결합
           if (sizeOrConditions.length === 1) {
             filterConditions.push(sizeOrConditions[0]);
@@ -121,12 +127,16 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
           finalFilter = ['all', ...filterConditions];
         }
 
-        console.log(`${layerId} 필터:`, finalFilter);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`${layerId} 필터:`, finalFilter);
+        }
         map.setFilter(layerId, finalFilter);
       }
     });
 
-    console.log('지도 필터 적용 완료');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('지도 필터 적용 완료');
+    }
   };
 
   // 필터 변경시 실시간 적용

@@ -302,9 +302,6 @@ const AboutDetailSheet = ({ section, onClose }) => {
             {sec.emailButton && (
               <a
                 href="mailto:handfoot119@gmail.com?subject=서울 나무 지도 피드백&body=안녕하세요,%0D%0A%0D%0A피드백 내용을 작성해주세요."
-                onClick={(e) => {
-                  console.log('이메일 버튼 클릭됨');
-                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
