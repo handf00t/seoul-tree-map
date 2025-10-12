@@ -48,27 +48,91 @@ function AppContent() {
   // URL 파라미터에서 공유된 나무 정보 확인
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const treeId = urlParams.get('id');
     const lat = urlParams.get('lat');
     const lng = urlParams.get('lng');
 
-    if (lat && lng && mapInstance) {
-      const sharedTreeData: TreeData = {
-        species_kr: urlParams.get('species') || '미상',
-        tree_type: (urlParams.get('type') as TreeData['tree_type']) || 'unknown',
-        source_id: urlParams.get('id') || '',
-        borough: urlParams.get('borough') || '',
-        district: urlParams.get('district') || '',
-        clickCoordinates: {
-          lat: parseFloat(lat),
-          lng: parseFloat(lng)
-        }
-      };
+    if (treeId && lat && lng && mapInstance) {
+      // 지도가 로드될 때까지 대기
+      if (!mapInstance.isStyleLoaded()) {
+        mapInstance.once('idle', () => {
+          queryTreeFromMap(treeId, parseFloat(lng), parseFloat(lat));
+        });
+      } else {
+        queryTreeFromMap(treeId, parseFloat(lng), parseFloat(lat));
+      }
 
-      setSelectedTree(sharedTreeData);
-      setShowPopup(true);
+      // URL 파라미터 제거
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [mapInstance]);
+
+  // 지도에서 나무 데이터 조회
+  const queryTreeFromMap = (sourceId: string, lng: number, lat: number) => {
+    if (!mapInstance) return;
+
+    // 해당 위치로 지도 이동
+    mapInstance.flyTo({
+      center: [lng, lat],
+      zoom: 16,
+      duration: 1500
+    });
+
+    // 지도 이동 후 나무 데이터 조회
+    setTimeout(() => {
+      const point = mapInstance.project([lng, lat]);
+      const features = mapInstance.queryRenderedFeatures(point, {
+        layers: ['protected-trees', 'roadside-trees', 'park-trees']
+      });
+
+      // source_id가 일치하는 나무 찾기
+      const matchedFeature = features.find(
+        (f: any) => f.properties.source_id === sourceId
+      );
+
+      if (matchedFeature && matchedFeature.properties) {
+        const properties = matchedFeature.properties;
+        const treeData: TreeData = {
+          source_id: properties.source_id,
+          species_kr: properties.species_kr,
+          tree_type: properties.tree_type,
+          dbh_cm: properties.dbh_cm,
+          height_m: properties.height_m,
+          borough: properties.borough,
+          district: properties.district,
+          address: properties.address,
+          latitude: properties.latitude,
+          longitude: properties.longitude,
+          clickCoordinates: {
+            lat: lat,
+            lng: lng
+          }
+        };
+
+        // benefits 데이터가 있으면 추가
+        if (properties.total_annual_value_krw !== undefined ||
+            properties.stormwater_liters_year !== undefined ||
+            properties.energy_kwh_year !== undefined ||
+            properties.air_pollution_kg_year !== undefined ||
+            properties.carbon_storage_kg_year !== undefined) {
+          treeData.benefits = {
+            total_annual_value_krw: properties.total_annual_value_krw,
+            stormwater_liters_year: properties.stormwater_liters_year,
+            stormwater_value_krw_year: properties.stormwater_value_krw_year,
+            energy_kwh_year: properties.energy_kwh_year,
+            energy_value_krw_year: properties.energy_value_krw_year,
+            air_pollution_kg_year: properties.air_pollution_kg_year,
+            air_pollution_value_krw_year: properties.air_pollution_value_krw_year,
+            carbon_storage_kg_year: properties.carbon_storage_kg_year,
+            carbon_value_krw_year: properties.carbon_value_krw_year
+          };
+        }
+
+        setSelectedTree(treeData);
+        setShowPopup(true);
+      }
+    }, 1600);
+  };
 
   const handleMapLoad = useCallback((map: MapboxMap) => {
     setMapInstance(map);

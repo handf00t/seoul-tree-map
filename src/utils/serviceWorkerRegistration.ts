@@ -16,6 +16,19 @@ export function register(): void {
         .then((registration) => {
           console.log('✅ Service Worker registered:', registration.scope);
 
+          // 버전 업데이트 메시지 수신 - 자동 리로드
+          navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'VERSION_UPDATE') {
+              console.log('🆕 New version available:', event.data.version);
+              console.log('🔄 Auto-reloading to apply updates...');
+
+              // 자동으로 페이지 새로고침
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }
+          });
+
           // 업데이트 확인
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
@@ -23,10 +36,18 @@ export function register(): void {
 
             newWorker?.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('📦 New Service Worker installed, refresh to activate');
+                console.log('📦 New Service Worker installed');
+
+                // 새 워커가 설치되면 즉시 활성화
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
               }
             });
           });
+
+          // 주기적으로 업데이트 확인 (1시간마다)
+          setInterval(() => {
+            registration.update();
+          }, 60 * 60 * 1000);
         })
         .catch((error) => {
           console.error('❌ Service Worker registration failed:', error);

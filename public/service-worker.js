@@ -1,7 +1,9 @@
 // service-worker.js - Mapbox 타일 캐싱을 위한 Service Worker
 
-const CACHE_NAME = 'seoul-tree-map-v1';
-const TILE_CACHE_NAME = 'mapbox-tiles-v1';
+// 버전 정보 (빌드 시 자동으로 업데이트됨)
+const APP_VERSION = '0.1.0';
+const CACHE_NAME = `seoul-tree-map-v${APP_VERSION}`;
+const TILE_CACHE_NAME = `mapbox-tiles-v${APP_VERSION}`;
 const MAX_TILE_AGE = 7 * 24 * 60 * 60 * 1000; // 7일
 
 // 디버그 모드 (필요할 때만 true로 변경)
@@ -46,18 +48,33 @@ self.addEventListener('install', (event) => {
 
 // 활성화 이벤트 - 오래된 캐시 삭제
 self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] Activating...');
+  console.log('[Service Worker] Activating version:', APP_VERSION);
 
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== TILE_CACHE_NAME) {
-            console.log('[Service Worker] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
+    Promise.all([
+      // 오래된 캐시 삭제
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            // 현재 버전이 아닌 모든 캐시 삭제
+            if (cacheName !== CACHE_NAME && cacheName !== TILE_CACHE_NAME) {
+              console.log('[Service Worker] Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      // 모든 클라이언트에 새 버전 알림
+      self.clients.matchAll().then((clients) => {
+        clients.forEach((client) => {
+          client.postMessage({
+            type: 'VERSION_UPDATE',
+            version: APP_VERSION
+          });
+        });
+      })
+    ]).then(() => {
+      console.log('[Service Worker] Activation complete, claiming clients');
     })
   );
 
@@ -140,6 +157,12 @@ self.addEventListener('fetch', (event) => {
 
 // 메시지 이벤트 - 캐시 관리
 self.addEventListener('message', (event) => {
+  // 즉시 활성화 (새 버전 배포 시)
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[Service Worker] Skipping waiting, activating immediately');
+    self.skipWaiting();
+  }
+
   if (event.data && event.data.type === 'CLEAR_TILE_CACHE') {
     event.waitUntil(
       caches.delete(TILE_CACHE_NAME).then(() => {

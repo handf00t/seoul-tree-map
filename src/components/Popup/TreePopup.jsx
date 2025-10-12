@@ -130,14 +130,11 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     setShareStatus('copying');
 
     try {
+      // source_id와 좌표만 전달하여 지도에서 실제 데이터를 조회
       const params = new URLSearchParams({
-        lat: treeData.clickCoordinates.lat.toFixed(6),
-        lng: treeData.clickCoordinates.lng.toFixed(6),
-        species: treeData.species_kr || '미상',
-        type: treeData.tree_type || 'unknown',
         id: treeData.source_id || '',
-        borough: treeData.borough || '',
-        district: treeData.district || ''
+        lat: treeData.clickCoordinates.lat.toFixed(6),
+        lng: treeData.clickCoordinates.lng.toFixed(6)
       });
 
       const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
@@ -157,10 +154,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
       }
 
       setShareStatus('copied');
+      alert('링크가 복사되었습니다!');
       setTimeout(() => setShareStatus('idle'), 3000);
 
     } catch (error) {
       console.error('URL 복사 실패:', error);
+      alert('링크 복사에 실패했습니다.');
       setShareStatus('failed');
       setTimeout(() => setShareStatus('idle'), 3000);
     }
