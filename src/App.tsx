@@ -78,60 +78,76 @@ function AppContent() {
       duration: 1500
     });
 
-    // 지도 이동 후 나무 데이터 조회
-    setTimeout(() => {
-      const point = mapInstance.project([lng, lat]);
-      const features = mapInstance.queryRenderedFeatures(point, {
-        layers: ['protected-trees', 'roadside-trees', 'park-trees']
-      });
+    // 지도 이동 완료 후 데이터 조회
+    const onMoveEnd = () => {
+      // 타일이 로드될 때까지 추가 대기
+      mapInstance.once('idle', () => {
+        // querySourceFeatures를 사용하여 소스에서 직접 조회 (렌더링 상태 무관)
+        const sourceFeatures = mapInstance.querySourceFeatures('seoul-trees', {
+          sourceLayer: 'trees_with_benefits'
+        });
 
-      // source_id가 일치하는 나무 찾기
-      const matchedFeature = features.find(
-        (f: any) => f.properties.source_id === sourceId
-      );
+        console.log('Querying tree from source:', {
+          sourceId,
+          totalFeatures: sourceFeatures.length
+        });
 
-      if (matchedFeature && matchedFeature.properties) {
-        const properties = matchedFeature.properties;
-        const treeData: TreeData = {
-          source_id: properties.source_id,
-          species_kr: properties.species_kr,
-          tree_type: properties.tree_type,
-          dbh_cm: properties.dbh_cm,
-          height_m: properties.height_m,
-          borough: properties.borough,
-          district: properties.district,
-          address: properties.address,
-          latitude: properties.latitude,
-          longitude: properties.longitude,
-          clickCoordinates: {
-            lat: lat,
-            lng: lng
+        // source_id가 일치하는 나무 찾기
+        const matchedFeature = sourceFeatures.find(
+          (f: any) => {
+            const featureId = f.properties.source_id;
+            return String(featureId) === String(sourceId);
           }
-        };
+        );
 
-        // benefits 데이터가 있으면 추가
-        if (properties.total_annual_value_krw !== undefined ||
-            properties.stormwater_liters_year !== undefined ||
-            properties.energy_kwh_year !== undefined ||
-            properties.air_pollution_kg_year !== undefined ||
-            properties.carbon_storage_kg_year !== undefined) {
-          treeData.benefits = {
-            total_annual_value_krw: properties.total_annual_value_krw,
-            stormwater_liters_year: properties.stormwater_liters_year,
-            stormwater_value_krw_year: properties.stormwater_value_krw_year,
-            energy_kwh_year: properties.energy_kwh_year,
-            energy_value_krw_year: properties.energy_value_krw_year,
-            air_pollution_kg_year: properties.air_pollution_kg_year,
-            air_pollution_value_krw_year: properties.air_pollution_value_krw_year,
-            carbon_storage_kg_year: properties.carbon_storage_kg_year,
-            carbon_value_krw_year: properties.carbon_value_krw_year
+        if (matchedFeature && matchedFeature.properties) {
+          const properties = matchedFeature.properties;
+          const treeData: TreeData = {
+            source_id: properties.source_id,
+            species_kr: properties.species_kr,
+            tree_type: properties.tree_type,
+            dbh_cm: properties.dbh_cm,
+            height_m: properties.height_m,
+            borough: properties.borough,
+            district: properties.district,
+            address: properties.address,
+            latitude: properties.latitude,
+            longitude: properties.longitude,
+            clickCoordinates: {
+              lat: lat,
+              lng: lng
+            }
           };
-        }
 
-        setSelectedTree(treeData);
-        setShowPopup(true);
-      }
-    }, 1600);
+          // benefits 데이터가 있으면 추가
+          if (properties.total_annual_value_krw !== undefined ||
+              properties.stormwater_liters_year !== undefined ||
+              properties.energy_kwh_year !== undefined ||
+              properties.air_pollution_kg_year !== undefined ||
+              properties.carbon_storage_kg_year !== undefined) {
+            treeData.benefits = {
+              total_annual_value_krw: properties.total_annual_value_krw,
+              stormwater_liters_year: properties.stormwater_liters_year,
+              stormwater_value_krw_year: properties.stormwater_value_krw_year,
+              energy_kwh_year: properties.energy_kwh_year,
+              energy_value_krw_year: properties.energy_value_krw_year,
+              air_pollution_kg_year: properties.air_pollution_kg_year,
+              air_pollution_value_krw_year: properties.air_pollution_value_krw_year,
+              carbon_storage_kg_year: properties.carbon_storage_kg_year,
+              carbon_value_krw_year: properties.carbon_value_krw_year
+            };
+          }
+
+          console.log('Tree found and popup opening:', treeData.species_kr);
+          setSelectedTree(treeData);
+          setShowPopup(true);
+        } else {
+          console.warn('Tree not found:', sourceId);
+        }
+      });
+    };
+
+    mapInstance.once('moveend', onMoveEnd);
   };
 
   const handleMapLoad = useCallback((map: MapboxMap) => {
