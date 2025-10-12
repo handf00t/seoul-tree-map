@@ -216,19 +216,50 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
           const properties = e.features[0].properties;
           const feature = e.features[0];
           const coordinates = feature.geometry.coordinates;
-          
+
           if (process.env.NODE_ENV === 'development') {
             console.log('나무 클릭:', properties);
           }
-          
+
           if (onTreeClick) {
-            onTreeClick({
-              ...properties,
+            // 평탄화된 타일셋 데이터를 중첩 구조로 변환
+            const treeData = {
+              source_id: properties.source_id,
+              species_kr: properties.species_kr,
+              tree_type: properties.tree_type,
+              dbh_cm: properties.dbh_cm,
+              height_m: properties.height_m,
+              borough: properties.borough,
+              district: properties.district,
+              address: properties.address,
+              latitude: properties.latitude,
+              longitude: properties.longitude,
               clickCoordinates: {
-                 lat: coordinates[1],  // GeoJSON은 [lng, lat] 순서
-                  lng: coordinates[0]
+                lat: coordinates[1],  // GeoJSON은 [lng, lat] 순서
+                lng: coordinates[0]
               }
-            });
+            };
+
+            // benefits 데이터가 있으면 중첩 객체로 구성
+            if (properties.total_annual_value_krw !== undefined ||
+                properties.stormwater_liters_year !== undefined ||
+                properties.energy_kwh_year !== undefined ||
+                properties.air_pollution_kg_year !== undefined ||
+                properties.carbon_storage_kg_year !== undefined) {
+              treeData.benefits = {
+                total_annual_value_krw: properties.total_annual_value_krw,
+                stormwater_liters_year: properties.stormwater_liters_year,
+                stormwater_value_krw_year: properties.stormwater_value_krw_year,
+                energy_kwh_year: properties.energy_kwh_year,
+                energy_value_krw_year: properties.energy_value_krw_year,
+                air_pollution_kg_year: properties.air_pollution_kg_year,
+                air_pollution_value_krw_year: properties.air_pollution_value_krw_year,
+                carbon_storage_kg_year: properties.carbon_storage_kg_year,
+                carbon_value_krw_year: properties.carbon_value_krw_year
+              };
+            }
+
+            onTreeClick(treeData);
           }
         });
         

@@ -89,20 +89,6 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefit
               />
             )}
           </div>
-
-          <div style={{
-            padding: '12px',
-            marginTop: '12px',
-            fontSize: '12px',
-            color: 'var(--text-secondary)',
-            lineHeight: '1.4',
-            background: 'var(--overlay-light)',
-            borderRadius: '6px',
-            border: '1px solid var(--primary-border)'
-          }}>
-            <strong>편익 산정 기준:</strong> 한국 기후조건, 산림청 공익기능 평가 기준,
-            환경부 대기오염 피해비용, K-ETS 탄소가격 등을 반영하여 계산된 연간 추정값입니다.
-          </div>
         </div>
       )}
     </>

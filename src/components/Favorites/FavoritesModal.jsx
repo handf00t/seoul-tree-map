@@ -47,18 +47,70 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
         duration: 1500
       });
 
-      // 나무 선택 콜백 호출
-      if (onTreeSelect) {
-        const treeData = {
-          ...favorite,
-          clickCoordinates: {
-            lat: favorite.coordinates.lat,
-            lng: favorite.coordinates.lng
+      // 타일셋에서 실제 나무 데이터 쿼리 (benefits 정보 포함)
+      setTimeout(() => {
+        const point = map.project([favorite.coordinates.lng, favorite.coordinates.lat]);
+        const features = map.queryRenderedFeatures(point, {
+          layers: ['protected-trees', 'roadside-trees', 'park-trees']
+        });
+
+        if (features.length > 0) {
+          // 타일셋에서 찾은 데이터 사용 (benefits 포함)
+          const properties = features[0].properties;
+          const treeData = {
+            source_id: properties.source_id,
+            species_kr: properties.species_kr,
+            tree_type: properties.tree_type,
+            dbh_cm: properties.dbh_cm,
+            height_m: properties.height_m,
+            borough: properties.borough,
+            district: properties.district,
+            address: properties.address,
+            latitude: properties.latitude,
+            longitude: properties.longitude,
+            clickCoordinates: {
+              lat: favorite.coordinates.lat,
+              lng: favorite.coordinates.lng
+            }
+          };
+
+          // benefits 데이터가 있으면 중첩 객체로 구성
+          if (properties.total_annual_value_krw !== undefined ||
+              properties.stormwater_liters_year !== undefined ||
+              properties.energy_kwh_year !== undefined ||
+              properties.air_pollution_kg_year !== undefined ||
+              properties.carbon_storage_kg_year !== undefined) {
+            treeData.benefits = {
+              total_annual_value_krw: properties.total_annual_value_krw,
+              stormwater_liters_year: properties.stormwater_liters_year,
+              stormwater_value_krw_year: properties.stormwater_value_krw_year,
+              energy_kwh_year: properties.energy_kwh_year,
+              energy_value_krw_year: properties.energy_value_krw_year,
+              air_pollution_kg_year: properties.air_pollution_kg_year,
+              air_pollution_value_krw_year: properties.air_pollution_value_krw_year,
+              carbon_storage_kg_year: properties.carbon_storage_kg_year,
+              carbon_value_krw_year: properties.carbon_value_krw_year
+            };
           }
-        };
-        onTreeSelect(treeData);
-      }
-      
+
+          if (onTreeSelect) {
+            onTreeSelect(treeData);
+          }
+        } else {
+          // 타일셋에서 못 찾으면 즐겨찾기 데이터만 사용
+          if (onTreeSelect) {
+            const treeData = {
+              ...favorite,
+              clickCoordinates: {
+                lat: favorite.coordinates.lat,
+                lng: favorite.coordinates.lng
+              }
+            };
+            onTreeSelect(treeData);
+          }
+        }
+      }, 1600); // flyTo 완료 후 쿼리
+
       onClose();
     }
   };
@@ -292,7 +344,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
             )
           ) : (
             <div style={{ padding: '0 24px 24px 24px' }}>
-              {filteredFavorites.map((favorite, index) => (
+              {filteredFavorites.map((favorite) => (
                 <div
                   key={favorite.id}
                   style={{

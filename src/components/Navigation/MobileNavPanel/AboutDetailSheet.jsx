@@ -106,7 +106,7 @@ const AboutDetailSheet = ({ section, onClose }) => {
               description: '실측 수관너비가 있으면 우선 사용. 없으면 흉고직경(DBH)과 수종별 회귀식으로 추정'
             },
             {
-      
+
               sectionTitle: '편익별 계산',
               items: [
                 '빗물 흡수 : 수관면적 1㎡당 연간 157리터 흡수. 상수도 요금 기준 가치 환산 (0.85원/L)',
@@ -114,12 +114,7 @@ const AboutDetailSheet = ({ section, onClose }) => {
                 '대기 정화: 수관면적 1㎡당 연간 129g 오염물질 제거. 수종별 보정 (소나무 1.3배, 느티나무 1.0배 등). PM2.5, PM10, NO₂ 등 5대 오염물질 포함',
                 '탄소 흡수 : 수종별 상대생장식으로 바이오매스 계산. 연간 성장률 2% 적용. 배출권 거래가 기준 환산 (45원/kg)'
               ]
-            },
-            {
-              sectionTitle: '참고 문헌',
-              description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-            },
-            
+            }
           ]
         };
       case 'feedback':
@@ -127,13 +122,12 @@ const AboutDetailSheet = ({ section, onClose }) => {
           title: '피드백',
           sections: [
             {
-              sectionTitle: '연락처',
-              items: [
-                'Dummy item 1',
-                'Dummy item 2',
-                'Dummy item 3',
-                'Dummy item 4'
-              ]
+              sectionTitle: '문의 및 제안',
+              description: '서울 나무 지도에 대한 의견, 버그 제보, 기능 제안 등 모든 피드백을 환영합니다.'
+            },
+            {
+              sectionTitle: null,
+              emailButton: true
             }
           ]
         };
@@ -303,6 +297,37 @@ const AboutDetailSheet = ({ section, onClose }) => {
               }}>
                 {sec.description}
               </p>
+            )}
+
+            {sec.emailButton && (
+              <a
+                href="mailto:handfoot119@gmail.com?subject=서울 나무 지도 피드백&body=안녕하세요,%0D%0A%0D%0A피드백 내용을 작성해주세요."
+                onClick={(e) => {
+                  console.log('이메일 버튼 클릭됨');
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  padding: '16px 24px',
+                  background: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  boxShadow: '0 2px 8px rgba(78, 205, 196, 0.3)',
+                  cursor: 'pointer',
+                  width: '100%',
+                  textDecoration: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
+              >
+                <span className="material-icons" style={{ fontSize: '24px' }}>email</span>
+                <span>이메일로 피드백 보내기</span>
+              </a>
             )}
           </div>
         ))}

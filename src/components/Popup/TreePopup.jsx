@@ -39,12 +39,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     return user && treeData ? isFavorite(treeData) : false;
   }, [user, treeData, isFavorite]);
 
-  const hasBenefitsData = treeData && (
-    treeData.total_annual_value_krw ||
-    treeData.stormwater_liters_year ||
-    treeData.energy_kwh_year ||
-    treeData.air_pollution_kg_year ||
-    treeData.carbon_storage_kg_year
+  const hasBenefitsData = treeData?.benefits && (
+    treeData.benefits.total_annual_value_krw ||
+    treeData.benefits.stormwater_liters_year ||
+    treeData.benefits.energy_kwh_year ||
+    treeData.benefits.air_pollution_kg_year ||
+    treeData.benefits.carbon_storage_kg_year
   );
 
   // 방문기록 로드 (모바일 + 방문록 탭일 때만)
@@ -440,7 +440,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   }}
                 >
                   <span>
-                    연간 생태적 편익 {treeData.total_annual_value_krw ? formatKRW(treeData.total_annual_value_krw) : '정보 없음'}
+                    연간 생태적 편익 {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw) : '정보 없음'}
                   </span>
                   <span className="material-icons" style={{ fontSize: '12px' }}>expand_more</span>
                 </button>

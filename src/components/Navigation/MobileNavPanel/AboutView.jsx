@@ -2,6 +2,7 @@
 import IconButton from '../../UI/IconButton';
 
 const AboutView = ({ setActiveView, onDetailClick }) => {
+  // 2025-01-12: 피드백 섹션 hasDetail true로 설정됨
   const sections = [
     {
       id: 'intro',
@@ -43,7 +44,7 @@ const AboutView = ({ setActiveView, onDetailClick }) => {
       title: '피드백',
       content: '개선사항, 기능 제안, 오류 제보를 보내주세요.',
       icon: 'feedback',
-      hasDetail: false
+      hasDetail: true
     }
   ];
 

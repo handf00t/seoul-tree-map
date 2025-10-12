@@ -1,4 +1,4 @@
-// src/App.tsx - 스플래시 화면 추가
+// src/App.tsx
 import React, { useState, useCallback, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { clearMapFilters } from './utils/mapFilters';
@@ -10,7 +10,6 @@ import TreeFilter from './components/Filter/TreeFilter';
 import LoginModal from './components/Auth/LoginModal';
 import { UserProfile } from './components/Auth/LoginModal';
 import FavoritesModal from './components/Favorites/FavoritesModal';
-import SplashScreen from './components/SplashScreen/SplashScreen';
 import CurrentLocationButton from './components/Map/CurrentLocationButton';
 import AboutView from './components/Navigation/MobileNavPanel/AboutView';
 import AboutDetailSheet from './components/Navigation/MobileNavPanel/AboutDetailSheet';
@@ -44,14 +43,6 @@ function AppContent() {
   const [isPopupMinimized, setIsPopupMinimized] = useState<boolean>(false);
   const [isMapInteracting, setIsMapInteracting] = useState<boolean>(false);
 
-  // 스플래시 화면 상태 추가
-  const [showSplash, setShowSplash] = useState<boolean>(
-    !localStorage.getItem('hasVisitedBefore')
-  );
-
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-  };
 
   // URL 파라미터에서 공유된 나무 정보 확인
   useEffect(() => {
@@ -132,11 +123,6 @@ function AppContent() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showProfile]);
-
-  // 스플래시 화면이 표시 중이면 스플래시만 렌더링
-  if (showSplash) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
 
   return (
     <div className="App">
