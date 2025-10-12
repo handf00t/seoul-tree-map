@@ -148,18 +148,23 @@ function AppContent() {
           {/* 로고 영역 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '16px' }}>
             <div style={{
-              background: 'var(--gradient-secondary)',
               borderRadius: isMobile ? '8px' : '12px',
               width: isMobile ? '36px' : '48px',
               height: isMobile ? '36px' : '48px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: isMobile ? '18px' : '24px',
-              color: 'white',
-              boxShadow: '0 3px 8px rgba(78, 205, 196, 0.3)'
+              overflow: 'hidden'
             }}>
-              <span className="material-icons" style={{ fontSize: isMobile ? '18px' : '24px' }}>park</span>
+              <img
+                src="/logo.svg"
+                alt="서울시 나무 지도 로고"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
+              />
             </div>
 
             <div>
