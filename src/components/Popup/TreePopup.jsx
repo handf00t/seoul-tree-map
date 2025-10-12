@@ -483,7 +483,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   height: '48px',
                   background: !user ? 'var(--surface-variant)' :
                             isTreeFavorited ? 'var(--error)' : 'var(--primary)',
-                  color: 'var(--surface)',
+                  color: !user ? 'var(--text-secondary)' : 'var(--surface)',
                   border: !user ? '1px solid var(--outline)' : 'none',
                   borderRadius: '8px',
                   cursor: favoriteStatus !== 'idle' ? 'not-allowed' : 'pointer',
