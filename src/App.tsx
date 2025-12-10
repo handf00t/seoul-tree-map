@@ -13,6 +13,7 @@ import FavoritesModal from './components/Favorites/FavoritesModal';
 import CurrentLocationButton from './components/Map/CurrentLocationButton';
 import AboutView from './components/Navigation/MobileNavPanel/AboutView';
 import AboutDetailSheet from './components/Navigation/MobileNavPanel/AboutDetailSheet';
+import BlogView from './components/Blog/BlogView';
 import ErrorBoundary from './components/ErrorBoundary';
 import { TreeData } from './types';
 import './App.css';
@@ -39,6 +40,7 @@ function AppContent() {
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
   const [showAbout, setShowAbout] = useState<boolean>(false);
   const [selectedAboutSection, setSelectedAboutSection] = useState<AboutSection>(null);
+  const [showBlog, setShowBlog] = useState<boolean>(false);
   const [activeFilters, setActiveFilters] = useState<FilterState>({ species: [], sizes: [] });
   const [isPopupMinimized, setIsPopupMinimized] = useState<boolean>(false);
   const [isMapInteracting, setIsMapInteracting] = useState<boolean>(false);
@@ -270,6 +272,33 @@ function AppContent() {
 
           {/* 헤더 우측 컨트롤 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* 블로그 버튼 (PC만) */}
+            <button
+              onClick={() => setShowBlog(true)}
+              style={{
+                background: 'var(--surface-variant)',
+                color: 'var(--on-surface-variant)',
+                border: 'none',
+                borderRadius: 'var(--radius-lg)',
+                height: '40px',
+                padding: '10px 16px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'all 0.2s ease',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--surface)')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--surface-variant)')}
+            >
+              <span className="material-icons" style={{ fontSize: '18px' }}>article</span>
+              <span>블로그</span>
+            </button>
+
             {/* 소개 버튼 (PC만) */}
             <button
               onClick={() => setShowAbout(true)}
@@ -504,6 +533,9 @@ function AppContent() {
           }}
           map={mapInstance}
         />
+
+        {/* 블로그 모달 (PC & Mobile) */}
+        {showBlog && <BlogView onClose={() => setShowBlog(false)} />}
 
         {/* 소개 모달 (PC) */}
         {showAbout && (

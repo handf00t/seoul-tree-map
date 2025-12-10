@@ -57,6 +57,35 @@ const ProfileMenu = ({
           <button
             onClick={() => {
               setShowProfileMenu(false);
+              setActiveView('blog');
+            }}
+            style={{
+              padding: '16px 20px',
+              background: 'var(--surface)',
+              border: '1px solid var(--outline)',
+              borderRadius: '12px',
+              fontSize: '16px',
+              fontWeight: '600',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
+            onMouseLeave={(e) => e.target.style.background = 'var(--surface)'}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span className="material-icons" style={{ fontSize: '20px' }}>article</span>
+              <span>블로그</span>
+            </div>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setShowProfileMenu(false);
               setActiveView('about');
             }}
             style={{
@@ -258,6 +287,35 @@ const ProfileMenu = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span className="material-icons" style={{ fontSize: '20px' }}>location_on</span>
             <span>나의 방문</span>
+          </div>
+          <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setShowProfileMenu(false);
+            setActiveView('blog');
+          }}
+          style={{
+            padding: '16px 20px',
+            background: 'var(--surface)',
+            border: '1px solid var(--outline)',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontWeight: '600',
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
+          onMouseLeave={(e) => e.target.style.background = 'white'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span className="material-icons" style={{ fontSize: '20px' }}>article</span>
+            <span>블로그</span>
           </div>
           <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
         </button>

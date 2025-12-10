@@ -8,6 +8,7 @@ import HomeView from './HomeView';
 import FavoritesView from './FavoritesView';
 import AboutView from './AboutView';
 import AboutDetailSheet from './AboutDetailSheet';
+import BlogView from '../../Blog/BlogView';
 
 const MobileNavPanel = ({
   map,
@@ -479,92 +480,98 @@ const MobileNavPanel = ({
     if (isCollapsed) {
       return '80px';
     }
-    if (activeView === 'myvisits' || activeView === 'favorites' || activeView === 'about') {
+    if (activeView === 'myvisits' || activeView === 'favorites' || activeView === 'about' || activeView === 'blog') {
        return 'calc(85vh - env(safe-area-inset-bottom))';
     }
     return showProfileMenu ? '70vh' : showSuggestions ? '40vh' : '280px';
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: getBottomPosition(),
-      left: 0,
-      right: 0,
-      background: 'var(--surface-elevated)',
-      backdropFilter: 'blur(20px)',
-      borderRadius: '20px 20px 0 0',
-      boxShadow: '0 -4px 20px var(--shadow-color-md)',
-      zIndex: 1000,
-      maxHeight: getMaxHeight(),
-      //overflowY: 'auto',
-      transition: 'bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.3s ease',
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      pointerEvents: 'auto',
-      paddingBottom: 'env(safe-area-inset-bottom)'
-    }}>
-      <div 
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          padding: '20px 0',
-          cursor: 'grab',
-          touchAction: 'none'
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onClick={handleHandleClick}
-      >
-        <div style={{
-          width: '36px',
-          height: '4px',
-          background: isDragging ? 'var(--primary)' : 'var(--outline)',
-          borderRadius: '2px',
-          transition: isDragging ? 'none' : 'all 0.2s ease'
-        }} />
-      </div>
+    <>
+      {/* 블로그 뷰는 MobileNavPanel 밖에서 렌더링 */}
+      {activeView === 'blog' && (
+        <BlogView onClose={() => setActiveView('home')} />
+      )}
 
-      {showProfileMenu ? (
-        <ProfileMenu
-          user={user}
-          userFavorites={userFavorites}
-          setShowProfileMenu={setShowProfileMenu}
-          onFavoritesClick={onFavoritesClick}
-          setActiveView={setActiveView}
-          signOut={signOut}
-        />
-      ) : activeView === 'myvisits' ? (
-        <MyVisitsView
-          myVisits={myVisits}
-          loadingMyVisits={loadingMyVisits}
-          setActiveView={setActiveView}
-          handleMyVisitClick={handleMyVisitClick}
-          handleDeleteMyVisit={handleDeleteMyVisit}
-          formatDate={formatDate}
-        />
-      ) : activeView === 'favorites' ? (
-        <FavoritesView
-          setActiveView={setActiveView}
-          handleTreeSelect={handleTreeSelect}
-          handleFavoriteDelete={handleFavoriteDelete}
-        />
-      ) : activeView === 'about' ? (
-        <>
-          <AboutView
+      <div style={{
+        position: 'fixed',
+        bottom: getBottomPosition(),
+        left: 0,
+        right: 0,
+        background: 'var(--surface-elevated)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '20px 20px 0 0',
+        boxShadow: '0 -4px 20px var(--shadow-color-md)',
+        zIndex: 1000,
+        maxHeight: getMaxHeight(),
+        //overflowY: 'auto',
+        transition: 'bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.3s ease',
+        display: activeView === 'blog' ? 'none' : 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        pointerEvents: 'auto',
+        paddingBottom: 'env(safe-area-inset-bottom)'
+      }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            padding: '20px 0',
+            cursor: 'grab',
+            touchAction: 'none'
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onClick={handleHandleClick}
+        >
+          <div style={{
+            width: '36px',
+            height: '4px',
+            background: isDragging ? 'var(--primary)' : 'var(--outline)',
+            borderRadius: '2px',
+            transition: isDragging ? 'none' : 'all 0.2s ease'
+          }} />
+        </div>
+
+        {showProfileMenu ? (
+          <ProfileMenu
+            user={user}
+            userFavorites={userFavorites}
+            setShowProfileMenu={setShowProfileMenu}
+            onFavoritesClick={onFavoritesClick}
             setActiveView={setActiveView}
-            onDetailClick={(section) => setSelectedAboutSection(section)}
+            signOut={signOut}
           />
-          {selectedAboutSection && (
-            <AboutDetailSheet
-              section={selectedAboutSection}
-              onClose={() => setSelectedAboutSection(null)}
+        ) : activeView === 'myvisits' ? (
+          <MyVisitsView
+            myVisits={myVisits}
+            loadingMyVisits={loadingMyVisits}
+            setActiveView={setActiveView}
+            handleMyVisitClick={handleMyVisitClick}
+            handleDeleteMyVisit={handleDeleteMyVisit}
+            formatDate={formatDate}
+          />
+        ) : activeView === 'favorites' ? (
+          <FavoritesView
+            setActiveView={setActiveView}
+            handleTreeSelect={handleTreeSelect}
+            handleFavoriteDelete={handleFavoriteDelete}
+          />
+        ) : activeView === 'about' ? (
+          <>
+            <AboutView
+              setActiveView={setActiveView}
+              onDetailClick={(section) => setSelectedAboutSection(section)}
             />
-          )}
-        </>
-      ) : (
+            {selectedAboutSection && (
+              <AboutDetailSheet
+                section={selectedAboutSection}
+                onClose={() => setSelectedAboutSection(null)}
+              />
+            )}
+          </>
+        ) : (
         <HomeView
           query={query}
           handleInputChange={handleInputChange}
@@ -588,7 +595,8 @@ const MobileNavPanel = ({
           setActiveView={setActiveView}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

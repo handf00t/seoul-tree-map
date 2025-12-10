@@ -398,9 +398,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
         )}
 
         {/* 컨텐츠 */}
-        <div 
-          style={{ 
-            padding: isMobile ? '8px 20px 20px 20px' : '24px',
+        <div
+          style={{
+            padding: isMobile ? '8px 20px 20px 20px' : '32px',
             cursor: isMinimized ? 'pointer' : 'default'
           }}
           onClick={isMinimized ? handleExpand : undefined}
