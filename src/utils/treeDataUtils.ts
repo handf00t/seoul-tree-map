@@ -14,9 +14,10 @@ export const formatNumber = (num: number | null | undefined): string => {
   return Math.round(num).toLocaleString();
 };
 
-export const formatKRW = (amount: number | null | undefined): string => {
-  if (!amount || amount === 0) return '0원';
-  return `${formatNumber(amount)}원`;
+export const formatKRW = (amount: number | null | undefined, language: string = 'ko'): string => {
+  const currency = language === 'ko' ? '원' : ' KRW';
+  if (!amount || amount === 0) return `0${currency}`;
+  return `${formatNumber(amount)}${currency}`;
 };
 
 export const hasValidData = (value: any): boolean => {

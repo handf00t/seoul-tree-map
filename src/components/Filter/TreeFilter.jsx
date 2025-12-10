@@ -1,10 +1,25 @@
 // components/Filter/TreeFilter.jsx
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { availableSpecies, sizeCategories } from '../../constants/treeData';
+import { getTreeSpeciesName } from '../../utils/treeSpeciesTranslation';
 
 const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
+  const { t, i18n } = useTranslation();
   const [selectedSpecies, setSelectedSpecies] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
+
+  // 크기 라벨 번역
+  const getSizeLabel = (sizeId) => {
+    const sizeKeys = {
+      'small': 'filter.sizeSmall',
+      'medium-small': 'filter.sizeMediumSmall',
+      'medium': 'filter.sizeMedium',
+      'medium-large': 'filter.sizeMediumLarge',
+      'large': 'filter.sizeLarge'
+    };
+    return t(sizeKeys[sizeId] || sizeId);
+  };
 
   // 수종 선택/해제
   const toggleSpecies = (speciesName) => {
@@ -196,14 +211,14 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
               fontWeight: 'bold',
               color: 'var(--text-heading)'
             }}>
-              나무 필터
+              {t('filter.treeFilter')}
             </h2>
             <p style={{
               margin: 0,
               fontSize: '14px',
               color: 'var(--text-secondary)'
             }}>
-              수종과 크기로 나무를 필터링하세요
+              {t('filter.filterDescription')}
             </p>
           </div>
           <button
@@ -246,7 +261,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                 fontWeight: '600',
                 color: 'var(--text-heading)'
               }}>
-                수종별 필터
+                {t('filter.speciesFilter')}
               </h3>
               <button
                 onClick={toggleAllSpecies}
@@ -260,7 +275,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                   cursor: 'pointer'
                 }}
               >
-                {selectedSpecies.length === availableSpecies.length ? '전체 해제' : '전체 선택'}
+                {selectedSpecies.length === availableSpecies.length ? t('filter.deselectAll') : t('filter.selectAll')}
               </button>
             </div>
 
@@ -306,7 +321,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                     }}
                   />
                   <span style={{ fontSize: '14px', color: 'var(--text-heading)' }}>
-                    {species.name}
+                    {getTreeSpeciesName(species.name, i18n.language)}
                   </span>
                 </label>
               ))}
@@ -327,7 +342,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                 fontWeight: '600',
                 color: 'var(--text-heading)'
               }}>
-                크기별 필터 (줄기 직경)
+                {t('filter.sizeFilterWithUnit')}
               </h3>
               <button
                 onClick={toggleAllSizes}
@@ -341,7 +356,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                   cursor: 'pointer'
                 }}
               >
-                {selectedSizes.length === sizeCategories.length ? '전체 해제' : '전체 선택'}
+                {selectedSizes.length === sizeCategories.length ? t('filter.deselectAll') : t('filter.selectAll')}
               </button>
             </div>
 
@@ -387,7 +402,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
                     }}
                   />
                   <span style={{ fontSize: '14px', color: 'var(--text-heading)' }}>
-                    {size.label}
+                    {getSizeLabel(size.id)}
                   </span>
                 </label>
               ))}
@@ -416,7 +431,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
               cursor: 'pointer'
             }}
           >
-            필터 초기화
+            {t('filter.resetFilter')}
           </button>
           <button
             onClick={onClose}
@@ -432,7 +447,7 @@ const TreeFilter = ({ map, isVisible, onClose, onFilterApply }) => {
               cursor: 'pointer'
             }}
           >
-            적용 완료
+            {t('filter.applyComplete')}
           </button>
         </div>
       </div>

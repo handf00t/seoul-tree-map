@@ -1,5 +1,6 @@
 // components/Auth/LoginModal.tsx
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface LoginModalProps {
@@ -13,6 +14,7 @@ interface UserProfileProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
+  const { t } = useTranslation();
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -24,7 +26,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
     if (result.success) {
       onClose();
     } else {
-      alert('로그인에 실패했습니다: ' + result.error);
+      alert(t('auth.loginFailed') + ': ' + result.error);
     }
   };
 
@@ -74,7 +76,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
             fontWeight: 'bold',
             color: 'var(--text-heading)'
           }}>
-            서울시 나무지도에 오신걸 환영합니다
+            {t('auth.welcomeMessage')}
           </h2>
           <p style={{
             margin: '0 0 24px 0',
@@ -82,7 +84,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
             color: 'var(--text-secondary)',
             lineHeight: '1.5'
           }}>
-            로그인하고 좋아하는 나무들을 저장하고 공유해보세요
+            {t('auth.loginDescription')}
           </p>
         </div>
 
@@ -126,7 +128,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite'
                 }} />
-                로그인 중...
+                {t('auth.loggingIn')}
               </>
             ) : (
               <>
@@ -136,7 +138,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
                   <path fill="white" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="white" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                Google로 계속하기
+                {t('auth.continueWithGoogle')}
               </>
             )}
           </button>
@@ -154,7 +156,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
               fontWeight: '600',
               color: 'var(--text-heading)'
             }}>
-              로그인하면 이런 기능을 사용할 수 있어요
+              {t('auth.loginBenefitsTitle')}
             </h4>
             <ul style={{
               margin: 0,
@@ -163,8 +165,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
               color: 'var(--text-secondary)',
               lineHeight: '1.4'
             }}>
-              <li>마음에 드는 나무를 즐겨찾기에 저장</li>
-              <li>나무 방문록 작성</li>
+              <li>{t('auth.loginBenefit1')}</li>
+              <li>{t('auth.loginBenefit2')}</li>
             </ul>
           </div>
 
@@ -183,7 +185,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
               cursor: 'pointer'
             }}
           >
-            나중에 하기
+            {t('auth.later')}
           </button>
         </div>
       </div>
@@ -219,6 +221,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
 
 // components/Auth/UserProfile.tsx
 export const UserProfile: React.FC<UserProfileProps> = ({ onFavoritesClick, onClose }) => {
+  const { t } = useTranslation();
   const { user, signOut, userFavorites } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -303,7 +306,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onFavoritesClick, onCl
           onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-variant)'}
           onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
         >
-          <span className="material-icons">star</span> 즐겨찾기한 나무  {userFavorites.length}개
+          <span className="material-icons">star</span> {t('favorites.favoriteTrees')} {t('favorites.treesCount', { count: userFavorites.length })}
 
         </button>
 
@@ -332,7 +335,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onFavoritesClick, onCl
             if (!isLoading) e.currentTarget.style.background = 'none';
           }}
         >
-          {isLoading ? '로그아웃 중...' : <><span className="material-icons">logout</span> 로그아웃</>}
+          {isLoading ? t('auth.loggingOut') : <><span className="material-icons">logout</span> {t('auth.logout')}</>}
         </button>
       </div>
 

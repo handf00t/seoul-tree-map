@@ -1,48 +1,51 @@
 // MobileNavPanel/AboutView.jsx
+import { useTranslation } from 'react-i18next';
 import IconButton from '../../UI/IconButton';
 
 const AboutView = ({ setActiveView, onDetailClick }) => {
+  const { t } = useTranslation();
+
   // 2025-01-12: 피드백 섹션 hasDetail true로 설정됨
   const sections = [
     {
       id: 'intro',
-      title: '서울 나무 지도',
-      content: '서울시 25개 자치구의 나무를 한 곳에서 확인할 수 있습니다. 위치, 수종, 크기, 그리고 각 나무가 제공하는 생태적 편익을 보여줍니다.',
+      title: t('about.intro.title'),
+      content: t('about.intro.content'),
       icon: 'map',
       hasDetail: false
     },
     {
       id: 'species',
-      title: '수종과 크기분류',
-      content: '지도에서 각 수종은 고유한 색으로 표시됩니다. 같은 과에 속하는 나무는 비슷한 색상 계열을 사용합니다. 나무 크기는 흉고직경에 따라 다섯단계로 구분합니다.',
+      title: t('about.species.title'),
+      content: t('about.species.content'),
       icon: 'category',
       hasDetail: true
     },
     {
       id: 'favorites',
-      title: '즐겨찾기와 방문록',
-      content: '즐겨찾기를 통해 관심있는 나무를 저장하고, 방문록을 작성하여 직접 찍은 사진과 한미디를 기록할 수 있습니다.',
+      title: t('about.favorites.title'),
+      content: t('about.favorites.content'),
       icon: 'favorite',
       hasDetail: false
     },
     {
       id: 'data-source',
-      title: '데이터 출처',
-      content: '서울 열린데이터 광장의 공식 자료를 사용합니다.',
+      title: t('about.dataSource.title'),
+      content: t('about.dataSource.content'),
       icon: 'source',
       hasDetail: true
     },
     {
       id: 'eco-benefits',
-      title: '생태 편익',
-      content: '도시 나무가 제공하는 환경 서비스를 한국형 i-Tree Eco 방법론으로 계산하고 경제적 가치로 환산했습니다. 빗물 관리, 에너지 절약, 공기 정화, 탄소 흡수 효과 를 포함합니다. 계산 방식은 수종, 크기, 위치를 반영하며, 서울시 환경 특성에 맞게 조정된 계수를 사용합니다. ',
+      title: t('about.ecoBenefits.title'),
+      content: t('about.ecoBenefits.content'),
       icon: 'eco',
       hasDetail: true
     },
     {
       id: 'feedback',
-      title: '피드백',
-      content: '개선사항, 기능 제안, 오류 제보를 보내주세요.',
+      title: t('about.feedback.title'),
+      content: t('about.feedback.content'),
       icon: 'feedback',
       hasDetail: true
     }
@@ -71,7 +74,7 @@ const AboutView = ({ setActiveView, onDetailClick }) => {
           onClick={() => setActiveView('home')}
           variant="ghost"
           size="medium"
-          ariaLabel="뒤로 가기"
+          ariaLabel={t('common.back')}
         />
         <h2 style={{
           margin: 0,
@@ -80,7 +83,7 @@ const AboutView = ({ setActiveView, onDetailClick }) => {
           color: 'var(--text-primary)',
           flex: 1
         }}>
-          소개
+          {t('about.title')}
         </h2>
       </div>
 
@@ -158,7 +161,7 @@ const AboutView = ({ setActiveView, onDetailClick }) => {
                 onMouseEnter={(e) => e.target.style.background = 'var(--surface-variant)'}
                 onMouseLeave={(e) => e.target.style.background = 'none'}
               >
-                더보기
+                {t('about.seeMore')}
                 <span className="material-icons" style={{ fontSize: '18px' }}>
                   chevron_right
                 </span>

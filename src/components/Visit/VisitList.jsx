@@ -1,20 +1,26 @@
 // src/components/Visit/VisitList.jsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import IconButton from '../UI/IconButton';
 
 const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, onDeleteVisit }) => {
+  const { t, i18n } = useTranslation();
+
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp.seconds * 1000);
-    return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const locale = i18n.language === 'en' ? 'en-US' : 'ko-KR';
+    return date.toLocaleDateString(locale, { year: 'numeric', month: '2-digit', day: '2-digit' });
   };
 
   // 익명화된 닉네임 생성
   const getAnonymousName = (userId) => {
-    const animals = ['너구리', '다람쥐', '고양이', '강아지', '토끼', '여우', '햄스터', '판다', '코알라', '펭귄'];
+    const animals = i18n.language === 'en'
+      ? ['Raccoon', 'Squirrel', 'Cat', 'Dog', 'Rabbit', 'Fox', 'Hamster', 'Panda', 'Koala', 'Penguin']
+      : ['너구리', '다람쥐', '고양이', '강아지', '토끼', '여우', '햄스터', '판다', '코알라', '펭귄'];
     const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const animal = animals[hash % animals.length];
-    return `익명의 ${animal}`;
+    return t('visits.anonymousAnimal', { animal });
   };
 
   return (
@@ -42,7 +48,7 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
               cursor: 'pointer'
             }}
           />
-          나의 방문만 보기
+          {t('visits.myVisitsOnly')}
         </label>
       )}
 
@@ -57,10 +63,10 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
         >
           <div style={{ fontSize: '48px', marginBottom: '12px' }}><svg height="48" width="48"viewBox="0 -960 960 960"  fill="currentColor"><path d="M200-80v-80h240v-160h-80q-83 0-141.5-58.5T160-520q0-60 33-110.5t89-73.5q9-75 65.5-125.5T480-880q76 0 132.5 50.5T678-704q56 23 89 73.5T800-520q0 83-58.5 141.5T600-320h-80v160h240v80H200Zm160-320h240q50 0 85-35t35-85q0-36-20.5-66T646-630l-42-18-6-46q-6-45-39.5-75.5T480-800q-45 0-78.5 30.5T362-694l-6 46-42 18q-33 14-53.5 44T240-520q0 50 35 85t85 35Zm120-200Z"/></svg></div>
           <div style={{ fontSize: '16px', marginBottom: '8px' }}>
-            {showMyVisitsOnly ? '아직 방문 기록이 없습니다' : '첫 방문자가 되어주세요!'}
+            {showMyVisitsOnly ? t('visits.noMyVisits') : t('visits.beFirstVisitor')}
           </div>
           <div style={{ fontSize: '14px', color: '#bbb' }}>
-            {showMyVisitsOnly ? '이 나무를 방문하고 기록을 남겨보세요' : '방문기록을 남겨 이 나무의 이야기를 시작해보세요'}
+            {showMyVisitsOnly ? t('visits.visitAndRecord') : t('visits.startTreeStory')}
           </div>
         </div>
       ) : (
@@ -152,7 +158,7 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
                         fontWeight: '600'
                       }}
                     >
-                      본인
+                      {i18n.language === 'en' ? 'You' : '본인'}
                     </span>
                   )}
                 </div>
@@ -186,13 +192,13 @@ const VisitList = ({ visits, showMyVisitsOnly, onFilterChange, currentUserId, on
                 <IconButton
                   icon="delete"
                   onClick={() => {
-                    if (window.confirm('이 방문기록을 삭제하시겠습니까?')) {
+                    if (window.confirm(t('visits.confirmDelete'))) {
                       onDeleteVisit(visit.id);
                     }
                   }}
                   variant="danger"
                   size="medium"
-                  ariaLabel="삭제"
+                  ariaLabel={t('common.delete')}
                   style={{
                     position: 'absolute',
                     top: '40px',

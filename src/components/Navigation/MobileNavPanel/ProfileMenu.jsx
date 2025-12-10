@@ -1,5 +1,8 @@
 // MobileNavPanel/ProfileMenu.jsx
+import { useTranslation } from 'react-i18next';
 import IconButton from '../../UI/IconButton';
+import LanguageToggle from '../../UI/LanguageToggle';
+import { getTreeSpeciesName } from '../../../utils/treeSpeciesTranslation';
 
 const ProfileMenu = ({
   user,
@@ -9,8 +12,10 @@ const ProfileMenu = ({
   setActiveView,
   signOut
 }) => {
+  const { t, i18n } = useTranslation();
+
   const handleSignOut = async () => {
-    if (window.confirm('로그아웃 하시겠습니까?')) {
+    if (window.confirm(t('auth.confirmLogout'))) {
       await signOut();
       setShowProfileMenu(false);
     }
@@ -42,14 +47,14 @@ const ProfileMenu = ({
             fontWeight: '700',
             color: 'var(--text-primary)'
           }}>
-            서울 나무 지도
+            {t('common.appName')}
           </h3>
           <IconButton
             icon="close"
             onClick={() => setShowProfileMenu(false)}
             variant="close"
             size="medium"
-            ariaLabel="메뉴 닫기"
+            ariaLabel={t('common.closeMenu')}
           />
         </div>
 
@@ -78,7 +83,7 @@ const ProfileMenu = ({
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <span className="material-icons" style={{ fontSize: '20px' }}>article</span>
-              <span>블로그</span>
+              <span>{t('navigation.blog')}</span>
             </div>
             <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
           </button>
@@ -107,24 +112,45 @@ const ProfileMenu = ({
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <span className="material-icons" style={{ fontSize: '20px' }}>info</span>
-              <span>소개</span>
+              <span>{t('navigation.about')}</span>
             </div>
             <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
           </button>
+        </div>
 
+        {/* 언어 설정 */}
+        <div style={{
+          marginTop: '24px',
+          paddingTop: '20px',
+          borderTop: '1px solid var(--divider)'
+        }}>
+          <div style={{
+            fontSize: '14px',
+            fontWeight: '600',
+            color: 'var(--text-secondary)',
+            marginBottom: '12px',
+            paddingLeft: '20px'
+          }}>
+            {t('common.languageSettings')}
+          </div>
+          <LanguageToggle variant="mobile" />
+        </div>
+
+        <div style={{ marginTop: '24px' }}>
           <button
             onClick={() => {
               setShowProfileMenu(false);
               onFavoritesClick();
             }}
             style={{
+              width: '100%',
               padding: '16px 20px',
-              background: 'var(--primary)',
-              border: 'none',
+              background: 'var(--surface)',
+              border: '1px solid var(--primary)',
               borderRadius: '12px',
               fontSize: '16px',
               fontWeight: '600',
-              color: 'white',
+              color: 'var(--primary)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -132,11 +158,17 @@ const ProfileMenu = ({
               gap: '8px',
               transition: 'all 0.2s ease'
             }}
-            onMouseEnter={(e) => e.target.style.opacity = '0.9'}
-            onMouseLeave={(e) => e.target.style.opacity = '1'}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'var(--primary)';
+              e.target.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'var(--surface)';
+              e.target.style.color = 'var(--primary)';
+            }}
           >
             <span className="material-icons" style={{ fontSize: '20px' }}>login</span>
-            <span>로그인</span>
+            <span>{t('auth.login')}</span>
           </button>
         </div>
       </div>
@@ -196,7 +228,7 @@ const ProfileMenu = ({
           onClick={() => setShowProfileMenu(false)}
           variant="close"
           size="medium"
-          ariaLabel="메뉴 닫기"
+          ariaLabel={t('common.closeMenu')}
         />
       </div>
 
@@ -213,20 +245,20 @@ const ProfileMenu = ({
           marginBottom: '12px'
         }}>
           <span style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '600' }}>
-            즐겨찾기한 나무
+            {t('favorites.favoriteTrees')}
           </span>
           <span style={{
             fontSize: '18px',
             fontWeight: '700',
             color: 'var(--primary)'
           }}>
-            {userFavorites.length}개
+            {t('favorites.treesCount', { count: userFavorites.length })}
           </span>
         </div>
 
         {userFavorites.length > 0 && (
           <div style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
-            가장 최근: {userFavorites[0]?.species_kr || '미상'}
+            {t('favorites.mostRecent')}: {getTreeSpeciesName(userFavorites[0]?.species_kr, i18n.language)}
             ({userFavorites[0]?.borough})
           </div>
         )}
@@ -257,7 +289,7 @@ const ProfileMenu = ({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span className="material-icons" style={{ fontSize: '20px' }}>favorite</span>
-            <span>내 즐겨찾기</span>
+            <span>{t('favorites.myFavorites')}</span>
           </div>
           <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
         </button>
@@ -286,7 +318,7 @@ const ProfileMenu = ({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span className="material-icons" style={{ fontSize: '20px' }}>location_on</span>
-            <span>나의 방문</span>
+            <span>{t('visits.myVisits')}</span>
           </div>
           <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
         </button>
@@ -315,7 +347,7 @@ const ProfileMenu = ({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span className="material-icons" style={{ fontSize: '20px' }}>article</span>
-            <span>블로그</span>
+            <span>{t('navigation.blog')}</span>
           </div>
           <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
         </button>
@@ -344,28 +376,60 @@ const ProfileMenu = ({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span className="material-icons" style={{ fontSize: '20px' }}>info</span>
-            <span>소개</span>
+            <span>{t('navigation.about')}</span>
           </div>
           <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{'>'}</span>
         </button>
+      </div>
+
+      {/* 언어 설정 */}
+      <div style={{
+        marginTop: '24px',
+        paddingTop: '20px',
+        borderTop: '1px solid var(--divider)'
+      }}>
+        <div style={{
+          fontSize: '14px',
+          fontWeight: '600',
+          color: 'var(--text-secondary)',
+          marginBottom: '12px',
+          paddingLeft: '20px'
+        }}>
+          {t('common.languageSettings')}
+        </div>
+        <LanguageToggle variant="mobile" />
       </div>
 
       <button
         onClick={handleSignOut}
         style={{
           padding: '16px 20px',
-          background: 'none',
-          border: '1px solid var(--outline)',
+          background: 'var(--surface)',
+          border: '1px solid var(--error)',
           borderRadius: '12px',
           fontSize: '16px',
           fontWeight: '600',
           color: 'var(--error)',
           cursor: 'pointer',
           marginTop: '20px',
-          marginBottom: '80px'
+          marginBottom: '80px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          transition: 'all 0.2s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.background = 'var(--error)';
+          e.target.style.color = 'white';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.background = 'var(--surface)';
+          e.target.style.color = 'var(--error)';
         }}
       >
-        로그아웃
+        <span className="material-icons" style={{ fontSize: '20px' }}>logout</span>
+        <span>{t('auth.logout')}</span>
       </button>
     </div>
   );

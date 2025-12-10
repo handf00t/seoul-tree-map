@@ -1,5 +1,6 @@
 // src/components/Popup/TreePopup.jsx - 모바일 탭 구조 추가 (PC는 기존 유지)
 import React, { useEffect, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { visitService } from '../../services/firebase';
 import CameraCapture from '../Visit/CameraCapture';
@@ -13,6 +14,7 @@ import TreeInfoBox from './TreePopup/TreeInfoBox';
 import BenefitsSection from './TreePopup/BenefitsSection';
 
 const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMapInteracting, onLoginRequest }) => {
+  const { t, i18n } = useTranslation();
   const { user, addToFavorites, removeFromFavorites, isFavorite, recordTreeView } = useAuth();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [shareStatus, setShareStatus] = useState('idle');
@@ -70,12 +72,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
   };
   const handleDeleteVisit = async (visitId) => {
   if (!user) return;
-  
+
   const result = await visitService.deleteVisit(user.uid, visitId);
   if (result.success) {
     loadVisits(); // 목록 새로고침
   } else {
-    alert('삭제 실패: ' + result.error);
+    alert(t('popup.deleteFailed') + ': ' + result.error);
   }
 };
 
@@ -85,8 +87,9 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
   };
 
   const formatKRW = (amount) => {
-    if (!amount || amount === 0) return '0원';
-    return `${formatNumber(amount)}원`;
+    const currency = i18n.language === 'ko' ? '원' : ' KRW';
+    if (!amount || amount === 0) return `0${currency}`;
+    return `${formatNumber(amount)}${currency}`;
   };
 
   const hasValidData = (value) => {
@@ -102,7 +105,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     }
 
     if (!treeData || !treeData.source_id) {
-      alert('나무 정보가 없습니다.');
+      alert(t('popup.noTreeData'));
       return;
     }
 
@@ -154,12 +157,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
       }
 
       setShareStatus('copied');
-      alert('링크가 복사되었습니다!');
+      alert(t('popup.linkCopied'));
       setTimeout(() => setShareStatus('idle'), 3000);
 
     } catch (error) {
       console.error('URL 복사 실패:', error);
-      alert('링크 복사에 실패했습니다.');
+      alert(t('popup.linkCopyFailed'));
       setShareStatus('failed');
       setTimeout(() => setShareStatus('idle'), 3000);
     }
@@ -192,7 +195,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
       );
 
       if (!uploadResult.success) {
-        alert('사진 업로드에 실패했습니다: ' + uploadResult.error);
+        alert(t('popup.photoUploadFailed') + ': ' + uploadResult.error);
         return;
       }
 
@@ -210,13 +213,13 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
         setCapturedPhoto(null);
         setActiveTab('visits');
         loadVisits();
-        alert('방문기록이 등록되었습니다!');
+        alert(t('popup.visitRecorded'));
       } else {
-        alert('방문기록 저장에 실패했습니다: ' + visitResult.error);
+        alert(t('popup.visitSaveFailed') + ': ' + visitResult.error);
       }
     } catch (error) {
       console.error('방문기록 처리 중 오류:', error);
-      alert('방문기록 처리 중 오류가 발생했습니다.');
+      alert(t('popup.visitProcessError'));
     }
   };
 
@@ -439,7 +442,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   }}
                 >
                   <span>
-                    연간 생태적 편익 {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw) : '정보 없음'}
+                    {t('tree.annualBenefits')} {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw) : t('popup.noInfo')}
                   </span>
                   <span className="material-icons" style={{ fontSize: '12px' }}>expand_more</span>
                 </button>
@@ -533,7 +536,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                     <svg width="22" height="22" viewBox="0 -960 960 960" fill="currentColor">
                       <path d="M480-40 192-256q-15-11-23.5-28t-8.5-36v-480q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v480q0 19-8.5 36T768-256L480-40Zm0-100 240-180v-480H240v480l240 180Zm-42-220 226-226-56-58-170 170-84-84-58 56 142 142Zm42-440H240h480-240Z"/>
                     </svg>
-                    <span style={{ fontSize: '13px' }}>방문기록</span>
+                    <span style={{ fontSize: '13px' }}>{t('popup.recordVisit')}</span>
                   </button>
                 )}
 
@@ -563,8 +566,8 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                     <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
                   </svg>
                   <span style={{ fontSize: '13px' }}>
-                    {shareStatus === 'copying' ? '복사중' :
-                     shareStatus === 'copied' ? '완료' : '공유'}
+                    {shareStatus === 'copying' ? t('popup.sharing') :
+                     shareStatus === 'copied' ? t('popup.shared') : t('popup.share')}
                   </span>
                 </button>
 
@@ -592,7 +595,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   <span className="material-icons" style={{ fontSize: '18px' }}>
                     {isTreeFavorited ? 'favorite' : 'favorite_border'}
                   </span>
-                  <span style={{ fontSize: '13px' }}>즐겨찾기</span>
+                  <span style={{ fontSize: '13px' }}>{t('common.favorite')}</span>
                 </button>
               </div>
 

@@ -1,8 +1,10 @@
 // src/components/Popup/TreePopup/PopupHeader.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import IconButton from '../../UI/IconButton';
 import { TreeData, TreeType } from '../../../types';
 import { getTreeLeafImage } from '../../../constants/treeImages';
+import { getTreeSpeciesName } from '../../../utils/treeSpeciesTranslation';
 
 interface PopupHeaderProps {
   treeData: TreeData;
@@ -11,17 +13,18 @@ interface PopupHeaderProps {
   onClose: () => void;
 }
 
-const getTreeType = (type: TreeType): string => {
-  switch(type) {
-    case 'protected': return '보호수';
-    case 'roadside': return '가로수';
-    case 'park': return '공원수목';
-    default: return type;
-  }
-};
-
 const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimized, onClose }) => {
+  const { t, i18n } = useTranslation();
   const leafImagePath = getTreeLeafImage(treeData.species_kr);
+
+  const getTreeType = (type: TreeType): string => {
+    switch(type) {
+      case 'protected': return t('filter.protected');
+      case 'roadside': return t('filter.roadside');
+      case 'park': return t('filter.park');
+      default: return type;
+    }
+  };
 
   // 모바일 레이아웃
   if (isMobile) {
@@ -45,7 +48,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
               lineHeight: '1.2',
               marginBottom: '8px'
             }}>
-              {treeData.species_kr || '미상'}
+              {getTreeSpeciesName(treeData.species_kr, i18n.language) || t('tree.unknownSpecies')}
             </h2>
 
             <div style={{
@@ -88,7 +91,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
               {leafImagePath && (
                 <img
                   src={leafImagePath}
-                  alt={`${treeData.species_kr} 잎`}
+                  alt={`${getTreeSpeciesName(treeData.species_kr, i18n.language)} ${t('common.close').toLowerCase()}`}
                   style={{
                     width: '100px',
                     height: '100px',
@@ -109,7 +112,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
                 }}
                 variant="close"
                 size="medium"
-                ariaLabel="닫기"
+                ariaLabel={t('common.close')}
               />
             </div>
           )}
@@ -124,7 +127,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
               }}
               variant="close"
               size="medium"
-              ariaLabel="닫기"
+              ariaLabel={t('common.close')}
             />
           )}
         </div>
@@ -153,7 +156,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
             lineHeight: '1.2',
             marginBottom: '8px'
           }}>
-            {treeData.species_kr || '미상'}
+            {getTreeSpeciesName(treeData.species_kr, i18n.language) || t('tree.unknownSpecies')}
           </h2>
 
           <div style={{
@@ -188,7 +191,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
           {leafImagePath && (
             <img
               src={leafImagePath}
-              alt={`${treeData.species_kr} 잎`}
+              alt={`${getTreeSpeciesName(treeData.species_kr, i18n.language)} ${t('common.close').toLowerCase()}`}
               style={{
                 width: '160px',
                 height: '160px',
@@ -209,7 +212,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
             }}
             variant="close"
             size="medium"
-            ariaLabel="닫기"
+            ariaLabel={t('common.close')}
           />
         </div>
       </div>

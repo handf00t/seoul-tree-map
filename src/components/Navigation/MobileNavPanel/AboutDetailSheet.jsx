@@ -1,7 +1,9 @@
 // MobileNavPanel/AboutDetailSheet.jsx
+import { useTranslation } from 'react-i18next';
 import IconButton from '../../UI/IconButton';
 
 const AboutDetailSheet = ({ section, onClose }) => {
+  const { t } = useTranslation();
   if (!section) return null;
 
   const getDetailContent = (sectionId) => {
@@ -178,7 +180,7 @@ const AboutDetailSheet = ({ section, onClose }) => {
           onClick={onClose}
           variant="close"
           size="medium"
-          ariaLabel="닫기"
+          ariaLabel={t('common.close')}
         />
       </div>
 
@@ -273,7 +275,7 @@ const AboutDetailSheet = ({ section, onClose }) => {
                                   fontSize: '14px'
                                 }}
                               >
-                                링크
+                                {t('about.link')}
                                 <span className="material-icons" style={{ fontSize: '16px' }}>
                                   open_in_new
                                 </span>
@@ -323,7 +325,7 @@ const AboutDetailSheet = ({ section, onClose }) => {
                 }}
               >
                 <span className="material-icons" style={{ fontSize: '24px' }}>email</span>
-                <span>이메일로 피드백 보내기</span>
+                <span>{t('about.sendFeedbackEmail')}</span>
               </a>
             )}
           </div>

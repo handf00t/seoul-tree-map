@@ -1,5 +1,6 @@
 // src/components/Popup/TreePopup/TabMenu.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 type TabType = 'info' | 'visits';
 
@@ -9,6 +10,8 @@ interface TabMenuProps {
 }
 
 const TabMenu: React.FC<TabMenuProps> = ({ activeTab, onTabChange }) => {
+  const { t } = useTranslation();
+
   return (
     <div style={{
       display: 'flex',
@@ -31,7 +34,7 @@ const TabMenu: React.FC<TabMenuProps> = ({ activeTab, onTabChange }) => {
           transition: 'all 0.2s ease'
         }}
       >
-        정보
+        {t('popup.treeInfo')}
       </button>
       <button
         onClick={() => onTabChange('visits')}
@@ -49,7 +52,7 @@ const TabMenu: React.FC<TabMenuProps> = ({ activeTab, onTabChange }) => {
           transition: 'all 0.2s ease'
         }}
       >
-        방문록
+        {t('visits.title')}
       </button>
     </div>
   );

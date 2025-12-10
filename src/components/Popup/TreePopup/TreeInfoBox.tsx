@@ -1,5 +1,6 @@
 // src/components/Popup/TreePopup/TreeInfoBox.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { hasValidData } from '../../../utils/treeDataUtils';
 import { TreeData } from '../../../types';
 
@@ -8,6 +9,7 @@ interface TreeInfoBoxProps {
 }
 
 const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
+  const { t } = useTranslation();
   const hasAnyInfo = hasValidData(treeData.height_m) ||
                      hasValidData(treeData.dbh_cm) ||
                      treeData.source_id;
@@ -28,7 +30,7 @@ const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
     }}>
       {hasValidData(treeData.height_m) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>높이</span>
+          <span style={{ color: 'var(--text-secondary)' }}>{t('tree.height')}</span>
           <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
             {Math.round(treeData.height_m!)}m
           </span>
@@ -36,7 +38,7 @@ const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
       )}
       {hasValidData(treeData.dbh_cm) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>직경</span>
+          <span style={{ color: 'var(--text-secondary)' }}>{t('tree.diameter')}</span>
           <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
             {Math.round(treeData.dbh_cm!)}cm
           </span>
@@ -44,7 +46,7 @@ const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
       )}
       {treeData.source_id && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>나무번호</span>
+          <span style={{ color: 'var(--text-secondary)' }}>{t('tree.treeId')}</span>
           <span style={{ fontWeight: '600', color: 'var(--primary-dark)' }}>
             {treeData.source_id}
           </span>

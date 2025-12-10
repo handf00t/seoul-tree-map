@@ -2,13 +2,14 @@
 import React from 'react';
 import { formatKRW, hasValidData } from '../../../utils/treeDataUtils';
 
-interface BenefitItemProps {
+export interface BenefitItemProps {
   label: string;
   valueLabel: string;
   krwValue?: number;
+  language?: string;
 }
 
-const BenefitItem: React.FC<BenefitItemProps> = ({ label, valueLabel, krwValue }) => {
+const BenefitItem: React.FC<BenefitItemProps> = ({ label, valueLabel, krwValue, language = 'ko' }) => {
   return (
     <div style={{
       display: 'flex',
@@ -34,7 +35,7 @@ const BenefitItem: React.FC<BenefitItemProps> = ({ label, valueLabel, krwValue }
         </div>
         {hasValidData(krwValue) && (
           <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
-            {formatKRW(krwValue!)}
+            {formatKRW(krwValue!, language)}
           </div>
         )}
       </div>

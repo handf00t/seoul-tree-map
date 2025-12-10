@@ -1,5 +1,6 @@
 // src/App.tsx
 import React, { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { clearMapFilters } from './utils/mapFilters';
 import MapContainer from './components/Map/MapContainer';
@@ -14,6 +15,7 @@ import CurrentLocationButton from './components/Map/CurrentLocationButton';
 import AboutView from './components/Navigation/MobileNavPanel/AboutView';
 import AboutDetailSheet from './components/Navigation/MobileNavPanel/AboutDetailSheet';
 import BlogView from './components/Blog/BlogView';
+import LanguageToggle from './components/UI/LanguageToggle';
 import ErrorBoundary from './components/ErrorBoundary';
 import { TreeData } from './types';
 import './App.css';
@@ -29,6 +31,7 @@ interface FilterState {
 type AboutSection = 'overview' | 'features' | 'data' | 'tech' | null;
 
 function AppContent() {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
   const [mapInstance, setMapInstance] = useState<MapboxMap | null>(null);
@@ -257,7 +260,7 @@ function AppContent() {
                 fontWeight: 'bold',
                 color: 'var(--on-surface)'
               }}>
-                서울시 나무 지도
+                {t('common.appName')}
               </h1>
               <p style={{
                 margin: 0,
@@ -272,6 +275,9 @@ function AppContent() {
 
           {/* 헤더 우측 컨트롤 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* 언어 토글 버튼 (PC만) */}
+            <LanguageToggle />
+
             {/* 블로그 버튼 (PC만) */}
             <button
               onClick={() => setShowBlog(true)}
@@ -296,7 +302,7 @@ function AppContent() {
               onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--surface-variant)')}
             >
               <span className="material-icons" style={{ fontSize: '18px' }}>article</span>
-              <span>블로그</span>
+              <span>{t('navigation.blog')}</span>
             </button>
 
             {/* 소개 버튼 (PC만) */}
@@ -323,7 +329,7 @@ function AppContent() {
               onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--surface-variant)')}
             >
               <span className="material-icons" style={{ fontSize: '18px' }}>info</span>
-              <span>소개</span>
+              <span>{t('navigation.about')}</span>
             </button>
 
             {/* 로그인/프로필 버튼 (PC만) */}
@@ -367,7 +373,7 @@ function AppContent() {
                       {user.displayName?.split(' ')[0] || '사용자'}
                     </>
                   ) : (
-                    '로그인'
+                    t('auth.login')
                   )}
                 </button>
 
@@ -466,7 +472,7 @@ function AppContent() {
               alignItems: 'center',
               gap: '8px'
             }}>
-              <span className="material-icons" style={{ fontSize: '16px' }}>filter_alt</span> 적용된 필터
+              <span className="material-icons" style={{ fontSize: '16px' }}>filter_alt</span> {t('filter.activeFiltersLabel')}
               <button
                 onClick={clearFilters}
                 className="badge badge-primary"
@@ -477,13 +483,13 @@ function AppContent() {
                   padding: '4px 8px'
                 }}
               >
-                초기화
+                {t('common.reset')}
               </button>
             </div>
 
             {activeFilters.species.length > 0 && (
               <div style={{ marginBottom: '4px' }}>
-                <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>수종: </span>
+                <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{t('filter.species')}: </span>
                 <span style={{ fontSize: '12px', color: 'var(--on-surface)' }}>
                   {activeFilters.species.join(', ')}
                 </span>
@@ -492,9 +498,9 @@ function AppContent() {
 
             {activeFilters.sizes.length > 0 && (
               <div>
-                <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>크기: </span>
+                <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{t('filter.size')}: </span>
                 <span style={{ fontSize: '12px', color: 'var(--on-surface)' }}>
-                  {activeFilters.sizes.length}개 범위 선택됨
+                  {t('filter.rangesSelected', { count: activeFilters.sizes.length })}
                 </span>
               </div>
             )}

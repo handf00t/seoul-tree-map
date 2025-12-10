@@ -1,5 +1,6 @@
 // components/Navigation/MobileNavPanel/index.jsx
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../contexts/AuthContext';
 import { visitService } from '../../../services/firebase';
 import ProfileMenu from './ProfileMenu';
@@ -22,6 +23,7 @@ const MobileNavPanel = ({
   minimizedPopupHeight = 0,
   onCollapseChange
 }) => {
+  const { t } = useTranslation();
   const { user, userFavorites, signOut, removeFromFavorites } = useAuth();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -109,14 +111,14 @@ const MobileNavPanel = ({
   // 방문 삭제
   const handleDeleteMyVisit = async (visitId, e) => {
     e.stopPropagation();
-    
-    if (!window.confirm('이 방문기록을 삭제하시겠습니까?')) return;
-    
+
+    if (!window.confirm(t('visits.confirmDelete'))) return;
+
     const result = await visitService.deleteVisit(user.uid, visitId);
     if (result.success) {
       loadMyVisits();
     } else {
-      alert('삭제 실패: ' + result.error);
+      alert(t('popup.deleteFailed') + ': ' + result.error);
     }
   };
 
@@ -201,7 +203,7 @@ const MobileNavPanel = ({
   const handleQuickFilter = (filterId) => {
     if (filterId === 'my-trees') {
       if (!user || !userFavorites || userFavorites.length === 0) {
-        alert('즐겨찾기한 나무가 없습니다.');
+        alert(t('favorites.noFavorites'));
         return;
       }
       
@@ -265,7 +267,7 @@ const MobileNavPanel = ({
       .filter(id => id);
 
     if (favoriteIds.length === 0) {
-      alert('표시할 수 있는 나무가 없습니다.');
+      alert(t('favorites.noFavorites'));
       setIsMyTreesActive(false);
       return;
     }
@@ -318,7 +320,7 @@ const MobileNavPanel = ({
   const handleRemoveFavorite = async (favorite) => {
     const result = await removeFromFavorites(favorite.id);
     if (!result.success) {
-      alert('즐겨찾기 제거에 실패했습니다: ' + result.error);
+      alert(t('favorites.removeFailed') + ': ' + result.error);
     }
   };
 
@@ -326,7 +328,7 @@ const MobileNavPanel = ({
     if (e) e.stopPropagation();
     const result = await removeFromFavorites(favoriteId);
     if (!result.success) {
-      alert('즐겨찾기 제거에 실패했습니다: ' + result.error);
+      alert(t('favorites.removeFailed') + ': ' + result.error);
     }
   };
 

@@ -1,7 +1,9 @@
 // MobileNavPanel/HomeView.jsx
+import { useTranslation } from 'react-i18next';
 import EmptyState from '../../UI/EmptyState';
 import IconButton from '../../UI/IconButton';
 import { getTreeColor } from '../../../constants/treeData';
+import { getTreeSpeciesName } from '../../../utils/treeSpeciesTranslation';
 
 const HomeView = ({
   query,
@@ -25,6 +27,8 @@ const HomeView = ({
   onFavoritesClick,
   setActiveView
 }) => {
+  const { t, i18n } = useTranslation();
+
   return (
     <>
       <div style={{
@@ -43,7 +47,7 @@ const HomeView = ({
               type="text"
               value={query}
               onChange={handleInputChange}
-              placeholder="검색"
+              placeholder={t('common.search')}
               style={{
                 width: '100%',
                 padding: '12px 16px',
@@ -137,7 +141,7 @@ const HomeView = ({
             fontWeight: '600',
             color: 'var(--text-primary)'
           }}>
-            나무 필터
+            {t('filter.treeFilter')}
           </h3>
 
           <div style={{
@@ -172,7 +176,7 @@ const HomeView = ({
                   }}
                 >
                   {filter.icon && <span>{filter.icon}</span>}
-                  {filter.name}
+                  {filter.name ? getTreeSpeciesName(filter.name, i18n.language) : ''}
                   {isActive && (
                     <span className="material-icons" style={{ fontSize: '12px' }}>check</span>
                   )}
@@ -196,7 +200,7 @@ const HomeView = ({
                 gap: '4px'
               }}
             >
-              더보기 <span style={{ fontSize: '12px' }}>▼</span>
+              {t('common.more')} <span style={{ fontSize: '12px' }}>▼</span>
             </button>
           </div>
 
@@ -207,7 +211,7 @@ const HomeView = ({
               color: 'var(--primary)',
               fontWeight: '600'
             }}>
-              {isMyTreesActive ? '나의 나무 표시 중' : `${activeFilterCount}개 필터 활성화됨`}
+              {isMyTreesActive ? t('filter.myTreesActive') : t('filter.filtersActive', { count: activeFilterCount })}
             </div>
           )}
         </div>
@@ -221,7 +225,7 @@ const HomeView = ({
                 fontWeight: '600',
                 color: 'var(--text-primary)'
               }}>
-                즐겨찾기
+                {t('favorites.title')}
               </h3>
 
               <div style={{
@@ -269,7 +273,7 @@ const HomeView = ({
                           fontSize: '15px',
                           marginBottom: '4px'
                         }}>
-                          {favorite.species_kr || '미상'}
+                          {favorite.species_kr || t('tree.unknownSpecies')}
                         </div>
                         <div style={{
                           fontSize: '13px',
@@ -286,7 +290,7 @@ const HomeView = ({
                       onClick={(e) => handleFavoriteDelete(favorite.id, e)}
                       variant="danger"
                       size="small"
-                      ariaLabel="삭제"
+                      ariaLabel={t('common.delete')}
                     />
                   </div>
                 ))}
@@ -303,7 +307,7 @@ const HomeView = ({
                       cursor: 'pointer'
                     }}
                   >
-                    더보기 ({userFavorites.length - 3}개 더)
+                    {t('favorites.viewMore', { count: userFavorites.length - 3 })}
                   </button>
                 )}
               </div>
@@ -311,15 +315,19 @@ const HomeView = ({
           ) : (
             <EmptyState
               icon="park"
-              description="아직 즐겨찾기한 나무가 없어요"
+              description={t('favorites.emptyState')}
               variant="dashed"
             />
           )
         ) : (
           <EmptyState
             icon="favorite"
-            title="즐겨찾기 기능"
-            description={<>마음에 드는 나무를 저장하고<br/>언제든 다시 찾아보세요</>}
+            title={t('favorites.featureTitle')}
+            description={
+              <div dangerouslySetInnerHTML={{
+                __html: t('favorites.featureDescription')
+              }} />
+            }
             variant="default"
             action={
               <button
@@ -335,7 +343,7 @@ const HomeView = ({
                   cursor: 'pointer'
                 }}
               >
-                로그인하기
+                {t('auth.login')}
               </button>
             }
           />

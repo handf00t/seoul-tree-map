@@ -1,11 +1,13 @@
 // components/Favorites/FavoritesModal.jsx
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import IconButton from '../UI/IconButton';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import EmptyState from '../UI/EmptyState';
 
 const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
+  const { t, i18n } = useTranslation();
   const { userFavorites, removeFromFavorites, loadUserFavorites, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all'); // all, protected, roadside, park
@@ -31,7 +33,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
   const handleRemoveFavorite = async (favorite) => {
     const result = await removeFromFavorites(favorite.id);
     if (!result.success) {
-      alert('즐겨찾기 제거에 실패했습니다: ' + result.error);
+      alert(t('favorites.removeFailed') + ': ' + result.error);
     }
   };
 
@@ -160,12 +162,12 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
     }
   };
 
-  // 나무 타입 한글 변환
+  // 나무 타입 변환
   const getTreeTypeName = (type) => {
     switch(type) {
-      case 'protected': return '보호수';
-      case 'roadside': return '가로수';
-      case 'park': return '공원수목';
+      case 'protected': return t('filter.protected');
+      case 'roadside': return t('filter.roadside');
+      case 'park': return t('filter.park');
       default: return type;
     }
   };
@@ -219,14 +221,14 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
               fontWeight: 'bold',
               color: 'var(--text-heading)'
             }}>
-              내 즐겨찾기
+              {t('favorites.myFavorites')}
             </h2>
             <p style={{
               margin: 0,
               fontSize: '14px',
               color: 'var(--text-secondary)'
             }}>
-              저장한 나무 {userFavorites.length}개
+              {t('favorites.savedCount', { count: userFavorites.length })}
             </p>
           </div>
           <IconButton
@@ -234,7 +236,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
             onClick={onClose}
             variant="close"
             size="large"
-            ariaLabel="닫기"
+            ariaLabel={t('common.close')}
           />
         </div>
 
@@ -252,7 +254,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="나무 이름이나 위치로 검색..."
+              placeholder={t('search.searchByName')}
               style={{
                 width: '100%',
                 padding: '8px 12px',
@@ -274,10 +276,10 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
             {/* 타입 필터 */}
             <div style={{ display: 'flex', gap: '6px' }}>
               {[
-                { id: 'all', name: '전체' },
-                { id: 'protected', name: '보호수' },
-                { id: 'roadside', name: '가로수' },
-                { id: 'park', name: '공원수목' }
+                { id: 'all', name: t('favorites.all') },
+                { id: 'protected', name: t('filter.protected') },
+                { id: 'roadside', name: t('filter.roadside') },
+                { id: 'park', name: t('filter.park') }
               ].map(filter => (
                 <button
                   key={filter.id}
@@ -310,9 +312,9 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                 color: 'var(--text-secondary)'
               }}
             >
-              <option value="recent">최근 저장순</option>
-              <option value="name">이름순</option>
-              <option value="location">위치순</option>
+              <option value="recent">{t('favorites.sortByRecent')}</option>
+              <option value="name">{t('favorites.sortByName')}</option>
+              <option value="location">{t('favorites.sortByLocation')}</option>
             </select>
           </div>
         </div>
@@ -324,19 +326,19 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
           maxHeight: 'calc(85vh - 200px)'
         }}>
           {isLoading ? (
-            <LoadingSpinner text="즐겨찾기를 불러오는 중..." />
+            <LoadingSpinner text={t('favorites.loading')} />
           ) : filteredFavorites.length === 0 ? (
             userFavorites.length === 0 ? (
               <EmptyState
                 icon="park"
-                title="아직 저장한 나무가 없어요"
-                description="마음에 드는 나무를 찾아서 하트 버튼을 눌러보세요!"
+                title={t('favorites.noFavorites')}
+                description={t('favorites.addFirst')}
                 variant="plain"
               />
             ) : (
               <EmptyState
                 icon="search"
-                description="검색 조건에 맞는 나무를 찾을 수 없습니다"
+                description={t('favorites.noResults')}
                 variant="plain"
               />
             )
@@ -378,7 +380,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                       fontSize: '15px',
                       marginBottom: '4px'
                     }}>
-                      {favorite.species_kr || '미상'}
+                      {favorite.species_kr || t('tree.unknownSpecies')}
                     </div>
                     <div style={{
                       fontSize: '12px',
@@ -392,7 +394,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                         fontSize: '11px',
                         color: 'var(--text-tertiary)'
                       }}>
-                        {new Date(favorite.addedAt.seconds * 1000).toLocaleDateString('ko-KR')} 저장
+                        {new Date(favorite.addedAt.seconds * 1000).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'ko-KR')} {t('favorites.saved')}
                       </div>
                     )}
                   </div>
@@ -406,7 +408,7 @@ const FavoritesModal = ({ isVisible, onClose, onTreeSelect, map }) => {
                     }}
                     variant="danger"
                     size="small"
-                    ariaLabel="삭제"
+                    ariaLabel={t('common.delete')}
                   />
                 </div>
               ))}

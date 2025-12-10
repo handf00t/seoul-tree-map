@@ -1,14 +1,16 @@
 // src/components/Map/CurrentLocationButton.jsx
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight, isHidden, isPanelCollapsed }) => {
+  const { t } = useTranslation();
   const [isLocating, setIsLocating] = useState(false);
 
   const handleCurrentLocation = () => {
     if (!map || isLocating) return;
 
     if (!navigator.geolocation) {
-      alert('위치 서비스를 사용할 수 없습니다.');
+      alert(t('errors.locationNotAvailable'));
       return;
     }
 
@@ -28,20 +30,20 @@ const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight, isHidden, 
       },
       (error) => {
         console.error('위치 조회 실패:', error);
-        let errorMessage = '현재 위치를 가져올 수 없습니다.';
-        
+        let errorMessage = t('errors.cannotGetLocation');
+
         switch(error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = '위치 권한이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요.';
+            errorMessage = t('errors.locationPermissionDenied');
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = '위치 정보를 사용할 수 없습니다.';
+            errorMessage = t('errors.locationUnavailable');
             break;
           case error.TIMEOUT:
-            errorMessage = '위치 조회 시간이 초과되었습니다.';
+            errorMessage = t('errors.locationTimeout');
             break;
         }
-        
+
         alert(errorMessage);
         setIsLocating(false);
       },
@@ -103,7 +105,7 @@ const CurrentLocationButton = ({ map, isMobile, minimizedPopupHeight, isHidden, 
           e.target.style.boxShadow = '0 2px 12px var(--shadow-color-lg)';
         }
       }}
-      title="현재 위치"
+      title={t('common.currentLocation')}
     >
       {isLocating ? (
         <div style={{

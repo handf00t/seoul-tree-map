@@ -1,8 +1,11 @@
 // components/Search/SearchFilterPanel.jsx - PC 전용 인라인 필터
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { availableSpecies, sizeCategories } from '../../constants/treeData';
+import { getTreeSpeciesName } from '../../utils/treeSpeciesTranslation';
 
 const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
+  const { t, i18n } = useTranslation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -12,6 +15,18 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
 
   const [selectedSpecies, setSelectedSpecies] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
+
+  // 크기 라벨 번역
+  const getSizeLabel = (sizeId) => {
+    const sizeKeys = {
+      'small': 'filter.sizeSmall',
+      'medium-small': 'filter.sizeMediumSmall',
+      'medium': 'filter.sizeMedium',
+      'medium-large': 'filter.sizeMediumLarge',
+      'large': 'filter.sizeLarge'
+    };
+    return t(sizeKeys[sizeId] || sizeId);
+  };
 
   // Mapbox Geocoding API로 위치 검색
   const searchLocation = async (searchQuery) => {
@@ -61,13 +76,13 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
   };
 
   const getPlaceType = (placeTypes) => {
-    if (placeTypes.includes('region')) return '지역';
-    if (placeTypes.includes('district')) return '구';
-    if (placeTypes.includes('locality')) return '동네';
-    if (placeTypes.includes('neighborhood')) return '동';
-    if (placeTypes.includes('address')) return '주소';
-    if (placeTypes.includes('poi')) return '관심장소';
-    return '위치';
+    if (placeTypes.includes('region')) return t('placeTypes.region');
+    if (placeTypes.includes('district')) return t('placeTypes.district');
+    if (placeTypes.includes('locality')) return t('placeTypes.locality');
+    if (placeTypes.includes('neighborhood')) return t('placeTypes.neighborhood');
+    if (placeTypes.includes('address')) return t('placeTypes.address');
+    if (placeTypes.includes('poi')) return t('placeTypes.poi');
+    return t('placeTypes.location');
   };
 
   const getPlaceIcon = (placeTypes) => {
@@ -262,7 +277,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
               type="text"
               value={query}
               onChange={handleInputChange}
-              placeholder="(예: 강남구, 테헤란로)"
+              placeholder={t('search.searchPlaceholder')}
               className="form-input"
               style={{
                 width: '100%',
@@ -348,7 +363,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                   height: '24px',
                   margin: '0 auto 8px'
                 }} />
-                탐험 지역을 찾는 중...
+                {t('search.searchingLocation')}
               </div>
             ) : suggestions.length > 0 ? (
               suggestions.map((suggestion, index) => (
@@ -430,7 +445,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                 fontSize: '14px'
               }}>
                 <span className="material-icons" style={{ fontSize: '32px', marginBottom: '8px', display: 'block' }}>search</span>
-                탐험할 수 있는 장소를 찾지 못했어요
+                {t('search.noLocationFound')}
               </div>
             ) : null}
           </div>
@@ -461,7 +476,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
               }}
             >
               <span className="material-icons" style={{ fontSize: '16px' }}>filter_alt</span>
-              나무 필터
+              {t('filter.treeFilter')}
               {activeFilterCount > 0 && (
                 <span className="badge" style={{
                   background: 'var(--overlay-light)',
@@ -502,7 +517,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                   fontWeight: '600',
                   color: 'var(--text-primary)'
                 }}>
-                  나무 필터 설정
+                  {t('filter.filterSettings')}
                 </h3>
                 <button
                   onClick={() => setShowFilterExpanded(false)}
@@ -535,7 +550,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     fontWeight: '600',
                     color: 'var(--text-primary)'
                   }}>
-                    수종별 필터
+                    {t('filter.speciesFilter')}
                   </h4>
                   <button
                     onClick={toggleAllSpecies}
@@ -549,7 +564,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                       cursor: 'pointer'
                     }}
                   >
-                    {selectedSpecies.length === availableSpecies.length ? '전체 해제' : '전체 선택'}
+                    {selectedSpecies.length === availableSpecies.length ? t('filter.deselectAll') : t('filter.selectAll')}
                   </button>
                 </div>
 
@@ -595,7 +610,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                         }}
                       />
                       <span style={{ fontSize: '12px', color: 'var(--text-primary)' }}>
-                        {species.name}
+                        {getTreeSpeciesName(species.name, i18n.language)}
                       </span>
                     </label>
                   ))}
@@ -616,7 +631,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                     fontWeight: '600',
                     color: 'var(--text-primary)'
                   }}>
-                    크기별 필터
+                    {t('filter.sizeFilter')}
                   </h4>
                   <button
                     onClick={toggleAllSizes}
@@ -630,7 +645,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                       cursor: 'pointer'
                     }}
                   >
-                    {selectedSizes.length === sizeCategories.length ? '전체 해제' : '전체 선택'}
+                    {selectedSizes.length === sizeCategories.length ? t('filter.deselectAll') : t('filter.selectAll')}
                   </button>
                 </div>
 
@@ -676,7 +691,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                         }}
                       />
                       <span style={{ fontSize: '12px', color: 'var(--text-primary)' }}>
-                        {size.label}
+                        {getSizeLabel(size.id)}
                       </span>
                     </label>
                   ))}
@@ -712,7 +727,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                   cursor: 'pointer'
                 }}
               >
-                초기화
+                {t('common.reset')}
               </button>
               <button
                 onClick={applyFilters}
@@ -728,7 +743,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
                   cursor: 'pointer'
                 }}
               >
-                적용
+                {t('common.apply')}
               </button>
             </div>
           </div>

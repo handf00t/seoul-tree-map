@@ -1,5 +1,6 @@
 // src/components/Popup/TreePopup/BenefitsSection.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import BenefitItem from './BenefitItem';
 import { formatNumber, formatKRW, hasValidData } from '../../../utils/treeDataUtils';
 import { TreeData } from '../../../types';
@@ -12,6 +13,8 @@ interface BenefitsSectionProps {
 }
 
 const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefits, onToggle, hasBenefitsData }) => {
+  const { t, i18n } = useTranslation();
+
   return (
     <>
       {hasBenefitsData && (
@@ -35,7 +38,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefit
             }}
           >
             <span>
-              연간 생태적 편익 {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw) : '정보 없음'}
+              {t('tree.annualBenefits')} {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw, i18n.language) : t('tree.unknownSpecies')}
             </span>
             <span className="material-icons" style={{
               transform: showBenefits ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -59,33 +62,37 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefit
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {hasValidData(treeData.benefits.stormwater_liters_year) && (
               <BenefitItem
-                label="빗물 흡수"
+                label={t('benefits.stormwater')}
                 valueLabel={`${formatNumber(treeData.benefits.stormwater_liters_year!)}L`}
                 krwValue={treeData.benefits.stormwater_value_krw_year}
+                language={i18n.language}
               />
             )}
 
             {hasValidData(treeData.benefits.energy_kwh_year) && (
               <BenefitItem
-                label="에너지 절약"
+                label={t('benefits.energy')}
                 valueLabel={`${formatNumber(treeData.benefits.energy_kwh_year!)}kWh`}
                 krwValue={treeData.benefits.energy_value_krw_year}
+                language={i18n.language}
               />
             )}
 
             {hasValidData(treeData.benefits.air_pollution_kg_year) && (
               <BenefitItem
-                label="대기 정화"
+                label={t('benefits.airPollution')}
                 valueLabel={`${formatNumber(treeData.benefits.air_pollution_kg_year! * 1000)}g`}
                 krwValue={treeData.benefits.air_pollution_value_krw_year}
+                language={i18n.language}
               />
             )}
 
             {hasValidData(treeData.benefits.carbon_storage_kg_year) && (
               <BenefitItem
-                label="탄소 흡수"
+                label={t('benefits.carbonStorage')}
                 valueLabel={`${formatNumber(treeData.benefits.carbon_storage_kg_year!)}kg`}
                 krwValue={treeData.benefits.carbon_value_krw_year}
+                language={i18n.language}
               />
             )}
           </div>
