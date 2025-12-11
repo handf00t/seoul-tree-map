@@ -290,12 +290,12 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
           if (process.env.NODE_ENV === 'development') {
             console.log('나무 데이터 로드 완료');
           }
-          
+
           setTimeout(() => {
             const features = map.queryRenderedFeatures({
               layers: ['protected-trees', 'roadside-trees', 'park-trees']
             });
-            
+
             if (process.env.NODE_ENV === 'development') {
               console.log('현재 화면의 나무 수:', features.length);
               if (features.length > 0) {

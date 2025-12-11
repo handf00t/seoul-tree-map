@@ -10,4 +10,7 @@ build/
 dist/
 *.log
 
+# Backup images (original PNG files)
+public/images/trees/backup/
+
 

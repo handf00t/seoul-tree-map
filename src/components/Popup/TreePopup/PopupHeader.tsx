@@ -92,6 +92,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
                 <img
                   src={leafImagePath}
                   alt={`${getTreeSpeciesName(treeData.species_kr, i18n.language)} ${t('common.close').toLowerCase()}`}
+                  loading="lazy"
                   style={{
                     width: '100px',
                     height: '100px',
@@ -192,6 +193,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = ({ treeData, isMobile, isMinimiz
             <img
               src={leafImagePath}
               alt={`${getTreeSpeciesName(treeData.species_kr, i18n.language)} ${t('common.close').toLowerCase()}`}
+              loading="lazy"
               style={{
                 width: '160px',
                 height: '160px',
