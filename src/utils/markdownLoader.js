@@ -53,11 +53,12 @@ function parseFrontMatter(markdown) {
 /**
  * 마크다운 파일을 로드하고 파싱합니다
  * @param {string} filename - posts 디렉토리 내의 파일명
+ * @param {string} language - 언어 코드 (ko, en, ja)
  * @returns {Promise<{metadata: Object, content: string}>}
  */
-export async function loadMarkdownPost(filename) {
+export async function loadMarkdownPost(filename, language = 'ko') {
   try {
-    const response = await fetch(`${process.env.PUBLIC_URL}/posts/${filename}`);
+    const response = await fetch(`${process.env.PUBLIC_URL}/posts/${language}/${filename}`);
     if (!response.ok) {
       throw new Error(`Failed to load ${filename}`);
     }
@@ -73,20 +74,40 @@ export async function loadMarkdownPost(filename) {
 }
 
 /**
+ * public/posts 디렉토리의 모든 마크다운 파일 목록을 가져옵니다
+ * @param {string} language - 언어 코드 (ko, en, ja)
+ * @returns {Promise<Array>} 파일명 배열
+ */
+async function getAllPostFiles(language = 'ko') {
+  try {
+    // public/posts/manifest.json에서 파일 목록을 읽습니다
+    const response = await fetch(`${process.env.PUBLIC_URL}/posts/manifest.json`);
+    if (response.ok) {
+      const manifest = await response.json();
+      return manifest.posts?.[language] || [];
+    }
+  } catch (error) {
+    console.warn('manifest.json not found, using default list');
+  }
+
+  // manifest.json이 없으면 기본 목록 사용
+  return [
+    '2025-11-11-street-trees-hero.md',
+  ];
+}
+
+/**
  * 모든 포스트 목록을 로드합니다
+ * @param {string} language - 언어 코드 (ko, en, ja)
  * @returns {Promise<Array>} 포스트 메타데이터 배열
  */
-export async function loadAllPosts() {
-  // posts 디렉토리의 모든 마크다운 파일 목록
-  const postFiles = [
-    '2025-01-10-seoul-tree-map-intro.md',
-  ];
-
+export async function loadAllPosts(language = 'ko') {
+  const postFiles = await getAllPostFiles(language);
   const posts = [];
 
   for (const filename of postFiles) {
     try {
-      const { metadata } = await loadMarkdownPost(filename);
+      const { metadata } = await loadMarkdownPost(filename, language);
       posts.push({
         ...metadata,
         contentFile: filename,

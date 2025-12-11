@@ -2,6 +2,8 @@
 // Vercel 블로그 스타일의 메인 뷰
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import BlogCard from './BlogCard';
 import BlogDetail from './BlogDetail';
 import IconButton from '../UI/IconButton';
@@ -9,35 +11,65 @@ import { BLOG_CATEGORIES } from '../../data/blogPosts';
 import { loadAllPosts } from '../../utils/markdownLoader';
 
 const BlogView = ({ onClose }) => {
+  const navigate = useNavigate();
+  const { postId } = useParams();
+  const { t, i18n } = useTranslation();
   const [selectedPost, setSelectedPost] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 현재 언어 가져오기 (ko, en 중 하나)
+  const currentLanguage = i18n.language.split('-')[0]; // 'ko-KR' -> 'ko'
+
   useEffect(() => {
     async function fetchPosts() {
       setIsLoading(true);
-      const loadedPosts = await loadAllPosts();
+      const loadedPosts = await loadAllPosts(currentLanguage);
       setPosts(loadedPosts);
       setIsLoading(false);
     }
     fetchPosts();
-  }, []);
+  }, [currentLanguage]);
 
-  const featuredPosts = posts.filter(post => post.featured);
-  const regularPosts = posts.filter(post => !post.featured);
+  // URL 파라미터로 포스트 선택 (slug 기반)
+  useEffect(() => {
+    if (postId && posts.length > 0) {
+      // slug로 포스트 찾기
+      const post = posts.find(p => p.slug === postId);
+      setSelectedPost(post || null);
+    } else {
+      setSelectedPost(null);
+    }
+  }, [postId, posts]);
 
-  // 필터된 포스트
-  const filteredPosts = selectedCategory
-    ? regularPosts.filter(post => post.category === selectedCategory)
-    : regularPosts;
+  const featuredPosts = selectedCategory
+    ? posts.filter(post => post.featured && post.category === selectedCategory)
+    : posts.filter(post => post.featured);
+
+  const regularPosts = selectedCategory
+    ? posts.filter(post => !post.featured && post.category === selectedCategory)
+    : posts.filter(post => !post.featured);
+
+  // 필터된 포스트 (카테고리 선택 시에는 이미 regularPosts가 필터링되어 있음)
+  const filteredPosts = regularPosts;
+
+  // 포스트 클릭 핸들러 (slug 사용)
+  const handlePostClick = (post) => {
+    navigate(`/blog/${post.slug}`);
+  };
+
+  // 포스트 상세에서 뒤로가기
+  const handleClosePost = () => {
+    navigate('/blog');
+  };
 
   // 상세 보기가 열려있으면 상세 화면만 표시
   if (selectedPost) {
     return (
       <BlogDetail
         post={selectedPost}
-        onClose={() => setSelectedPost(null)}
+        onClose={handleClosePost}
       />
     );
   }
@@ -75,7 +107,7 @@ const BlogView = ({ onClose }) => {
             onClick={onClose}
             variant="ghost"
             size="medium"
-            ariaLabel="뒤로 가기"
+            ariaLabel={t('common.back')}
           />
           <h1 style={{
             margin: 0,
@@ -83,7 +115,7 @@ const BlogView = ({ onClose }) => {
             fontWeight: '700',
             color: 'var(--text-primary)'
           }}>
-            블로그
+            {t('blog.title')}
           </h1>
         </div>
       </div>
@@ -108,170 +140,218 @@ const BlogView = ({ onClose }) => {
               article
             </span>
             <p style={{ margin: 0, fontSize: '16px' }}>
-              포스트를 불러오는 중...
+              {t('blog.loading')}
             </p>
           </div>
         ) : (
-          <>
-        {/* 카테고리 필터 */}
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          marginBottom: '32px',
-          overflowX: 'auto',
-          paddingBottom: '8px'
-        }}>
-          <button
-            onClick={() => setSelectedCategory(null)}
-            style={{
-              padding: '10px 20px',
-              borderRadius: '24px',
-              border: selectedCategory === null ? 'none' : '1px solid var(--outline)',
-              background: selectedCategory === null ? 'var(--primary)' : 'var(--surface)',
-              color: selectedCategory === null ? 'white' : 'var(--text-primary)',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              whiteSpace: 'nowrap'
-            }}
-            onMouseEnter={(e) => {
-              if (selectedCategory !== null) {
-                e.target.style.background = 'var(--surface-variant)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (selectedCategory !== null) {
-                e.target.style.background = 'var(--surface)';
-              }
-            }}
-          >
-            전체
-          </button>
-
-          {BLOG_CATEGORIES.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              style={{
-                padding: '10px 20px',
-                borderRadius: '24px',
-                border: selectedCategory === category.id ? 'none' : '1px solid var(--outline)',
-                background: selectedCategory === category.id ? category.color : 'var(--surface)',
-                color: selectedCategory === category.id ? 'white' : 'var(--text-primary)',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => {
-                if (selectedCategory !== category.id) {
-                  e.target.style.background = 'var(--surface-variant)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedCategory !== category.id) {
-                  e.target.style.background = 'var(--surface)';
-                }
-              }}
-            >
-              <span className="material-icons" style={{ fontSize: '18px' }}>
-                {category.icon}
-              </span>
-              {category.name}
-            </button>
-          ))}
-        </div>
-
-        {/* 추천 포스트 (카테고리 필터 없을 때만) */}
-        {!selectedCategory && featuredPosts.length > 0 && (
-          <section style={{ marginBottom: '48px' }}>
-            <h2 style={{
-              fontSize: '20px',
-              fontWeight: '700',
-              marginBottom: '20px',
-              color: 'var(--text-primary)',
+          <div>
+            <div style={{
               display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
+              gap: '12px',
+              marginBottom: '32px',
+              overflowX: 'auto',
+              paddingBottom: '8px'
             }}>
-              <span className="material-icons" style={{ fontSize: '24px', color: 'var(--primary)' }}>
-                star
-              </span>
-              추천 글
-            </h2>
+              <button
+                onClick={() => setSelectedCategory(null)}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '24px',
+                  border: selectedCategory === null ? 'none' : '1px solid var(--outline)',
+                  background: selectedCategory === null ? 'var(--primary)' : 'var(--surface)',
+                  color: selectedCategory === null ? 'white' : 'var(--text-primary)',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  whiteSpace: 'nowrap'
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedCategory !== null) {
+                    e.target.style.background = 'var(--surface-variant)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedCategory !== null) {
+                    e.target.style.background = 'var(--surface)';
+                  }
+                }}
+              >
+                {t('blog.all')}
+              </button>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: '24px'
-            }}>
-              {featuredPosts.map((post) => (
-                <BlogCard
-                  key={post.id}
-                  post={post}
-                  onClick={setSelectedPost}
-                  featured={true}
-                />
+              {BLOG_CATEGORIES.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: '24px',
+                    border: selectedCategory === category.id ? 'none' : '1px solid var(--outline)',
+                    background: selectedCategory === category.id ? category.color : 'var(--surface)',
+                    color: selectedCategory === category.id ? 'white' : 'var(--text-primary)',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    whiteSpace: 'nowrap'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedCategory !== category.id) {
+                      e.target.style.background = 'var(--surface-variant)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedCategory !== category.id) {
+                      e.target.style.background = 'var(--surface)';
+                    }
+                  }}
+                >
+                  <span className="material-icons" style={{ fontSize: '18px' }}>
+                    {category.icon}
+                  </span>
+                  {t(`blog.${category.id}`)}
+                </button>
               ))}
             </div>
-          </section>
-        )}
 
-        {/* 일반 포스트 */}
-        <section>
-          {!selectedCategory && (
-            <h2 style={{
-              fontSize: '20px',
-              fontWeight: '700',
-              marginBottom: '20px',
-              color: 'var(--text-primary)'
-            }}>
-              최근 글
-            </h2>
-          )}
+            {selectedCategory ? (
+              <section>
+                {featuredPosts.length === 0 && regularPosts.length === 0 ? (
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '60px 20px',
+                    color: 'var(--text-secondary)'
+                  }}>
+                    <span className="material-icons" style={{
+                      fontSize: '48px',
+                      marginBottom: '16px',
+                      opacity: 0.5
+                    }}>
+                      article
+                    </span>
+                    <p style={{
+                      margin: 0,
+                      fontSize: '16px'
+                    }}>
+                      {t('blog.noCategoryPosts')}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 380px))',
+                    gap: '24px',
+                    justifyContent: 'start'
+                  }}>
+                    {featuredPosts.map((post) => (
+                      <BlogCard
+                        key={post.id}
+                        post={post}
+                        onClick={handlePostClick}
+                        featured={true}
+                      />
+                    ))}
+                    {regularPosts.map((post) => (
+                      <BlogCard
+                        key={post.id}
+                        post={post}
+                        onClick={handlePostClick}
+                      />
+                    ))}
+                  </div>
+                )}
+              </section>
+            ) : (
+              <div>
+                {featuredPosts.length > 0 && (
+                  <section style={{ marginBottom: '48px' }}>
+                    <h2 style={{
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      marginBottom: '20px',
+                      color: 'var(--text-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <span className="material-icons" style={{ fontSize: '24px', color: 'var(--primary)' }}>
+                        star
+                      </span>
+                      {t('blog.featuredPosts')}
+                    </h2>
 
-          {filteredPosts.length === 0 ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '60px 20px',
-              color: 'var(--text-secondary)'
-            }}>
-              <span className="material-icons" style={{
-                fontSize: '48px',
-                marginBottom: '16px',
-                opacity: 0.5
-              }}>
-                article
-              </span>
-              <p style={{
-                margin: 0,
-                fontSize: '16px'
-              }}>
-                해당 카테고리의 글이 없습니다
-              </p>
-            </div>
-          ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '24px'
-            }}>
-              {filteredPosts.map((post) => (
-                <BlogCard
-                  key={post.id}
-                  post={post}
-                  onClick={setSelectedPost}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-        </>
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 380px))',
+                      gap: '24px',
+                      justifyContent: 'start'
+                    }}>
+                      {featuredPosts.map((post) => (
+                        <BlogCard
+                          key={post.id}
+                          post={post}
+                          onClick={handlePostClick}
+                          featured={true}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                <section>
+                  <h2 style={{
+                    fontSize: '20px',
+                    fontWeight: '700',
+                    marginBottom: '20px',
+                    color: 'var(--text-primary)'
+                  }}>
+                    {t('blog.recentPosts')}
+                  </h2>
+
+                  {filteredPosts.length === 0 ? (
+                    <div style={{
+                      textAlign: 'center',
+                      padding: '60px 20px',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      <span className="material-icons" style={{
+                        fontSize: '48px',
+                        marginBottom: '16px',
+                        opacity: 0.5
+                      }}>
+                        article
+                      </span>
+                      <p style={{
+                        margin: 0,
+                        fontSize: '16px'
+                      }}>
+                        {t('blog.noPosts')}
+                      </p>
+                    </div>
+                  ) : (
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 380px))',
+                      gap: '24px',
+                      justifyContent: 'start'
+                    }}>
+                      {filteredPosts.map((post) => (
+                        <BlogCard
+                          key={post.id}
+                          post={post}
+                          onClick={handlePostClick}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </section>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

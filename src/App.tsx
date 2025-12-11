@@ -1,5 +1,6 @@
 // src/App.tsx
 import React, { useState, useCallback, useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { clearMapFilters } from './utils/mapFilters';
@@ -33,6 +34,8 @@ type AboutSection = 'overview' | 'features' | 'data' | 'tech' | null;
 function AppContent() {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
   const [mapInstance, setMapInstance] = useState<MapboxMap | null>(null);
   const [selectedTree, setSelectedTree] = useState<TreeData | null>(null);
@@ -280,7 +283,7 @@ function AppContent() {
 
             {/* 블로그 버튼 (PC만) */}
             <button
-              onClick={() => setShowBlog(true)}
+              onClick={() => navigate('/blog')}
               style={{
                 background: 'var(--surface-variant)',
                 color: 'var(--on-surface-variant)',
@@ -540,8 +543,14 @@ function AppContent() {
           map={mapInstance}
         />
 
-        {/* 블로그 모달 (PC & Mobile) */}
-        {showBlog && <BlogView onClose={() => setShowBlog(false)} />}
+        {/* 블로그 라우팅 */}
+        <Routes>
+          <Route path="/blog" element={<BlogView onClose={() => navigate('/')} />} />
+          <Route path="/blog/:postId" element={<BlogView onClose={() => navigate('/')} />} />
+        </Routes>
+
+        {/* 블로그 모달 (PC & Mobile) - 구식 방식 지원 */}
+        {showBlog && !location.pathname.startsWith('/blog') && <BlogView onClose={() => setShowBlog(false)} />}
 
         {/* 소개 모달 (PC) */}
         {showAbout && (

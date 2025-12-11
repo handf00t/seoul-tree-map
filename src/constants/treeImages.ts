@@ -30,7 +30,7 @@ export const TREE_LEAF_IMAGES: { [key: string]: string } = {
   '백합나무': 'leaf_image_tuliptree.webp', // 튤립나무와 동일
   '잣나무': 'leaf_image_koreanpine.webp',
   '사시나무': 'leaf_image_aspen.webp',
-  '중국단풍': 'leaf_image_chinese_maple.webp',
+  '중국단풍나무': 'leaf_image_chinese_maple.webp',
   '양버즘': 'leaf_image_london_plane.webp', // 양버즘나무와 동일
   '가래나무': 'leaf_image_manchurianwalnut.webp',
   '히말라야시다': 'leaf_image_himalayancedar.webp',

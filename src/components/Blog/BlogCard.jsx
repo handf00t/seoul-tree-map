@@ -50,7 +50,8 @@ const BlogCard = ({ post, onClick, featured = false }) => {
       {post.coverImage && (
         <div style={{
           width: '100%',
-          height: featured ? '200px' : '160px',
+          paddingBottom: '100%',
+          position: 'relative',
           borderRadius: '12px',
           background: 'var(--surface-variant)',
           overflow: 'hidden'
@@ -59,6 +60,9 @@ const BlogCard = ({ post, onClick, featured = false }) => {
             src={post.coverImage}
             alt={post.title}
             style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
               width: '100%',
               height: '100%',
               objectFit: 'cover'

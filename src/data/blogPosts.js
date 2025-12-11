@@ -12,20 +12,21 @@ export const BLOG_CATEGORIES = [
 // 포스트 메타데이터
 // contentFile: src/data/posts/ 내의 마크다운 파일 이름
 export const BLOG_POSTS = [
+
   {
     id: '1',
-    title: '서울 나무 지도를 소개합니다',
-    excerpt: '서울시 전체 나무를 한눈에 볼 수 있는 인터랙티브 지도 서비스가 출시되었습니다. 25개 자치구의 나무 데이터를 실시간으로 탐색하고, 각 나무가 제공하는 생태적 편익을 확인해보세요.',
-    contentFile: '2025-01-10-seoul-tree-map-intro.md',
-    category: 'update',
-    tags: ['출시', '소개'],
+    title: '출근길 매일 보는 나무, 알고 보니 도시의 히어로였다',
+    excerpt: '매일 지나치는 가로수, 그냥 나무가 아닙니다. 운전자 안전부터 공기 정화까지, 가로수가 하는 놀라운 일들을 알아봅니다.',
+    contentFile: '2025-11-11-street-trees-hero.md',
+    category: 'story',
+    tags: ['가로수', '도시숲', '환경', '도시'],
     author: {
-      name: '서울 나무 지도 팀',
+      name: '서울트리맵',
       avatar: '/logo.svg'
     },
-    publishedAt: new Date('2025-01-10'),
-    coverImage: '/blog/launch.jpg',
-    readTime: 3,
+    publishedAt: new Date('2025-11-11'),
+    coverImage: '/blog/street-trees-hero.jpg',
+    readTime: 5,
     featured: true
   },
 

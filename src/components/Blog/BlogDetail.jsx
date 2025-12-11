@@ -2,22 +2,28 @@
 // 블로그 포스트 상세 보기 컴포넌트
 
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import IconButton from '../UI/IconButton';
 import { loadMarkdownPost } from '../../utils/markdownLoader';
 
 const BlogDetail = ({ post, onClose }) => {
+  const { i18n } = useTranslation();
   const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  // 현재 언어 가져오기 (ko, en, ja 중 하나)
+  const currentLanguage = i18n.language.split('-')[0]; // 'ko-KR' -> 'ko'
 
   useEffect(() => {
     async function loadContent() {
       setIsLoading(true);
-      const { content: markdownContent } = await loadMarkdownPost(post.contentFile);
+      const { content: markdownContent } = await loadMarkdownPost(post.contentFile, currentLanguage);
       setContent(markdownContent);
       setIsLoading(false);
     }
     loadContent();
-  }, [post.contentFile]);
+  }, [post.contentFile, currentLanguage]);
   const categoryInfo = {
     guide: { name: '가이드', color: '#22C55E' },
     story: { name: '이야기', color: '#F59E0B' },
@@ -156,6 +162,34 @@ const BlogDetail = ({ post, onClose }) => {
     return elements;
   };
 
+  // SEO를 위한 URL 및 이미지 경로
+  const siteUrl = window.location.origin;
+  const postUrl = `${siteUrl}/blog/${post.slug}`;
+  const imageUrl = post.coverImage ? `${siteUrl}${post.coverImage}` : `${siteUrl}/logo.svg`;
+
+  // Structured Data (JSON-LD)
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": imageUrl,
+    "datePublished": new Date(post.publishedAt).toISOString(),
+    "dateModified": new Date(post.publishedAt).toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": post.author.name
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "서울트리맵",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/logo.svg`
+      }
+    }
+  };
+
   return (
     <div style={{
       position: 'fixed',
@@ -167,6 +201,40 @@ const BlogDetail = ({ post, onClose }) => {
       zIndex: 10000,
       overflowY: 'auto'
     }}>
+      {/* SEO Meta Tags */}
+      <Helmet>
+        <title>{post.title} | 서울트리맵</title>
+        <meta name="description" content={post.excerpt} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={postUrl} />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:site_name" content="서울트리맵" />
+        <meta property="article:published_time" content={new Date(post.publishedAt).toISOString()} />
+        <meta property="article:author" content={post.author.name} />
+        {post.tags && post.tags.map((tag, index) => (
+          <meta key={index} property="article:tag" content={tag} />
+        ))}
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={postUrl} />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt} />
+        <meta name="twitter:image" content={imageUrl} />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href={postUrl} />
+
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+
       {/* 헤더 */}
       <div style={{
         position: 'sticky',
@@ -212,7 +280,10 @@ const BlogDetail = ({ post, onClose }) => {
         {post.coverImage && (
           <div style={{
             width: '100%',
-            height: '400px',
+            maxWidth: '800px',
+            margin: '0 auto',
+            paddingBottom: '100%',
+            position: 'relative',
             borderRadius: '16px',
             marginBottom: '32px',
             overflow: 'hidden',
@@ -222,6 +293,9 @@ const BlogDetail = ({ post, onClose }) => {
               src={post.coverImage}
               alt={post.title}
               style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover'
@@ -282,12 +356,15 @@ const BlogDetail = ({ post, onClose }) => {
             </span>
           </div>
 
-          <span style={{
-            fontSize: '14px',
-            color: 'var(--text-secondary)'
-          }}>
+          <time
+            dateTime={new Date(post.publishedAt).toISOString()}
+            style={{
+              fontSize: '14px',
+              color: 'var(--text-secondary)'
+            }}
+          >
             {formatDate(post.publishedAt)}
-          </span>
+          </time>
 
           <span style={{
             fontSize: '14px',
