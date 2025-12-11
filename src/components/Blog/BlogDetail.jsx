@@ -41,6 +41,76 @@ const BlogDetail = ({ post, onClose }) => {
     });
   };
 
+  // 인라인 마크다운 파싱 (bold, italic, code, links)
+  const parseInlineMarkdown = (text) => {
+    const parts = [];
+    let remaining = text;
+    let key = 0;
+
+    while (remaining.length > 0) {
+      // **bold**
+      const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+      if (boldMatch && boldMatch.index === 0) {
+        parts.push(<strong key={key++}>{boldMatch[1]}</strong>);
+        remaining = remaining.slice(boldMatch[0].length);
+        continue;
+      }
+
+      // *italic*
+      const italicMatch = remaining.match(/\*(.+?)\*/);
+      if (italicMatch && italicMatch.index === 0) {
+        parts.push(<em key={key++}>{italicMatch[1]}</em>);
+        remaining = remaining.slice(italicMatch[0].length);
+        continue;
+      }
+
+      // `code`
+      const codeMatch = remaining.match(/`(.+?)`/);
+      if (codeMatch && codeMatch.index === 0) {
+        parts.push(
+          <code key={key++} style={{
+            background: 'var(--surface-variant)',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            fontSize: '0.9em',
+            fontFamily: 'monospace'
+          }}>
+            {codeMatch[1]}
+          </code>
+        );
+        remaining = remaining.slice(codeMatch[0].length);
+        continue;
+      }
+
+      // [link text](url)
+      const linkMatch = remaining.match(/\[(.+?)\]\((.+?)\)/);
+      if (linkMatch && linkMatch.index === 0) {
+        parts.push(
+          <a key={key++} href={linkMatch[2]} target="_blank" rel="noopener noreferrer" style={{
+            color: 'var(--primary)',
+            textDecoration: 'underline'
+          }}>
+            {linkMatch[1]}
+          </a>
+        );
+        remaining = remaining.slice(linkMatch[0].length);
+        continue;
+      }
+
+      // 일반 텍스트
+      const nextSpecial = remaining.search(/\*\*|\*|`|\[/);
+      if (nextSpecial === -1) {
+        parts.push(remaining);
+        break;
+      } else {
+        parts.push(remaining.slice(0, nextSpecial));
+        remaining = remaining.slice(nextSpecial);
+      }
+    }
+
+    return parts.length > 0 ? parts : text;
+  };
+
   // 간단한 Markdown 파싱 (제목, 단락, 리스트만 지원)
   const renderContent = (content) => {
     const lines = content.split('\n');
@@ -80,7 +150,7 @@ const BlogDetail = ({ post, onClose }) => {
             color: 'var(--text-primary)',
             lineHeight: '1.3'
           }}>
-            {line.replace('# ', '')}
+            {parseInlineMarkdown(line.replace('# ', ''))}
           </h1>
         );
       }
@@ -95,7 +165,7 @@ const BlogDetail = ({ post, onClose }) => {
             color: 'var(--text-primary)',
             lineHeight: '1.4'
           }}>
-            {line.replace('## ', '')}
+            {parseInlineMarkdown(line.replace('## ', ''))}
           </h2>
         );
       }
@@ -110,7 +180,7 @@ const BlogDetail = ({ post, onClose }) => {
             color: 'var(--text-primary)',
             lineHeight: '1.4'
           }}>
-            {line.replace('### ', '')}
+            {parseInlineMarkdown(line.replace('### ', ''))}
           </h3>
         );
       }
@@ -127,7 +197,7 @@ const BlogDetail = ({ post, onClose }) => {
       // 리스트
       else if (line.startsWith('- ')) {
         inList = true;
-        currentList.push(line.replace('- ', ''));
+        currentList.push(parseInlineMarkdown(line.replace('- ', '')));
       }
       // 일반 단락
       else {
@@ -138,7 +208,7 @@ const BlogDetail = ({ post, onClose }) => {
             marginBottom: '16px',
             color: 'var(--text-primary)'
           }}>
-            {line}
+            {parseInlineMarkdown(line)}
           </p>
         );
       }

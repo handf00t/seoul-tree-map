@@ -1,96 +1,96 @@
 ---
 id: "1"
 slug: "street-trees-hero"
-title: "The tree I see every day on my way to work turns out to be the hero of the city."
-excerpt: "The street trees you pass by every day are not just trees. From driver safety to air purification, learn about the amazing things street trees do."
+title: "출근길 매일 보는 나무, 알고 보니 도시의 히어로였다"
+excerpt: "매일 지나치는 가로수, 그냥 나무가 아닙니다. 운전자 안전부터 공기 정화까지, 가로수가 하는 놀라운 일들을 알아봅니다."
 category: "story"
 tags: ["가로수", "도시숲", "환경", "도시"]
 author: "서울트리맵"
 avatar: "/logo.svg"
 publishedAt: "2025-11-11"
-coverImage: "/blog/street-trees-hero.jpg"
+coverImage: "/blog/street-trees-hero.png"
 readTime: 5
 featured: true
 ---
 
-# The tree I see every day on my way to work turns out to be the hero of the city.
+# 출근길 매일 보는 나무, 알고 보니 도시의 히어로였다
 
 **가로수 완전 정복 시리즈 #1**
 
 ---
 
-## Isn't it just a tree?
+## 그냥 나무 아니야?
 
-The trees you always see on the way to school or on the way to catch the bus. What do we call these trees that provide cool shade in the summer and show pretty fall foliage in the fall?
+학교 가는 길, 버스 타러 가는 길에 늘 보이는 나무들. 여름엔 시원한 그늘을 만들어주고, 가을엔 예쁜 단풍을 보여주는 이 나무들을 뭐라고 부를까요?
 
-It is a ‘street tree’. Street trees are the green space that we can most easily see around us. These are trees that were not just planted, but intentionally planted to make the city more livable.
-
----
-
-## What are street trees?
-
-There is a definition established by law. Trees planted next to roads or sidewalks are called street trees. We plant them to create a pretty landscape, clean the air, and provide cool shade.
-
-But the trees on the highway are not street trees! The law says that highways are excluded.
+바로 '가로수'입니다. 가로수는 우리 주변에서 가장 쉽게 볼 수 있는 녹지예요. 그냥 심어놓은 게 아니라, 도시를 더 살기 좋게 만들기 위해 일부러 심은 나무들이죠.
 
 ---
 
-## What street trees do
+## 가로수가 뭔데?
 
-Street trees do a lot more than you might think. Let’s take a look at them one by one.
+법으로 정해진 정의가 있어요. 도로 옆이나 인도에 심어진 나무를 가로수라고 해요. 예쁜 경관도 만들고, 공기도 깨끗하게 하고, 시원한 그늘도 주려고 심는 거예요.
 
-### 1. Keep drivers safe
-
-When the road curves or has ups and downs, if the trees stand regularly, the driver can know in advance, “Oh, the road turns there.” Even when the fog is thick or there is a lot of snow, trees play a role in showing the way.
-
-If it suddenly gets dark when you enter a tunnel, it takes time for your eyes to adjust, right? The street trees near the tunnel gradually create shade, helping your eyes adjust slowly.
-
-Even when the lights of cars coming from the opposite direction are dazzling at night, the trees block the street. And if the car goes off the road, the tree absorbs the impact more gently than the guardrail.
-
-### 2. Cool down the city
-
-Do you know why the city is so hot in the summer? Concrete buildings and asphalt roads hold a lot of heat. This is called the ‘heat island effect’. This means that the city becomes like a hot island.
-
-Street trees prevent this heat island effect. In the summer, it blocks direct sunlight to keep you cool, and in the winter, it prevents you from getting too cold.
-
-### 3. Catch fine dust
-
-Street trees remove fine dust in three ways.
-
-First, as we breathe in air through very small holes (stomata) in leaves, we also suck in fine dust. Second, fine dust sticks to small hairs or sticky parts on the surface of leaves. Third, the dust accumulated on the leaves is washed away when it rains.
-
-### 4. Clean the air
-
-Trees take in carbon dioxide and give out oxygen. The same goes for street trees. It absorbs bad substances contained in car exhaust and makes the air clean.
-
-### 5. Reduce the noise
-
-Trees block loud noises from the road. Leaves and branches absorb sound. So even if you live next to the road, it will be a little less noisy.
-
-### 6. Make the city pretty
-
-Street trees make the city pretty. There are also famous tree-lined streets like Yeouido Cherry Blossom Road and Deoksugung Stone Wall Road with ginkgo trees. It also becomes a symbol representing the neighborhood.
-
-### 7. It becomes a home for animals
-
-There aren't many forests in the city. So, street trees become homes for animals such as birds and squirrels. It also serves as a bridge connecting parks between parks. Animals can move along the street trees.
+그런데 고속도로에 있는 나무는 가로수가 아니에요! 고속도로는 제외된다고 법에 써있거든요.
 
 ---
 
-## fun facts
+## 가로수가 하는 일
 
-When building a new road, street trees must also be planted. It’s stipulated by law! When designing roads, space for planting trees must be created in advance.
+가로수는 생각보다 엄청 많은 일을 해요. 하나씩 살펴볼까요?
 
-And the street trees are managed by the district mayor. Since 2006, each local district office has been responsible for managing it.
+### 1. 운전자를 안전하게 지켜줘요
+
+도로가 휘어지거나 오르막내리막이 있을 때, 나무들이 규칙적으로 서 있으면 운전자가 "아, 저기서 길이 꺾이는구나" 하고 미리 알 수 있어요. 안개가 짙거나 눈이 많이 올 때도 나무가 길을 알려주는 역할을 해요.
+
+터널에 들어갈 때 갑자기 어두워지면 눈이 적응하는 데 시간이 걸리잖아요? 터널 근처에 있는 가로수가 서서히 그늘을 만들어서 눈이 천천히 적응할 수 있게 도와줘요.
+
+밤에 반대편에서 오는 차 불빛이 눈부실 때도 가로수가 막아줘요. 그리고 만약 차가 도로를 벗어나면 가드레일보다 나무가 충격을 더 부드럽게 흡수해준대요.
+
+### 2. 도시를 시원하게 해줘요
+
+여름에 도시가 왜 이렇게 더운지 알아요? 콘크리트 건물이랑 아스팔트 도로가 열을 엄청 품고 있거든요. 이걸 '열섬현상'이라고 해요. 도시가 마치 뜨거운 섬처럼 된다는 뜻이에요.
+
+가로수는 이 열섬현상을 막아줘요. 여름엔 직사광선을 막아서 시원하게 해주고, 겨울엔 너무 추워지는 걸 막아줘요.
+
+### 3. 미세먼지를 잡아줘요
+
+가로수는 세 가지 방법으로 미세먼지를 없애요.
+
+첫째, 나뭇잎에 있는 아주 작은 구멍(기공)으로 공기를 들이마시면서 미세먼지도 같이 빨아들여요. 둘째, 나뭇잎 표면에 있는 작은 털이나 끈적끈적한 부분에 미세먼지가 달라붙어요. 셋째, 잎 위에 쌓인 먼지가 비가 오면 같이 씻겨 내려가요.
+
+### 4. 공기를 깨끗하게 해줘요
+
+나무는 이산화탄소를 마시고 산소를 내뱉잖아요. 가로수도 마찬가지예요. 자동차 매연에 들어있는 나쁜 물질들도 흡수해서 공기를 깨끗하게 만들어줘요.
+
+### 5. 소음을 줄여줘요
+
+도로에서 나는 시끄러운 소리를 나무가 막아줘요. 나뭇잎이랑 가지가 소리를 흡수하거든요. 그래서 도로 옆에 살아도 조금 덜 시끄러운 거예요.
+
+### 6. 도시를 예쁘게 해줘요
+
+가로수는 도시를 예쁘게 만들어요. 여의도 벚꽃길, 덕수궁 돌담길 은행나무처럼 유명한 가로수길도 있잖아요. 그 동네를 대표하는 상징이 되기도 해요.
+
+### 7. 동물들의 집이 돼요
+
+도시에는 숲이 별로 없잖아요. 그래서 가로수가 새나 다람쥐 같은 동물들의 집이 되어줘요. 공원과 공원 사이를 이어주는 다리 역할도 하고요. 동물들이 가로수를 따라 이동할 수 있거든요.
 
 ---
 
-## finish
+## 재미있는 사실
 
-Now, when you look at street trees on the street, don’t they look different? He may seem like he's just standing around, but he's actually a city hero who's doing a lot for us!
+새 도로를 만들 때는 반드시 가로수도 같이 심어야 해요. 법으로 정해져 있거든요! 도로 설계할 때부터 나무 심을 공간을 미리 만들어놔야 해요.
+
+그리고 가로수는 구청장님이 관리해요. 2006년부터 각 지역 구청에서 책임지고 관리하고 있어요.
 
 ---
 
-## source
+## 마무리
 
-Korea Forest Service, 「Street Creation and Management Manual」, 2022
+이제 길에서 가로수를 보면 다르게 보이지 않나요? 그냥 서 있는 것 같지만 사실은 우리를 위해 엄청 많은 일을 하고 있는 도시의 히어로예요!
+
+---
+
+## 출처
+
+산림청, 「가로수 조성·관리 매뉴얼」, 2022

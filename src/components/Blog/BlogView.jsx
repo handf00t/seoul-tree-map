@@ -1,7 +1,7 @@
 // src/components/Blog/BlogView.jsx
 // Vercel 블로그 스타일의 메인 뷰
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BlogCard from './BlogCard';
@@ -180,7 +180,9 @@ const BlogView = ({ onClose }) => {
                 {t('blog.all')}
               </button>
 
-              {BLOG_CATEGORIES.map((category) => (
+              {BLOG_CATEGORIES.filter(category =>
+                posts.some(post => post.category === category.id)
+              ).map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}

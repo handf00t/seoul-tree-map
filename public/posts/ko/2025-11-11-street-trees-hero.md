@@ -8,7 +8,7 @@ tags: ["가로수", "도시숲", "환경", "도시"]
 author: "서울트리맵"
 avatar: "/logo.svg"
 publishedAt: "2025-11-11"
-coverImage: "/blog/street-trees-hero.jpg"
+coverImage: "/blog/street-trees-hero.png"
 readTime: 5
 featured: true
 ---

@@ -7,14 +7,14 @@ tags: ["가로수", "도시숲", "환경", "도시"]
 author: "서울트리맵"
 avatar: "/logo.svg"
 publishedAt: "2025-11-11"
-coverImage: "/blog/street-trees-hero.jpg"
+coverImage: "/blog/street-trees-hero.png"
 readTime: 5
 featured: true
 ---
 
 # 출근길 매일 보는 나무, 알고 보니 도시의 히어로였다
 
-**가로수 완전 정복 시리즈 #1**
+가로수 완전 정복 시리즈 #1
 
 ---
 
