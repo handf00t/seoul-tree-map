@@ -58,7 +58,9 @@ function parseFrontMatter(markdown) {
  */
 export async function loadMarkdownPost(filename, language = 'ko') {
   try {
-    const response = await fetch(`${process.env.PUBLIC_URL}/posts/${language}/${filename}`);
+    // 캐시 방지를 위해 타임스탬프 추가
+    const timestamp = new Date().getTime();
+    const response = await fetch(`${process.env.PUBLIC_URL}/posts/${language}/${filename}?v=${timestamp}`);
     if (!response.ok) {
       throw new Error(`Failed to load ${filename}`);
     }
@@ -81,7 +83,9 @@ export async function loadMarkdownPost(filename, language = 'ko') {
 async function getAllPostFiles(language = 'ko') {
   try {
     // public/posts/manifest.json에서 파일 목록을 읽습니다
-    const response = await fetch(`${process.env.PUBLIC_URL}/posts/manifest.json`);
+    // 캐시 방지를 위해 타임스탬프 추가
+    const timestamp = new Date().getTime();
+    const response = await fetch(`${process.env.PUBLIC_URL}/posts/manifest.json?v=${timestamp}`);
     if (response.ok) {
       const manifest = await response.json();
       return manifest.posts?.[language] || [];

@@ -24,7 +24,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "prestart": "rm -rf node_modules/.cache",
     "start": "react-scripts start",
+    "prebuild": "rm -rf build node_modules/.cache",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

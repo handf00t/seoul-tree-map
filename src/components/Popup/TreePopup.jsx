@@ -142,6 +142,26 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
 
       const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
 
+      // Web Share API 사용 (모바일)
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: treeData.tree_name || t('popup.tree'),
+            text: `${treeData.tree_name || ''} - ${treeData.address || ''}`,
+            url: shareUrl
+          });
+          setShareStatus('idle');
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') {
+            setShareStatus('idle');
+            return;
+          }
+          // Web Share 실패 시 클립보드 복사로 fallback
+        }
+      }
+
+      // 클립보드 복사 (데스크톱 또는 Web Share 실패 시)
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(shareUrl);
       } else {
@@ -157,14 +177,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
       }
 
       setShareStatus('copied');
-      alert(t('popup.linkCopied'));
-      setTimeout(() => setShareStatus('idle'), 3000);
+      setTimeout(() => setShareStatus('idle'), 2000);
 
     } catch (error) {
       console.error('URL 복사 실패:', error);
-      alert(t('popup.linkCopyFailed'));
       setShareStatus('failed');
-      setTimeout(() => setShareStatus('idle'), 3000);
+      setTimeout(() => setShareStatus('idle'), 2000);
     }
   };
 
@@ -448,31 +466,52 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                 </button>
               )}
 
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleShare();
-                }}
-                disabled={shareStatus === 'copying'}
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  background: 'var(--surface-variant)',
-                  color: shareStatus === 'copied' ? 'var(--primary-light)' : 'var(--text-secondary)',
-                  border: '1px solid var(--outline)',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  cursor: shareStatus === 'copying' ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
-                </svg>
-              </button>
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShare();
+                  }}
+                  disabled={shareStatus === 'copying'}
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    background: 'var(--surface-variant)',
+                    color: shareStatus === 'copied' ? 'var(--primary-light)' : 'var(--text-secondary)',
+                    border: '1px solid var(--outline)',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    cursor: shareStatus === 'copying' ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
+                  </svg>
+                </button>
+                {shareStatus === 'copied' && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginBottom: '4px',
+                    padding: '6px 12px',
+                    background: 'var(--text-primary)',
+                    color: 'var(--surface)',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    whiteSpace: 'nowrap',
+                    zIndex: 10
+                  }}>
+                    {t('popup.linkCopied')}
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={(e) => {
@@ -541,35 +580,52 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                 )}
 
                 {/* 보조 버튼들 */}
-                <button
-                  onClick={handleShare}
-                  disabled={shareStatus === 'copying'}
-                  style={{
-                    flex: isMobile ? 0 : 1,
-                    padding: '12px 16px',
-                    background: 'var(--surface-variant)',
-                    color: shareStatus === 'copied' ? 'var(--primary)' : 'var(--text-secondary)',
-                    border: 'none',
-                    borderRadius: '14px',
-                    fontSize: '15px',
-                    fontWeight: '600',
-                    cursor: shareStatus === 'copying' ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '4px',
-                    minWidth: isMobile ? '90px' : 'auto',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
-                  </svg>
-                  <span style={{ fontSize: '13px' }}>
-                    {shareStatus === 'copying' ? t('popup.sharing') :
-                     shareStatus === 'copied' ? t('popup.shared') : t('popup.share')}
-                  </span>
-                </button>
+                <div style={{ position: 'relative', flex: isMobile ? 0 : 1, minWidth: isMobile ? '90px' : 'auto' }}>
+                  <button
+                    onClick={handleShare}
+                    disabled={shareStatus === 'copying'}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'var(--surface-variant)',
+                      color: shareStatus === 'copied' ? 'var(--primary)' : 'var(--text-secondary)',
+                      border: 'none',
+                      borderRadius: '14px',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: shareStatus === 'copying' ? 'not-allowed' : 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '4px',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
+                    </svg>
+                    <span style={{ fontSize: '13px' }}>{t('popup.share')}</span>
+                  </button>
+                  {shareStatus === 'copied' && (
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      marginBottom: '4px',
+                      padding: '6px 12px',
+                      background: 'var(--text-primary)',
+                      color: 'var(--surface)',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      whiteSpace: 'nowrap',
+                      zIndex: 10
+                    }}>
+                      {t('popup.linkCopied')}
+                    </div>
+                  )}
+                </div>
 
                 <button
                   onClick={handleFavoriteToggle}

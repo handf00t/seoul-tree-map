@@ -4,6 +4,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { clearMapFilters } from './utils/mapFilters';
+import { startVersionCheck } from './utils/versionChecker';
 import MapContainer from './components/Map/MapContainer';
 import SearchFilterPanel from './components/Search/SearchFilterPanel';
 import MobileNavPanel from './components/Navigation/MobileNavPanel';
@@ -52,6 +53,16 @@ function AppContent() {
   const [isMapInteracting, setIsMapInteracting] = useState<boolean>(false);
   const [isPanelCollapsed, setIsPanelCollapsed] = useState<boolean>(false);
 
+  // 버전 체크 시작
+  useEffect(() => {
+    // 프로덕션 환경에서만 버전 체크 활성화
+    if (process.env.NODE_ENV === 'production') {
+      const cleanup = startVersionCheck({
+        silent: false // 사용자에게 확인 메시지 표시
+      });
+      return cleanup;
+    }
+  }, []);
 
   // URL 파라미터에서 공유된 나무 정보 확인
   useEffect(() => {

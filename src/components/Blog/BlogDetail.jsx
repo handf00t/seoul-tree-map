@@ -8,9 +8,10 @@ import IconButton from '../UI/IconButton';
 import { loadMarkdownPost } from '../../utils/markdownLoader';
 
 const BlogDetail = ({ post, onClose }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [showCopied, setShowCopied] = useState(false);
 
   // 현재 언어 가져오기 (ko, en, ja 중 하나)
   const currentLanguage = i18n.language.split('-')[0]; // 'ko-KR' -> 'ko'
@@ -237,6 +238,34 @@ const BlogDetail = ({ post, onClose }) => {
   const postUrl = `${siteUrl}/blog/${post.slug}`;
   const imageUrl = post.coverImage ? `${siteUrl}${post.coverImage}` : `${siteUrl}/logo.svg`;
 
+  // 공유하기 핸들러
+  const handleShare = async () => {
+    const shareData = {
+      title: post.title,
+      text: post.excerpt,
+      url: postUrl
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+        }
+      }
+    } else {
+      // Web Share API 미지원 시 클립보드에 복사
+      try {
+        await navigator.clipboard.writeText(postUrl);
+        setShowCopied(true);
+        setTimeout(() => setShowCopied(false), 2000);
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+    }
+  };
+
   // Structured Data (JSON-LD)
   const structuredData = {
     "@context": "https://schema.org",
@@ -332,10 +361,38 @@ const BlogDetail = ({ post, onClose }) => {
           <span style={{
             fontSize: '14px',
             fontWeight: '600',
-            color: category.color
+            color: category.color,
+            flex: 1
           }}>
             {category.name}
           </span>
+          <div style={{ position: 'relative' }}>
+            <IconButton
+              icon="share"
+              onClick={handleShare}
+              variant="ghost"
+              size="medium"
+              ariaLabel={t('common.share') || '공유하기'}
+            />
+            {showCopied && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '4px',
+                padding: '6px 12px',
+                background: 'var(--text-primary)',
+                color: 'var(--surface)',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: '500',
+                whiteSpace: 'nowrap',
+                zIndex: 10
+              }}>
+                링크가 복사되었습니다
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

@@ -245,7 +245,7 @@ const BlogView = ({ onClose }) => {
                 ) : (
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 380px))',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                     gap: '24px',
                     justifyContent: 'start'
                   }}>
@@ -254,7 +254,6 @@ const BlogView = ({ onClose }) => {
                         key={post.id}
                         post={post}
                         onClick={handlePostClick}
-                        featured={true}
                       />
                     ))}
                     {regularPosts.map((post) => (
@@ -288,7 +287,7 @@ const BlogView = ({ onClose }) => {
 
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 380px))',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                       gap: '24px',
                       justifyContent: 'start'
                     }}>
@@ -337,7 +336,7 @@ const BlogView = ({ onClose }) => {
                   ) : (
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 380px))',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                       gap: '24px',
                       justifyContent: 'start'
                     }}>
