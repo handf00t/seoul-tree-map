@@ -1,7 +1,7 @@
 // service-worker.js - Mapbox 타일 캐싱을 위한 Service Worker
 
-// 버전 정보 (빌드 시 자동으로 업데이트됨)
-const APP_VERSION = '0.1.0';
+// 버전 정보 (배포 시 수동으로 업데이트)
+const APP_VERSION = '1.2.0';
 const CACHE_NAME = `seoul-tree-map-v${APP_VERSION}`;
 const TILE_CACHE_NAME = `mapbox-tiles-v${APP_VERSION}`;
 const MAX_TILE_AGE = 7 * 24 * 60 * 60 * 1000; // 7일

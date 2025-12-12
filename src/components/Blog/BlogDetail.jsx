@@ -8,23 +8,20 @@ import IconButton from '../UI/IconButton';
 import { loadMarkdownPost } from '../../utils/markdownLoader';
 
 const BlogDetail = ({ post, onClose }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [showCopied, setShowCopied] = useState(false);
 
-  // 현재 언어 가져오기 (ko, en, ja 중 하나)
-  const currentLanguage = i18n.language.split('-')[0]; // 'ko-KR' -> 'ko'
-
   useEffect(() => {
     async function loadContent() {
       setIsLoading(true);
-      const { content: markdownContent } = await loadMarkdownPost(post.contentFile, currentLanguage);
+      const { content: markdownContent } = await loadMarkdownPost(post.contentFile);
       setContent(markdownContent);
       setIsLoading(false);
     }
     loadContent();
-  }, [post.contentFile, currentLanguage]);
+  }, [post.contentFile]);
   const categoryInfo = {
     guide: { name: '가이드', color: '#22C55E' },
     story: { name: '이야기', color: '#F59E0B' },
@@ -242,7 +239,6 @@ const BlogDetail = ({ post, onClose }) => {
   const handleShare = async () => {
     const shareData = {
       title: post.title,
-      text: post.excerpt,
       url: postUrl
     };
 

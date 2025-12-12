@@ -13,24 +13,21 @@ import { loadAllPosts } from '../../utils/markdownLoader';
 const BlogView = ({ onClose }) => {
   const navigate = useNavigate();
   const { postId } = useParams();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [selectedPost, setSelectedPost] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 현재 언어 가져오기 (ko, en 중 하나)
-  const currentLanguage = i18n.language.split('-')[0]; // 'ko-KR' -> 'ko'
-
   useEffect(() => {
     async function fetchPosts() {
       setIsLoading(true);
-      const loadedPosts = await loadAllPosts(currentLanguage);
+      const loadedPosts = await loadAllPosts();
       setPosts(loadedPosts);
       setIsLoading(false);
     }
     fetchPosts();
-  }, [currentLanguage]);
+  }, []);
 
   // URL 파라미터로 포스트 선택 (slug 기반)
   useEffect(() => {
