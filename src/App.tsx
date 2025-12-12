@@ -58,7 +58,7 @@ function AppContent() {
     // 프로덕션 환경에서만 버전 체크 활성화
     if (process.env.NODE_ENV === 'production') {
       const cleanup = startVersionCheck({
-        silent: false // 사용자에게 확인 메시지 표시
+        silent: true // 조용히 자동 새로고침
       });
       return cleanup;
     }

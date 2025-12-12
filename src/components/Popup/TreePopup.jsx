@@ -147,7 +147,6 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
         try {
           await navigator.share({
             title: treeData.tree_name || t('popup.tree'),
-            text: `${treeData.tree_name || ''} - ${treeData.address || ''}`,
             url: shareUrl
           });
           setShareStatus('idle');
