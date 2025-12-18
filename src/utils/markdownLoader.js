@@ -53,13 +53,14 @@ function parseFrontMatter(markdown) {
 /**
  * 마크다운 파일을 로드하고 파싱합니다
  * @param {string} filename - posts 디렉토리 내의 파일명
+ * @param {string} lang - 언어 코드 (기본값: 'ko')
  * @returns {Promise<{metadata: Object, content: string}>}
  */
-export async function loadMarkdownPost(filename) {
+export async function loadMarkdownPost(filename, lang = 'ko') {
   try {
     // 캐시 방지를 위해 타임스탬프 추가
     const timestamp = new Date().getTime();
-    const response = await fetch(`${process.env.PUBLIC_URL}/posts/${filename}?v=${timestamp}`);
+    const response = await fetch(`${process.env.PUBLIC_URL}/posts/${lang}/${filename}?v=${timestamp}`);
     if (!response.ok) {
       throw new Error(`Failed to load ${filename}`);
     }
@@ -76,9 +77,10 @@ export async function loadMarkdownPost(filename) {
 
 /**
  * public/posts 디렉토리의 모든 마크다운 파일 목록을 가져옵니다
+ * @param {string} lang - 언어 코드 (기본값: 'ko')
  * @returns {Promise<Array>} 파일명 배열
  */
-async function getAllPostFiles() {
+async function getAllPostFiles(lang = 'ko') {
   try {
     // public/posts/manifest.json에서 파일 목록을 읽습니다
     // 캐시 방지를 위해 타임스탬프 추가
@@ -86,7 +88,15 @@ async function getAllPostFiles() {
     const response = await fetch(`${process.env.PUBLIC_URL}/posts/manifest.json?v=${timestamp}`);
     if (response.ok) {
       const manifest = await response.json();
-      return manifest.posts || [];
+      // 새 구조: manifest.posts = { ko: [...], en: [...] }
+      if (manifest.posts && manifest.posts[lang]) {
+        return manifest.posts[lang];
+      }
+      // 이전 구조 호환: manifest.posts = [...]
+      if (Array.isArray(manifest.posts)) {
+        return manifest.posts;
+      }
+      return [];
     }
   } catch (error) {
     console.warn('manifest.json not found, using default list');
@@ -100,18 +110,20 @@ async function getAllPostFiles() {
 
 /**
  * 모든 포스트 목록을 로드합니다
+ * @param {string} lang - 언어 코드 (기본값: 'ko')
  * @returns {Promise<Array>} 포스트 메타데이터 배열
  */
-export async function loadAllPosts() {
-  const postFiles = await getAllPostFiles();
+export async function loadAllPosts(lang = 'ko') {
+  const postFiles = await getAllPostFiles(lang);
   const posts = [];
 
   for (const filename of postFiles) {
     try {
-      const { metadata } = await loadMarkdownPost(filename);
+      const { metadata } = await loadMarkdownPost(filename, lang);
       posts.push({
         ...metadata,
         contentFile: filename,
+        lang,
         publishedAt: new Date(metadata.publishedAt),
         author: {
           name: metadata.author,

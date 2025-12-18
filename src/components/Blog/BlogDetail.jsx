@@ -16,7 +16,7 @@ const BlogDetail = ({ post, onClose }) => {
   useEffect(() => {
     async function loadContent() {
       setIsLoading(true);
-      const { content: markdownContent } = await loadMarkdownPost(post.contentFile);
+      const { content: markdownContent } = await loadMarkdownPost(post.contentFile, post.lang || 'ko');
       setContent(markdownContent);
       setIsLoading(false);
     }
@@ -109,36 +109,184 @@ const BlogDetail = ({ post, onClose }) => {
     return parts.length > 0 ? parts : text;
   };
 
-  // 간단한 Markdown 파싱 (제목, 단락, 리스트만 지원)
+  // Markdown 파싱 (제목, 단락, 리스트, 표, 코드블록, 인용문 등 지원)
   const renderContent = (content) => {
     const lines = content.split('\n');
     const elements = [];
     let currentList = [];
-    let inList = false;
+    let currentListType = null; // 'ul' or 'ol'
+    let inCodeBlock = false;
+    let codeBlockContent = [];
+    let codeBlockLang = '';
+    let inBlockquote = false;
+    let blockquoteContent = [];
+    let inTable = false;
+    let tableRows = [];
+
+    const flushList = (index) => {
+      if (currentList.length > 0) {
+        const ListTag = currentListType === 'ol' ? 'ol' : 'ul';
+        elements.push(
+          <ListTag key={`list-${index}`} style={{
+            marginLeft: '24px',
+            marginBottom: '16px',
+            lineHeight: '1.8',
+            paddingLeft: currentListType === 'ol' ? '0' : undefined
+          }}>
+            {currentList.map((item, i) => (
+              <li key={i} style={{ marginBottom: '8px', color: 'var(--text-primary)' }}>{item}</li>
+            ))}
+          </ListTag>
+        );
+        currentList = [];
+        currentListType = null;
+      }
+    };
+
+    const flushBlockquote = (index) => {
+      if (blockquoteContent.length > 0) {
+        elements.push(
+          <blockquote key={`quote-${index}`} style={{
+            borderLeft: '4px solid var(--primary)',
+            paddingLeft: '16px',
+            margin: '16px 0',
+            color: 'var(--text-secondary)',
+            fontStyle: 'italic'
+          }}>
+            {blockquoteContent.map((line, i) => (
+              <p key={i} style={{ margin: '8px 0' }}>{parseInlineMarkdown(line)}</p>
+            ))}
+          </blockquote>
+        );
+        blockquoteContent = [];
+        inBlockquote = false;
+      }
+    };
+
+    const flushTable = (index) => {
+      if (tableRows.length > 0) {
+        const headerRow = tableRows[0];
+        const bodyRows = tableRows.slice(2); // skip header and separator
+        elements.push(
+          <div key={`table-${index}`} style={{
+            overflowX: 'auto',
+            margin: '16px 0'
+          }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: '14px'
+            }}>
+              <thead>
+                <tr>
+                  {headerRow.map((cell, i) => (
+                    <th key={i} style={{
+                      padding: '12px',
+                      borderBottom: '2px solid var(--divider)',
+                      textAlign: 'left',
+                      fontWeight: '600',
+                      background: 'var(--surface-variant)'
+                    }}>
+                      {parseInlineMarkdown(cell.trim())}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {bodyRows.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={cellIndex} style={{
+                        padding: '12px',
+                        borderBottom: '1px solid var(--divider)'
+                      }}>
+                        {parseInlineMarkdown(cell.trim())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        tableRows = [];
+        inTable = false;
+      }
+    };
 
     lines.forEach((line, index) => {
-      // 빈 줄
-      if (line.trim() === '') {
-        if (inList && currentList.length > 0) {
+      // 코드블록 시작/끝
+      if (line.trim().startsWith('```')) {
+        if (!inCodeBlock) {
+          flushList(index);
+          flushBlockquote(index);
+          flushTable(index);
+          inCodeBlock = true;
+          codeBlockLang = line.trim().slice(3);
+          codeBlockContent = [];
+        } else {
           elements.push(
-            <ul key={`list-${index}`} style={{
-              marginLeft: '24px',
-              marginBottom: '16px',
-              lineHeight: '1.8'
+            <pre key={`code-${index}`} style={{
+              background: '#1e1e1e',
+              color: '#d4d4d4',
+              padding: '16px',
+              borderRadius: '8px',
+              overflow: 'auto',
+              margin: '16px 0',
+              fontSize: '14px',
+              lineHeight: '1.5'
             }}>
-              {currentList.map((item, i) => (
-                <li key={i} style={{ marginBottom: '8px', color: 'var(--text-primary)' }}>{item}</li>
-              ))}
-            </ul>
+              <code>{codeBlockContent.join('\n')}</code>
+            </pre>
           );
-          currentList = [];
-          inList = false;
+          inCodeBlock = false;
+          codeBlockContent = [];
         }
         return;
       }
 
+      if (inCodeBlock) {
+        codeBlockContent.push(line);
+        return;
+      }
+
+      // 표 감지 (| 로 시작하는 줄)
+      if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+        flushList(index);
+        flushBlockquote(index);
+        inTable = true;
+        const cells = line.split('|').slice(1, -1);
+        // 구분선 (|---|---|) 은 건너뛰기
+        if (!cells.every(cell => cell.trim().match(/^[-:]+$/))) {
+          tableRows.push(cells);
+        } else {
+          tableRows.push('separator');
+        }
+        return;
+      } else if (inTable) {
+        flushTable(index);
+      }
+
+      // 빈 줄
+      if (line.trim() === '') {
+        flushList(index);
+        flushBlockquote(index);
+        return;
+      }
+
+      // 인용문
+      if (line.startsWith('> ')) {
+        flushList(index);
+        inBlockquote = true;
+        blockquoteContent.push(line.slice(2));
+        return;
+      } else if (inBlockquote) {
+        flushBlockquote(index);
+      }
+
       // H1
       if (line.startsWith('# ')) {
+        flushList(index);
         elements.push(
           <h1 key={index} style={{
             fontSize: '32px',
@@ -154,6 +302,7 @@ const BlogDetail = ({ post, onClose }) => {
       }
       // H2
       else if (line.startsWith('## ')) {
+        flushList(index);
         elements.push(
           <h2 key={index} style={{
             fontSize: '24px',
@@ -169,6 +318,7 @@ const BlogDetail = ({ post, onClose }) => {
       }
       // H3
       else if (line.startsWith('### ')) {
+        flushList(index);
         elements.push(
           <h3 key={index} style={{
             fontSize: '20px',
@@ -182,8 +332,25 @@ const BlogDetail = ({ post, onClose }) => {
           </h3>
         );
       }
+      // H4
+      else if (line.startsWith('#### ')) {
+        flushList(index);
+        elements.push(
+          <h4 key={index} style={{
+            fontSize: '18px',
+            fontWeight: '600',
+            marginBottom: '10px',
+            marginTop: '20px',
+            color: 'var(--text-primary)',
+            lineHeight: '1.4'
+          }}>
+            {parseInlineMarkdown(line.replace('#### ', ''))}
+          </h4>
+        );
+      }
       // 구분선
       else if (line.trim() === '---') {
+        flushList(index);
         elements.push(
           <hr key={index} style={{
             border: 'none',
@@ -192,13 +359,81 @@ const BlogDetail = ({ post, onClose }) => {
           }} />
         );
       }
-      // 리스트
-      else if (line.startsWith('- ')) {
-        inList = true;
-        currentList.push(parseInlineMarkdown(line.replace('- ', '')));
+      // iframe (인터랙티브 지도 등)
+      else if (line.trim().startsWith('<iframe')) {
+        flushList(index);
+        const srcMatch = line.match(/src="([^"]+)"/);
+        const heightMatch = line.match(/height="([^"]+)"/);
+        if (srcMatch) {
+          elements.push(
+            <div key={index} style={{
+              margin: '24px 0',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              background: 'var(--surface-variant)'
+            }}>
+              <iframe
+                src={srcMatch[1]}
+                width="100%"
+                height={heightMatch ? heightMatch[1] : '500'}
+                style={{
+                  border: 'none',
+                  display: 'block'
+                }}
+                loading="lazy"
+                title="Interactive map"
+              />
+            </div>
+          );
+        }
+      }
+      // 이미지 ![alt](src)
+      else if (line.trim().match(/^!\[.*\]\(.*\)$/)) {
+        flushList(index);
+        const imgMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
+        if (imgMatch) {
+          elements.push(
+            <figure key={index} style={{ margin: '24px 0', textAlign: 'center' }}>
+              <img
+                src={imgMatch[2]}
+                alt={imgMatch[1]}
+                style={{
+                  maxWidth: '100%',
+                  borderRadius: '8px'
+                }}
+              />
+              {imgMatch[1] && (
+                <figcaption style={{
+                  marginTop: '8px',
+                  fontSize: '14px',
+                  color: 'var(--text-secondary)'
+                }}>
+                  {imgMatch[1]}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+      }
+      // 번호 리스트 (1. item)
+      else if (line.match(/^\d+\.\s/)) {
+        if (currentListType !== 'ol') {
+          flushList(index);
+        }
+        currentListType = 'ol';
+        currentList.push(parseInlineMarkdown(line.replace(/^\d+\.\s/, '')));
+      }
+      // 비순서 리스트 (- item 또는 * item)
+      else if (line.match(/^[-*]\s/)) {
+        if (currentListType !== 'ul') {
+          flushList(index);
+        }
+        currentListType = 'ul';
+        currentList.push(parseInlineMarkdown(line.replace(/^[-*]\s/, '')));
       }
       // 일반 단락
       else {
+        flushList(index);
         elements.push(
           <p key={index} style={{
             fontSize: '16px',
@@ -212,20 +447,10 @@ const BlogDetail = ({ post, onClose }) => {
       }
     });
 
-    // 마지막에 리스트가 남아있으면 추가
-    if (currentList.length > 0) {
-      elements.push(
-        <ul key="list-final" style={{
-          marginLeft: '24px',
-          marginBottom: '16px',
-          lineHeight: '1.8'
-        }}>
-          {currentList.map((item, i) => (
-            <li key={i} style={{ marginBottom: '8px', color: 'var(--text-primary)' }}>{item}</li>
-          ))}
-        </ul>
-      );
-    }
+    // 마지막에 남아있는 요소들 처리
+    flushList('final');
+    flushBlockquote('final');
+    flushTable('final');
 
     return elements;
   };
