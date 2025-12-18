@@ -97,25 +97,11 @@ export async function checkVersion(options = {}) {
   const localVersion = getLocalVersion();
   const versionChanged = hasVersionChanged(localVersion, serverVersion);
 
-  // 버전이 변경되었거나 강제 업데이트 플래그가 설정된 경우
-  if (versionChanged || serverVersion.forceUpdate) {
+  // 버전 정보 저장 (알림 없이 조용히 업데이트)
+  if (versionChanged) {
     console.log('New version detected:', serverVersion.version);
-
-    // 버전 정보 저장
-    setLocalVersion(serverVersion);
-
-    if (serverVersion.forceUpdate || silent) {
-      // 강제 업데이트이거나 자동 모드면 바로 새로고침
-      if (onUpdate) onUpdate();
-      forceReload();
-    } else if (versionChanged) {
-      // 버전만 변경되었으면 사용자에게 확인
-      showUpdateNotification(onUpdate);
-    }
-  } else {
-    // 버전 변경 없음 - 로컬 버전만 업데이트
-    setLocalVersion(serverVersion);
   }
+  setLocalVersion(serverVersion);
 }
 
 /**
