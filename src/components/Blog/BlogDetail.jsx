@@ -117,7 +117,6 @@ const BlogDetail = ({ post, onClose }) => {
     let currentListType = null; // 'ul' or 'ol'
     let inCodeBlock = false;
     let codeBlockContent = [];
-    let codeBlockLang = '';
     let inBlockquote = false;
     let blockquoteContent = [];
     let inTable = false;
@@ -222,7 +221,6 @@ const BlogDetail = ({ post, onClose }) => {
           flushBlockquote(index);
           flushTable(index);
           inCodeBlock = true;
-          codeBlockLang = line.trim().slice(3);
           codeBlockContent = [];
         } else {
           elements.push(

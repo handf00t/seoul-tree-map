@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { availableSpecies, sizeCategories } from '../../constants/treeData';
 import { getTreeSpeciesName } from '../../utils/treeSpeciesTranslation';
+import { SEOUL_CENTER, SEOUL_BBOX, TIMING, MAP_ZOOM, MAP_ANIMATION } from '../../constants';
+import { applyFiltersToMap } from '../../utils/filterBuilder';
 
 const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
   const { t, i18n } = useTranslation();
@@ -43,8 +45,8 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
         new URLSearchParams({
           access_token: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
           country: 'KR',
-          proximity: '126.9780,37.5665',
-          bbox: '126.734,37.428,127.269,37.701',
+          proximity: `${SEOUL_CENTER.lng},${SEOUL_CENTER.lat}`,
+          bbox: SEOUL_BBOX.join(','),
           language: 'ko',
           limit: 6
         })
@@ -106,7 +108,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
 
     debounceRef.current = setTimeout(() => {
       searchLocation(value);
-    }, 300);
+    }, TIMING.DEBOUNCE_SEARCH);
   };
 
   const selectLocation = (location) => {
@@ -114,8 +116,8 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
 
     map.flyTo({
       center: location.coordinates,
-      zoom: 15,
-      duration: 2000
+      zoom: MAP_ZOOM.SEARCH_RESULT,
+      duration: MAP_ANIMATION.SEARCH.duration
     });
 
     setQuery(location.shortName);
@@ -175,64 +177,14 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
     if (!map) return;
 
     const filters = { species: selectedSpecies, sizes: selectedSizes };
-    
-    // 지도 레이어에 필터 적용
-    const layers = ['protected-trees', 'roadside-trees', 'park-trees'];
-    
-    layers.forEach(layerId => {
-      if (map.getLayer(layerId)) {
-        const filterConditions = [];
 
-        // 레이어 타입 필터
-        const layerType = layerId === 'protected-trees' ? 'protected' :
-                         layerId === 'roadside-trees' ? 'roadside' : 'park';
-        filterConditions.push(['==', ['get', 'tree_type'], layerType]);
-
-        // 수종 필터
-        if (selectedSpecies.length > 0 && selectedSpecies.length < availableSpecies.length) {
-          if (selectedSpecies.includes('기타')) {
-            const mainSpecies = selectedSpecies.filter(s => s !== '기타');
-            if (mainSpecies.length > 0) {
-              filterConditions.push(['in', ['get', 'species_kr'], ['literal', mainSpecies]]);
-            }
-          } else {
-            filterConditions.push(['in', ['get', 'species_kr'], ['literal', selectedSpecies]]);
-          }
-        }
-
-        // 크기 필터
-        if (selectedSizes.length > 0 && selectedSizes.length < sizeCategories.length) {
-          const sizeOrConditions = [];
-          
-          selectedSizes.forEach(sizeId => {
-            const sizeCategory = sizeCategories.find(s => s.id === sizeId);
-            if (sizeCategory) {
-              const [min, max] = sizeCategory.range;
-              
-              if (max === 999) {
-                sizeOrConditions.push(['>=', ['get', 'dbh_cm'], min]);
-              } else {
-                sizeOrConditions.push(['all', 
-                  ['>=', ['get', 'dbh_cm'], min],
-                  ['<', ['get', 'dbh_cm'], max]
-                ]);
-              }
-            }
-          });
-          
-          if (sizeOrConditions.length === 1) {
-            filterConditions.push(sizeOrConditions[0]);
-          } else if (sizeOrConditions.length > 1) {
-            filterConditions.push(['any', ...sizeOrConditions]);
-          }
-        }
-
-        const finalFilter = filterConditions.length === 1 ? 
-          filterConditions[0] : ['all', ...filterConditions];
-        
-        map.setFilter(layerId, finalFilter);
-      }
-    });
+    // 통합 필터 빌더 사용
+    applyFiltersToMap(
+      map,
+      { species: selectedSpecies, sizes: selectedSizes },
+      sizeCategories,
+      availableSpecies.length
+    );
 
     // 상위 컴포넌트에 필터 상태 알림
     if (onFilterApply) {

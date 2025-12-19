@@ -1,6 +1,7 @@
 // MobileNavPanel/FavoritesView.jsx
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
+import { getTreeColor } from '../../../constants/treeData';
 import IconButton from '../../UI/IconButton';
 import LoadingSpinner from '../../UI/LoadingSpinner';
 import EmptyState from '../../UI/EmptyState';
@@ -28,44 +29,6 @@ const FavoritesView = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-
-  // 나무 색상 (수종별 우선, 타입별 fallback)
-  const getTreeColor = (favorite) => {
-    const speciesColors = {
-      '은행나무': '#FFD700',
-      '느티나무': '#228B22',
-      '플라타너스': '#8FBC8F',
-      '벚나무': '#FFB6C1',
-      '단풍나무': '#FF4500',
-      '소나무': '#006400',
-      '회화나무': '#8B4513',
-      '참나무': '#8B4513',
-      '메타세쿼이아': '#228B22'
-    };
-
-    // 1순위: 수종별 색상
-    if (favorite.species_kr && speciesColors[favorite.species_kr]) {
-      return speciesColors[favorite.species_kr];
-    }
-
-    // 2순위: 타입별 색상
-    switch(favorite.tree_type) {
-      case 'protected': return 'var(--tree-protected)';
-      case 'roadside': return 'var(--primary)';
-      case 'park': return 'var(--tree-park)';
-      default: return 'var(--text-secondary)';
-    }
-  };
-
-  // 나무 타입 한글 변환
-  const getTreeTypeName = (type) => {
-    switch(type) {
-      case 'protected': return '보호수';
-      case 'roadside': return '가로수';
-      case 'park': return '공원수목';
-      default: return type;
-    }
-  };
 
   return (
     <div style={{

@@ -57,9 +57,7 @@ function AppContent() {
   useEffect(() => {
     // 프로덕션 환경에서만 버전 체크 활성화
     if (process.env.NODE_ENV === 'production') {
-      const cleanup = startVersionCheck({
-        silent: true // 조용히 자동 새로고침
-      });
+      const cleanup = startVersionCheck();
       return cleanup;
     }
   }, []);

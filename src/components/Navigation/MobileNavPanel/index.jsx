@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../contexts/AuthContext';
 import { visitService } from '../../../services/firebase';
+import { SEOUL_CENTER, SEOUL_BBOX, TIMING, MAP_ZOOM, MAP_ANIMATION, TREE_LAYER_IDS, DRAG_THRESHOLD, PANEL_POSITION } from '../../../constants';
+import { applyFiltersToMap, clearFilters } from '../../../utils/filterBuilder';
 import ProfileMenu from './ProfileMenu';
 import MyVisitsView from './MyVisitsView';
 import HomeView from './HomeView';
@@ -27,7 +29,6 @@ const MobileNavPanel = ({
   const { user, userFavorites, signOut, removeFromFavorites } = useAuth();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isMyTreesActive, setIsMyTreesActive] = useState(false);
@@ -37,7 +38,6 @@ const MobileNavPanel = ({
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const dragThreshold = 50;
 
   // 나의 방문 관련 state
   const [activeView, setActiveView] = useState('home');
@@ -90,16 +90,16 @@ const MobileNavPanel = ({
       ...visit.treeInfo,
       source_id: visit.treeId,
       clickCoordinates: {
-        lat: visit.treeInfo?.coordinates?.lat || 37.5665,
-        lng: visit.treeInfo?.coordinates?.lng || 126.9780
+        lat: visit.treeInfo?.coordinates?.lat || SEOUL_CENTER.lat,
+        lng: visit.treeInfo?.coordinates?.lng || SEOUL_CENTER.lng
       }
     };
 
     if (map && visit.treeInfo?.coordinates) {
       map.flyTo({
         center: [visit.treeInfo.coordinates.lng, visit.treeInfo.coordinates.lat],
-        zoom: 16,
-        duration: 1500
+        zoom: MAP_ZOOM.TREE_DETAIL,
+        duration: MAP_ANIMATION.TREE_SELECT.duration
       });
     }
 
@@ -128,16 +128,14 @@ const MobileNavPanel = ({
       return;
     }
 
-    setIsLoading(true);
-    
     try {
       const response = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?` +
         new URLSearchParams({
           access_token: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
           country: 'KR',
-          proximity: '126.9780,37.5665',
-          bbox: '126.734,37.428,127.269,37.701',
+          proximity: `${SEOUL_CENTER.lng},${SEOUL_CENTER.lat}`,
+          bbox: SEOUL_BBOX.join(','),
           language: 'ko',
           limit: 4
         })
@@ -161,8 +159,6 @@ const MobileNavPanel = ({
     } catch (error) {
       console.error('위치 검색 오류:', error);
       setSuggestions([]);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -177,7 +173,7 @@ const MobileNavPanel = ({
 
     debounceRef.current = setTimeout(() => {
       searchLocation(value);
-    }, 300);
+    }, TIMING.DEBOUNCE_SEARCH);
   };
 
   const selectLocation = (location) => {
@@ -185,8 +181,8 @@ const MobileNavPanel = ({
 
     map.flyTo({
       center: location.coordinates,
-      zoom: 15,
-      duration: 2000
+      zoom: MAP_ZOOM.SEARCH_RESULT,
+      duration: MAP_ANIMATION.SEARCH.duration
     });
 
     setQuery(location.shortName);
@@ -237,31 +233,13 @@ const MobileNavPanel = ({
       sizes: activeFilters?.sizes || []
     });
 
-    const layers = ['protected-trees', 'roadside-trees', 'park-trees'];
-  
-    layers.forEach(layerId => {
-      if (map.getLayer(layerId)) {
-        let filterConditions = [];
-        
-        const layerType = layerId === 'protected-trees' ? 'protected' :
-                         layerId === 'roadside-trees' ? 'roadside' : 'park';
-        filterConditions.push(['==', ['get', 'tree_type'], layerType]);
-
-        if (newSpecies.length > 0) {
-          filterConditions.push(['in', ['get', 'species_kr'], ['literal', newSpecies]]);
-        }
-
-        const finalFilter = filterConditions.length === 1 ? 
-          filterConditions[0] : ['all', ...filterConditions];
-        
-        map.setFilter(layerId, finalFilter);
-      }
-    });
+    // 통합 필터 빌더 사용
+    applyFiltersToMap(map, { species: newSpecies });
   };
 
   const applyMyTreesFilter = () => {
     if (!map || !userFavorites || userFavorites.length === 0) return;
-    
+
     const favoriteIds = userFavorites
       .map(fav => fav.source_id)
       .filter(id => id);
@@ -272,56 +250,24 @@ const MobileNavPanel = ({
       return;
     }
 
-    const layers = ['protected-trees', 'roadside-trees', 'park-trees'];
-    
-    layers.forEach(layerId => {
-      if (map.getLayer(layerId)) {
-        const layerType = layerId === 'protected-trees' ? 'protected' :
-                         layerId === 'roadside-trees' ? 'roadside' : 'park';
-        
-        const filter = [
-          'all',
-          ['==', ['get', 'tree_type'], layerType],
-          ['in', ['get', 'source_id'], ['literal', favoriteIds]]
-        ];
-        
-        map.setFilter(layerId, filter);
-      }
-    });
+    // 통합 필터 빌더 사용
+    applyFiltersToMap(map, { favoriteIds });
 
     if (userFavorites[0].coordinates) {
       map.flyTo({
         center: [userFavorites[0].coordinates.lng, userFavorites[0].coordinates.lat],
         zoom: 14,
-        duration: 2000
+        duration: MAP_ANIMATION.FLY_TO.duration
       });
     }
   };
 
   const clearMyTreesFilter = () => {
-    if (!map) return;
-    
-    const layers = ['protected-trees', 'roadside-trees', 'park-trees'];
-    
-    layers.forEach(layerId => {
-      if (map.getLayer(layerId)) {
-        const layerType = layerId === 'protected-trees' ? 'protected' :
-                         layerId === 'roadside-trees' ? 'roadside' : 'park';
-        
-        map.setFilter(layerId, ['==', ['get', 'tree_type'], layerType]);
-      }
-    });
+    clearFilters(map);
   };
 
   const handleProfileMenuClick = () => {
     setShowProfileMenu(!showProfileMenu);
-  };
-
-  const handleRemoveFavorite = async (favorite) => {
-    const result = await removeFromFavorites(favorite.id);
-    if (!result.success) {
-      alert(t('favorites.removeFailed') + ': ' + result.error);
-    }
   };
 
   const handleFavoriteDelete = async (favoriteId, e) => {
@@ -336,14 +282,14 @@ const MobileNavPanel = ({
     if (map && favorite.coordinates) {
       map.flyTo({
         center: [favorite.coordinates.lng, favorite.coordinates.lat],
-        zoom: 16,
-        duration: 1500
+        zoom: MAP_ZOOM.TREE_DETAIL,
+        duration: MAP_ANIMATION.TREE_SELECT.duration
       });
 
       setTimeout(() => {
         const point = map.project([favorite.coordinates.lng, favorite.coordinates.lat]);
         const features = map.queryRenderedFeatures(point, {
-          layers: ['protected-trees', 'roadside-trees', 'park-trees']
+          layers: TREE_LAYER_IDS
         });
 
         if (features.length > 0 && onTreeSelect) {
@@ -397,16 +343,8 @@ const MobileNavPanel = ({
           };
           onTreeSelect(treeData);
         }
-      }, 1600);
+      }, TIMING.MAP_QUERY_DELAY);
     }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-    setShowProfileMenu(false);
-    setActiveView('home');
-    setIsMyTreesActive(false);
-    clearMyTreesFilter();
   };
 
   const handleTouchStart = (e) => {
@@ -425,7 +363,7 @@ const MobileNavPanel = ({
 
     const deltaY = currentY - startY;
 
-    if (deltaY > dragThreshold) {
+    if (deltaY > DRAG_THRESHOLD.PANEL) {
       if (showProfileMenu) {
         setShowProfileMenu(false);
       } else if (showSuggestions) {
@@ -435,7 +373,7 @@ const MobileNavPanel = ({
         if (onCollapseChange) onCollapseChange(true);
       }
     }
-    else if (deltaY < -dragThreshold) {
+    else if (deltaY < -DRAG_THRESHOLD.PANEL) {
       if (isCollapsed) {
         setIsCollapsed(false);
         if (onCollapseChange) onCollapseChange(false);
@@ -472,9 +410,9 @@ const MobileNavPanel = ({
 
   const getBottomPosition = () => {
     if (isHidden || minimizedPopupHeight > 0) {
-      return '-400px';
+      return PANEL_POSITION.HIDDEN;
     } else {
-      return '0';
+      return PANEL_POSITION.VISIBLE;
     }
   };
 

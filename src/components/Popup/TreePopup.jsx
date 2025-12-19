@@ -3,11 +3,12 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { visitService } from '../../services/firebase';
+import { BREAKPOINT, DRAG_THRESHOLD, POPUP_HEIGHT, TIMING } from '../../constants';
+import { formatKRW } from '../../utils/treeDataUtils';
 import CameraCapture from '../Visit/CameraCapture';
 import VisitRecordForm from '../Visit/VisitRecordForm';
 import VisitList from '../Visit/VisitList';
 import LoadingSpinner from '../UI/LoadingSpinner';
-import ActionButton from '../UI/ActionButton';
 import PopupHeader from './TreePopup/PopupHeader';
 import TabMenu from './TreePopup/TabMenu';
 import TreeInfoBox from './TreePopup/TreeInfoBox';
@@ -16,7 +17,7 @@ import BenefitsSection from './TreePopup/BenefitsSection';
 const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMapInteracting, onLoginRequest }) => {
   const { t, i18n } = useTranslation();
   const { user, addToFavorites, removeFromFavorites, isFavorite, recordTreeView } = useAuth();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BREAKPOINT.MOBILE);
   const [shareStatus, setShareStatus] = useState('idle');
   const [showBenefits, setShowBenefits] = useState(false);
   const [favoriteStatus, setFavoriteStatus] = useState('idle');
@@ -26,7 +27,6 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
-  const dragThreshold = 50;
 
   // 모바일 전용 - 방문기록 관련 상태
   const [activeTab, setActiveTab] = useState('info');
@@ -80,21 +80,6 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     alert(t('popup.deleteFailed') + ': ' + result.error);
   }
 };
-
-  const formatNumber = (num) => {
-    if (!num || num === 0) return '0';
-    return Math.round(num).toLocaleString();
-  };
-
-  const formatKRW = (amount) => {
-    const currency = i18n.language === 'ko' ? '원' : ' KRW';
-    if (!amount || amount === 0) return `0${currency}`;
-    return `${formatNumber(amount)}${currency}`;
-  };
-
-  const hasValidData = (value) => {
-    return value != null && value !== 0 && value !== '' && !isNaN(value) && value > 0;
-  };
 
   const handleFavoriteToggle = async () => {
     if (!user) {
@@ -176,12 +161,12 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
       }
 
       setShareStatus('copied');
-      setTimeout(() => setShareStatus('idle'), 2000);
+      setTimeout(() => setShareStatus('idle'), TIMING.TOAST_DURATION);
 
     } catch (error) {
       console.error('URL 복사 실패:', error);
       setShareStatus('failed');
-      setTimeout(() => setShareStatus('idle'), 2000);
+      setTimeout(() => setShareStatus('idle'), TIMING.TOAST_DURATION);
     }
   };
 
@@ -267,7 +252,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     
     const deltaY = currentY - startY;
     
-    if (deltaY > dragThreshold) {
+    if (deltaY > DRAG_THRESHOLD.POPUP) {
       if (showBenefits) {
         setShowBenefits(false);
       } else if (!isMinimized) {
@@ -279,7 +264,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
         onClose();
       }
     }
-    else if (deltaY < -dragThreshold && isMinimized) {
+    else if (deltaY < -DRAG_THRESHOLD.POPUP && isMinimized) {
       handleExpand();
     }
     
@@ -307,7 +292,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= BREAKPOINT.MOBILE);
     };
 
     checkScreenSize();
@@ -342,7 +327,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     borderRadius: '16px 16px 0 0',
     boxShadow: '0 -2px 20px var(--shadow-color-md)',
     zIndex: 2001,
-    maxHeight: isMinimized ? '180px' : '85vh',
+    maxHeight: isMinimized ? `${POPUP_HEIGHT.MINIMIZED}px` : POPUP_HEIGHT.EXPANDED,
     overflowY: 'auto',
     transition: 'max-height 0.3s ease',
     pointerEvents: 'auto'
@@ -459,7 +444,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                   }}
                 >
                   <span>
-                    {t('tree.annualBenefits')} {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw) : t('popup.noInfo')}
+                    {t('tree.annualBenefits')} {treeData.benefits?.total_annual_value_krw ? formatKRW(treeData.benefits.total_annual_value_krw, i18n.language) : t('popup.noInfo')}
                   </span>
                   <span className="material-icons" style={{ fontSize: '12px' }}>expand_more</span>
                 </button>

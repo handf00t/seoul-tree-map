@@ -67,30 +67,9 @@ function forceReload() {
 }
 
 /**
- * 사용자에게 업데이트 알림을 표시합니다
- */
-function showUpdateNotification(onUpdate) {
-  const shouldUpdate = window.confirm(
-    '새로운 버전이 배포되었습니다.\n' +
-    '최신 기능을 사용하려면 페이지를 새로고침해주세요.\n\n' +
-    '지금 새로고침하시겠습니까?'
-  );
-
-  if (shouldUpdate) {
-    if (onUpdate) onUpdate();
-    forceReload();
-  }
-}
-
-/**
  * 버전을 체크하고 필요시 업데이트합니다
- * @param {Object} options - 옵션
- * @param {boolean} options.silent - true면 자동 새로고침, false면 사용자에게 확인
- * @param {Function} options.onUpdate - 업데이트 전 실행할 콜백
  */
-export async function checkVersion(options = {}) {
-  const { silent = false, onUpdate } = options;
-
+export async function checkVersion() {
   const serverVersion = await fetchServerVersion();
   if (!serverVersion) return;
 
@@ -107,13 +86,13 @@ export async function checkVersion(options = {}) {
 /**
  * 주기적으로 버전을 체크합니다
  */
-export function startVersionCheck(options = {}) {
+export function startVersionCheck() {
   // 초기 체크
-  checkVersion(options);
+  checkVersion();
 
   // 주기적 체크 시작
   const intervalId = setInterval(() => {
-    checkVersion(options);
+    checkVersion();
   }, VERSION_CHECK_INTERVAL);
 
   // 정리 함수 반환

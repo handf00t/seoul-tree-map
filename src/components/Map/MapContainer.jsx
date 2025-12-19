@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { SEOUL_CENTER, MAP_ZOOM, MAP_STYLES, TREE_LAYER_IDS, MAP_ANIMATION } from '../../constants';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -13,9 +14,9 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [126.9780, 37.5665],
-      zoom: 11
+      style: MAP_STYLES.LIGHT,
+      center: [SEOUL_CENTER.lng, SEOUL_CENTER.lat],
+      zoom: MAP_ZOOM.DEFAULT
     });
 
     mapRef.current = map;
@@ -209,9 +210,7 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
       }
 
       // 나무 클릭 이벤트
-      const treeLayers = ['protected-trees', 'roadside-trees', 'park-trees'];
-      
-      treeLayers.forEach(layerId => {
+      TREE_LAYER_IDS.forEach(layerId => {
         map.on('click', layerId, (e) => {
           const properties = e.features[0].properties;
           const feature = e.features[0];
@@ -276,7 +275,7 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
       map.on('click', (e) => {
         // 나무 레이어를 클릭하지 않은 경우만 처리
         const features = map.queryRenderedFeatures(e.point, {
-          layers: treeLayers
+          layers: TREE_LAYER_IDS
         });
         
         if (features.length === 0 && onMapClick) {
@@ -293,7 +292,7 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
 
           setTimeout(() => {
             const features = map.queryRenderedFeatures({
-              layers: ['protected-trees', 'roadside-trees', 'park-trees']
+              layers: TREE_LAYER_IDS
             });
 
             if (process.env.NODE_ENV === 'development') {
@@ -351,15 +350,15 @@ const MapContainer = ({ onMapLoad, onTreeClick, selectedTree, onMapInteractionCh
 
       selectedMarkerRef.current = marker;
 
-      const currentZoom = Math.max(mapRef.current.getZoom(), 16);
-      
+      const currentZoom = Math.max(mapRef.current.getZoom(), MAP_ZOOM.TREE_DETAIL);
+
       mapRef.current.flyTo({
         center: [
           selectedTree.clickCoordinates.lng,
           selectedTree.clickCoordinates.lat
         ],
         zoom: currentZoom,
-        duration: 1000
+        duration: MAP_ANIMATION.TREE_SELECT.duration
       });
     }
   }, [selectedTree]);
