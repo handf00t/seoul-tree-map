@@ -686,6 +686,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
                     showBenefits={showBenefits}
                     onToggle={() => setShowBenefits(!showBenefits)}
                     hasBenefitsData={hasBenefitsData}
+                    isMobile={isMobile}
                   />
                 </>
               )}

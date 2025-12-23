@@ -10,9 +10,10 @@ interface BenefitsSectionProps {
   showBenefits: boolean;
   onToggle: () => void;
   hasBenefitsData: boolean;
+  isMobile?: boolean;
 }
 
-const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefits, onToggle, hasBenefitsData }) => {
+const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefits, onToggle, hasBenefitsData, isMobile = false }) => {
   const { t, i18n } = useTranslation();
 
   return (
@@ -28,7 +29,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefit
               color: showBenefits ? 'var(--surface)' : 'var(--text-primary)',
               border: showBenefits ? 'none' : '1px solid var(--outline)',
               borderRadius: '8px',
-              fontSize: '17px',
+              fontSize: isMobile ? '15px' : '17px',
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
@@ -43,7 +44,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefit
             <span className="material-icons" style={{
               transform: showBenefits ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.2s ease',
-              fontSize: '14px'
+              fontSize: isMobile ? '12px' : '14px'
             }}>
               expand_more
             </span>
