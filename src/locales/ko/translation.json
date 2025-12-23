@@ -237,6 +237,13 @@
     "link": "링크",
     "sendFeedbackEmail": "이메일로 피드백 보내기"
   },
+  "landing": {
+    "blogTitle": "최신 이야기",
+    "blogSubtitle": "나무에 대한 흥미로운 분석과 이야기",
+    "viewAllPosts": "전체 보기",
+    "clickToExplore": "클릭하여 나무 탐색",
+    "mapHint": "서울의 40만 나무를 만나보세요"
+  },
   "blog": {
     "title": "블로그",
     "categories": "카테고리",

@@ -1,7 +1,7 @@
 {
   "short_name": "나무지도",
-  "name": "서울시 나무 지도 - Seoul Tree Explorer",
-  "description": "서울시 전역의 가로수와 보호수를 탐색하는 인터랙티브 지도",
+  "name": "Seoul Tree Map",
+  "description": "서울 전역의 가로수와 보호수를 탐색하는 인터랙티브 지도",
   "icons": [
     {
       "src": "favicon.ico",

@@ -237,6 +237,13 @@
     "link": "Link",
     "sendFeedbackEmail": "Send Feedback via Email"
   },
+  "landing": {
+    "blogTitle": "Latest Stories",
+    "blogSubtitle": "Interesting analysis and stories about trees",
+    "viewAllPosts": "View All",
+    "clickToExplore": "Click to explore trees",
+    "mapHint": "Discover 400,000+ trees in Seoul"
+  },
   "blog": {
     "title": "Blog",
     "categories": "Categories",

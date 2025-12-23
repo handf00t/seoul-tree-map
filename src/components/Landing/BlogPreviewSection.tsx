@@ -27,7 +27,12 @@ const BlogPreviewSection: React.FC<BlogPreviewSectionProps> = ({ onViewAll }) =>
     const fetchPosts = async () => {
       try {
         const lang = i18n.language === 'ko' ? 'ko' : 'en';
-        const allPosts = await loadAllPosts(lang);
+        let allPosts = await loadAllPosts(lang);
+
+        // 영어 포스트가 없으면 한국어로 fallback
+        if (allPosts.length === 0 && lang === 'en') {
+          allPosts = await loadAllPosts('ko');
+        }
 
         // 최신 3개 포스트만 사용
         const latestPosts = allPosts.slice(0, 3).map((post: any) => ({
