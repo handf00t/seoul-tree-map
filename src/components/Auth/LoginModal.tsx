@@ -69,7 +69,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isVisible, onClose }) => {
           padding: '24px 24px 0 24px',
           textAlign: 'center'
         }}>
-          <span className="material-icons" style={{ fontSize: '48px', marginBottom: '12px', display: 'block' }}>park</span>
+          <img src="/logo.svg" alt="Logo" style={{ width: '64px', height: '64px', marginBottom: '12px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
           <h2 style={{
             margin: '0 0 8px 0',
             fontSize: '24px',

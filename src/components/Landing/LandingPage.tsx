@@ -9,7 +9,6 @@ import TreeFilter from '../Filter/TreeFilter';
 import LoginModal from '../Auth/LoginModal';
 import FavoritesModal from '../Favorites/FavoritesModal';
 import MapSection from './MapSection';
-import FeaturesSection from './FeaturesSection';
 import BlogPreviewSection from './BlogPreviewSection';
 import { TreeData } from '../../types';
 
@@ -133,10 +132,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
         )}
       </div>
 
-      {/* Section 2: Features */}
-      <FeaturesSection />
-
-      {/* Section 3: Blog Preview */}
+      {/* Section 2: Blog Preview */}
       <BlogPreviewSection onViewAll={() => navigate('/blog')} />
 
       {/* Modals */}
