@@ -6,9 +6,10 @@ import { TreeData } from '../../../types';
 
 interface TreeInfoBoxProps {
   treeData: TreeData;
+  isMobile?: boolean;
 }
 
-const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
+const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData, isMobile = false }) => {
   const { t } = useTranslation();
   const hasAnyInfo = hasValidData(treeData.height_m) ||
                      hasValidData(treeData.dbh_cm) ||
@@ -25,7 +26,7 @@ const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
       background: 'var(--primary-surface)',
       borderRadius: '8px',
       marginBottom: '16px',
-      fontSize: '16px',
+      fontSize: isMobile ? '14px' : '16px',
       border: '1px solid var(--primary-border)'
     }}>
       {hasValidData(treeData.height_m) && (

@@ -679,7 +679,7 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
               ) : (
                 // 정보 탭 (기존 내용)
                 <>
-                  <TreeInfoBox treeData={treeData} />
+                  <TreeInfoBox treeData={treeData} isMobile={isMobile} />
 
                   <BenefitsSection
                     treeData={treeData}
