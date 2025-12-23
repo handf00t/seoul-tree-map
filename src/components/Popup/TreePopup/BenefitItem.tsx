@@ -21,20 +21,20 @@ const BenefitItem: React.FC<BenefitItemProps> = ({ label, valueLabel, krwValue, 
       border: '1px solid var(--primary-border)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+        <span style={{ fontSize: '16px', color: 'var(--text-secondary)' }}>
           {label}
         </span>
       </div>
       <div style={{ textAlign: 'right' }}>
         <div style={{
-          fontSize: '15px',
+          fontSize: '17px',
           fontWeight: '600',
           color: 'var(--primary-dark)'
         }}>
           {valueLabel}
         </div>
         {hasValidData(krwValue) && (
-          <div style={{ fontSize: '12px', color: 'var(--primary-dark)' }}>
+          <div style={{ fontSize: '14px', color: 'var(--primary-dark)' }}>
             {formatKRW(krwValue!, language)}
           </div>
         )}

@@ -3,11 +3,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { clearMapFilters } from './utils/mapFilters';
 import { startVersionCheck } from './utils/versionChecker';
 import MapContainer from './components/Map/MapContainer';
-import SearchFilterPanel from './components/Search/SearchFilterPanel';
 import MobileNavPanel from './components/Navigation/MobileNavPanel';
+import { LandingPage } from './components/Landing';
 import TreePopup from './components/Popup/TreePopup';
 import TreeFilter from './components/Filter/TreeFilter';
 import LoginModal from './components/Auth/LoginModal';
@@ -188,10 +187,8 @@ function AppContent() {
     setActiveFilters(filters);
   }, []);
 
-  const clearFilters = useCallback(() => {
-    setActiveFilters({ species: [], sizes: [] });
-    clearMapFilters(mapInstance);
-  }, [mapInstance]);
+  // clearFilters는 모바일에서는 MobileNavPanel 내부에서 처리
+  // PC에서는 LandingPage 내부에서 처리
 
   const handleLoginClick = () => {
     if (user) {
@@ -223,17 +220,24 @@ function AppContent() {
   }, [showProfile]);
 
   return (
-    <div className="App">
+    <div
+      className="App"
+      style={!isMobile ? {
+        height: 'auto',
+        overflow: 'visible',
+        minHeight: '100vh'
+      } : undefined}
+    >
       {/* 헤더 - PC만 표시 */}
       {!isMobile && (
       <header style={{
         background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
-        color: 'var(--on-surface)',
         padding: '16px 24px',
         boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
         zIndex: 1000,
-        position: 'relative',
+        position: 'sticky',
+        top: 0,
         borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
       }}>
         <div style={{
@@ -246,9 +250,9 @@ function AppContent() {
           {/* 로고 영역 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '16px' }}>
             <div style={{
-              borderRadius: isMobile ? '8px' : '12px',
-              width: isMobile ? '36px' : '48px',
-              height: isMobile ? '36px' : '48px',
+              borderRadius: isMobile ? '8px' : '10px',
+              width: isMobile ? '36px' : '44px',
+              height: isMobile ? '36px' : '44px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -277,7 +281,6 @@ function AppContent() {
               <p style={{
                 margin: 0,
                 fontSize: '12px',
-                opacity: 0.7,
                 color: 'var(--on-surface-variant)'
               }}>
                 Seoul Urban Tree Explorer
@@ -294,78 +297,59 @@ function AppContent() {
             <button
               onClick={() => navigate('/blog')}
               style={{
-                background: 'var(--surface-variant)',
+                background: 'transparent',
                 color: 'var(--on-surface-variant)',
                 border: 'none',
-                borderRadius: 'var(--radius-lg)',
-                height: '40px',
-                padding: '10px 16px',
+                padding: '8px 12px',
                 fontSize: '14px',
-                fontWeight: '600',
+                fontWeight: '500',
                 cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease',
-                boxShadow: 'var(--shadow-sm)'
+                transition: 'color 0.2s ease'
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--surface)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--surface-variant)')}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--on-surface)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--on-surface-variant)')}
             >
-              <span className="material-icons" style={{ fontSize: '18px' }}>article</span>
-              <span>{t('navigation.blog')}</span>
+              {t('navigation.blog')}
             </button>
 
             {/* 소개 버튼 (PC만) */}
             <button
               onClick={() => setShowAbout(true)}
               style={{
-                background: 'var(--surface-variant)',
+                background: 'transparent',
                 color: 'var(--on-surface-variant)',
                 border: 'none',
-                borderRadius: 'var(--radius-lg)',
-                height: '40px',
-                padding: '10px 16px',
+                padding: '8px 12px',
                 fontSize: '14px',
-                fontWeight: '600',
+                fontWeight: '500',
                 cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease',
-                boxShadow: 'var(--shadow-sm)'
+                transition: 'color 0.2s ease'
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--surface)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--surface-variant)')}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--on-surface)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--on-surface-variant)')}
             >
-              <span className="material-icons" style={{ fontSize: '18px' }}>info</span>
-              <span>{t('navigation.about')}</span>
+              {t('navigation.about')}
             </button>
 
             {/* 로그인/프로필 버튼 (PC만) */}
             <div style={{ position: 'relative' }} className="profile-container">
                 <button
                   onClick={handleLoginClick}
-                  className="interactive-element"
                   style={{
-                    background: user ? 'var(--gradient-secondary)' : 'var(--surface-variant)',
-                    color: user ? 'var(--on-primary)' : 'var(--on-surface-variant)',
+                    background: 'transparent',
+                    color: 'var(--on-surface-variant)',
                     border: 'none',
-                    borderRadius: 'var(--radius-lg)',
-                    height: '40px',
-                    padding: '10px 16px',
+                    padding: '8px 12px',
                     fontSize: '14px',
-                    fontWeight: '600',
+                    fontWeight: '500',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
                     gap: '8px',
-                    transition: 'all var(--duration-normal) ease',
-                    boxShadow: user ? 'var(--shadow-md)' : 'var(--shadow-sm)'
+                    transition: 'color 0.2s ease'
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--on-surface)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--on-surface-variant)')}
                 >
                   {loading ? (
                     <div className="loading-spinner" style={{ width: '16px', height: '16px' }} />
@@ -405,26 +389,26 @@ function AppContent() {
       </header>
       )}
 
-      {/* 메인 지도 영역 */}
-      <main style={{
-        height: isMobile ? '100vh' : 'calc(100vh - 96px)',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <MapContainer
-          onMapLoad={handleMapLoad}
-          onTreeClick={handleTreeClick}
-          selectedTree={selectedTree}
-          onMapInteractionChange={setIsMapInteracting}
-          onMapClick={() => {
-            if (showPopup && !isMapInteracting) {
-              setIsPopupMinimized(true);
-            }
-          }}
-        />
+      {/* 메인 영역 - PC와 Mobile 분기 */}
+      {isMobile ? (
+        /* 모바일: 기존 전체화면 지도 레이아웃 유지 */
+        <main style={{
+          height: '100vh',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <MapContainer
+            onMapLoad={handleMapLoad}
+            onTreeClick={handleTreeClick}
+            selectedTree={selectedTree}
+            onMapInteractionChange={setIsMapInteracting}
+            onMapClick={() => {
+              if (showPopup && !isMapInteracting) {
+                setIsPopupMinimized(true);
+              }
+            }}
+          />
 
-        {/* 현재 위치 버튼 (모바일만) */}
-        {isMobile && (
           <CurrentLocationButton
             map={mapInstance}
             isMobile={isMobile}
@@ -432,19 +416,7 @@ function AppContent() {
             isHidden={showPopup && !isPopupMinimized}
             isPanelCollapsed={isPanelCollapsed}
           />
-        )}
 
-        {/* PC용 검색 패널 (완전 분리) */}
-        {!isMobile && (
-          <SearchFilterPanel
-            map={mapInstance}
-            activeFilterCount={getActiveFilterCount()}
-            onFilterApply={handleFilterApply}
-          />
-        )}
-
-        {/* 모바일용 네비게이션 패널 (완전 분리) */}
-        {isMobile && (
           <MobileNavPanel
             map={mapInstance}
             onFilterClick={() => setShowFilter(true)}
@@ -463,172 +435,134 @@ function AppContent() {
             minimizedPopupHeight={isPopupMinimized ? 180 : 0}
             onCollapseChange={setIsPanelCollapsed}
           />
-        )}
 
-        {/* PC용 필터 범례 */}
-        {!isMobile && getActiveFilterCount() > 0 && (
-          <div className="surface-card" style={{
-            position: 'absolute',
-            bottom: '20px',
-            left: '20px',
-            zIndex: 1000,
-            maxWidth: '280px',
-            animation: 'slideUp var(--duration-normal) ease'
-          }}>
-            <div style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: 'var(--on-surface)',
-              marginBottom: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <span className="material-icons" style={{ fontSize: '16px' }}>filter_alt</span> {t('filter.activeFiltersLabel')}
-              <button
-                onClick={clearFilters}
-                className="badge badge-primary"
-                style={{
-                  cursor: 'pointer',
-                  border: 'none',
-                  fontSize: '10px',
-                  padding: '4px 8px'
-                }}
-              >
-                {t('common.reset')}
-              </button>
-            </div>
+          <TreePopup
+            key={selectedTree?.source_id}
+            treeData={selectedTree}
+            isVisible={showPopup}
+            onClose={handleClosePopup}
+            map={mapInstance}
+            onMinimizedChange={setIsPopupMinimized}
+            isMapInteracting={isMapInteracting}
+            onLoginRequest={() => setShowLogin(true)}
+          />
 
-            {activeFilters.species.length > 0 && (
-              <div style={{ marginBottom: '4px' }}>
-                <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{t('filter.species')}: </span>
-                <span style={{ fontSize: '12px', color: 'var(--on-surface)' }}>
-                  {activeFilters.species.join(', ')}
-                </span>
-              </div>
-            )}
+          <TreeFilter
+            map={mapInstance}
+            isVisible={showFilter}
+            onClose={() => setShowFilter(false)}
+            onFilterApply={handleFilterApply}
+          />
 
-            {activeFilters.sizes.length > 0 && (
-              <div>
-                <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{t('filter.size')}: </span>
-                <span style={{ fontSize: '12px', color: 'var(--on-surface)' }}>
-                  {t('filter.rangesSelected', { count: activeFilters.sizes.length })}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
+          <LoginModal
+            isVisible={showLogin}
+            onClose={() => setShowLogin(false)}
+          />
 
-        {/* 공통 모달들 */}
-        <TreePopup
-          treeData={selectedTree}
-          isVisible={showPopup}
-          onClose={handleClosePopup}
-          map={mapInstance}
-          onMinimizedChange={setIsPopupMinimized}
-          isMapInteracting={isMapInteracting}
-          onLoginRequest={() => setShowLogin(true)}
-        />
-
-        <TreeFilter
-          map={mapInstance}
-          isVisible={showFilter}
-          onClose={() => setShowFilter(false)}
+          <FavoritesModal
+            isVisible={showFavorites}
+            onClose={() => setShowFavorites(false)}
+            onTreeSelect={(treeData: TreeData) => {
+              setSelectedTree(treeData);
+              setShowPopup(true);
+            }}
+            map={mapInstance}
+          />
+        </main>
+      ) : (
+        /* PC: 랜딩 페이지 레이아웃 */
+        <LandingPage
+          onMapLoad={handleMapLoad}
+          mapInstance={mapInstance}
+          selectedTree={selectedTree}
+          showPopup={showPopup}
+          onTreeClick={handleTreeClick}
+          onClosePopup={handleClosePopup}
+          activeFilters={activeFilters}
           onFilterApply={handleFilterApply}
+          showLogin={showLogin}
+          setShowLogin={setShowLogin}
+          showFavorites={showFavorites}
+          setShowFavorites={setShowFavorites}
         />
+      )}
 
-        <LoginModal
-          isVisible={showLogin}
-          onClose={() => setShowLogin(false)}
-        />
+      {/* 블로그 라우팅 (공통) */}
+      <Routes>
+        <Route path="/blog" element={<BlogView onClose={() => navigate('/')} />} />
+        <Route path="/blog/:postId" element={<BlogView onClose={() => navigate('/')} />} />
+      </Routes>
 
-        <FavoritesModal
-          isVisible={showFavorites}
-          onClose={() => setShowFavorites(false)}
-          onTreeSelect={(treeData: TreeData) => {
-            setSelectedTree(treeData);
-            setShowPopup(true);
+      {/* 블로그 모달 - 구식 방식 지원 */}
+      {showBlog && !location.pathname.startsWith('/blog') && <BlogView onClose={() => setShowBlog(false)} />}
+
+      {/* 소개 모달 (PC 헤더 버튼용) */}
+      {showAbout && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10000,
+            padding: '20px'
           }}
-          map={mapInstance}
-        />
-
-        {/* 블로그 라우팅 */}
-        <Routes>
-          <Route path="/blog" element={<BlogView onClose={() => navigate('/')} />} />
-          <Route path="/blog/:postId" element={<BlogView onClose={() => navigate('/')} />} />
-        </Routes>
-
-        {/* 블로그 모달 (PC & Mobile) - 구식 방식 지원 */}
-        {showBlog && !location.pathname.startsWith('/blog') && <BlogView onClose={() => setShowBlog(false)} />}
-
-        {/* 소개 모달 (PC) */}
-        {showAbout && (
+          onClick={() => {
+            setShowAbout(false);
+            setSelectedAboutSection(null);
+          }}
+        >
           <div
             style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0, 0, 0, 0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 10000,
-              padding: '20px'
+              background: 'white',
+              borderRadius: '24px',
+              maxWidth: '600px',
+              width: '100%',
+              maxHeight: '85vh',
+              overflow: 'auto',
+              position: 'relative'
             }}
-            onClick={() => {
-              setShowAbout(false);
-              setSelectedAboutSection(null);
-            }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              style={{
-                background: 'white',
-                borderRadius: '24px',
-                maxWidth: '600px',
-                width: '100%',
-                maxHeight: '85vh',
-                overflow: 'auto',
-                position: 'relative'
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div style={{ position: 'relative' }}>
-                <AboutView
-                  setActiveView={(view: string) => {
-                    if (view === 'home') {
-                      setShowAbout(false);
-                      setSelectedAboutSection(null);
-                    }
+            <div style={{ position: 'relative' }}>
+              <AboutView
+                setActiveView={(view: string) => {
+                  if (view === 'home') {
+                    setShowAbout(false);
+                    setSelectedAboutSection(null);
+                  }
+                }}
+                onDetailClick={(section: AboutSection) => setSelectedAboutSection(section)}
+              />
+              {selectedAboutSection && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'white',
+                    borderRadius: '24px',
+                    overflow: 'auto',
+                    zIndex: 10
                   }}
-                  onDetailClick={(section: AboutSection) => setSelectedAboutSection(section)}
-                />
-                {selectedAboutSection && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: 'white',
-                      borderRadius: '24px',
-                      overflow: 'auto',
-                      zIndex: 10
-                    }}
-                  >
-                    <AboutDetailSheet
-                      section={selectedAboutSection}
-                      onClose={() => setSelectedAboutSection(null)}
-                    />
-                  </div>
-                )}
-              </div>
+                >
+                  <AboutDetailSheet
+                    section={selectedAboutSection}
+                    onClose={() => setSelectedAboutSection(null)}
+                  />
+                </div>
+              )}
             </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </div>
   );
 }

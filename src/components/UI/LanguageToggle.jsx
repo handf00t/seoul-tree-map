@@ -56,46 +56,40 @@ const LanguageToggle = ({ variant = 'default' }) => {
     );
   }
 
-  // Desktop header style
+  // Desktop header style (light header - simple text)
   return (
     <div style={{
       display: 'flex',
-      gap: '0',
-      background: 'var(--surface-variant)',
-      borderRadius: '8px',
-      padding: '4px',
-      boxShadow: 'var(--shadow-sm)'
+      alignItems: 'center',
+      gap: '4px'
     }}>
       <button
         onClick={() => changeLanguage('ko')}
         style={{
-          padding: '6px 12px',
-          background: currentLang === 'ko' ? 'var(--surface)' : 'transparent',
-          color: currentLang === 'ko' ? 'var(--text-primary)' : 'var(--text-secondary)',
+          padding: '8px 8px',
+          background: 'transparent',
+          color: currentLang === 'ko' ? 'var(--on-surface)' : 'var(--text-tertiary)',
           border: 'none',
-          borderRadius: '6px',
-          fontSize: '13px',
-          fontWeight: '600',
+          fontSize: '14px',
+          fontWeight: currentLang === 'ko' ? '600' : '400',
           cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: currentLang === 'ko' ? 'var(--shadow-sm)' : 'none'
+          transition: 'all 0.2s ease'
         }}
       >
         KO
       </button>
+      <span style={{ color: 'var(--outline)', fontSize: '12px' }}>|</span>
       <button
         onClick={() => changeLanguage('en')}
         style={{
-          padding: '6px 12px',
-          background: currentLang === 'en' ? 'var(--surface)' : 'transparent',
-          color: currentLang === 'en' ? 'var(--text-primary)' : 'var(--text-secondary)',
+          padding: '8px 8px',
+          background: 'transparent',
+          color: currentLang === 'en' ? 'var(--on-surface)' : 'var(--text-tertiary)',
           border: 'none',
-          borderRadius: '6px',
-          fontSize: '13px',
-          fontWeight: '600',
+          fontSize: '14px',
+          fontWeight: currentLang === 'en' ? '600' : '400',
           cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: currentLang === 'en' ? 'var(--shadow-sm)' : 'none'
+          transition: 'all 0.2s ease'
         }}
       >
         EN

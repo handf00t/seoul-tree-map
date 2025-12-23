@@ -14,7 +14,7 @@ import TabMenu from './TreePopup/TabMenu';
 import TreeInfoBox from './TreePopup/TreeInfoBox';
 import BenefitsSection from './TreePopup/BenefitsSection';
 
-const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMapInteracting, onLoginRequest }) => {
+const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMapInteracting, onLoginRequest, isLandingPage = false }) => {
   const { t, i18n } = useTranslation();
   const { user, addToFavorites, removeFromFavorites, isFavorite, recordTreeView } = useAuth();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= BREAKPOINT.MOBILE);
@@ -333,17 +333,32 @@ const TreePopup = ({ treeData, onClose, isVisible, map, onMinimizedChange, isMap
     pointerEvents: 'auto'
   };
 
-  const desktopModalStyle = {
+  const desktopModalStyle = isLandingPage ? {
+    // 랜딩 페이지: 지도 섹션 내부에 절대 위치
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%) scale(0.85)',
+    background: 'var(--surface)',
+    borderRadius: '12px',
+    boxShadow: '0 8px 32px var(--shadow-color-lg)',
+    zIndex: 100,
+    width: '480px',
+    maxHeight: '85%',
+    overflowY: 'auto',
+    pointerEvents: 'auto'
+  } : {
+    // 일반 페이지: 화면 중앙 고정
     position: 'fixed',
     top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -50%)',
+    transform: 'translate(-50%, -50%) scale(0.85)',
     background: 'var(--surface)',
     borderRadius: '12px',
     boxShadow: '0 8px 32px var(--shadow-color-lg)',
     zIndex: 2001,
-    width: '520px',
-    maxHeight: '85vh',
+    width: '480px',
+    maxHeight: '75vh',
     overflowY: 'auto',
     pointerEvents: 'auto'
   };

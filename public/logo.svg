@@ -1,8 +1,4 @@
-<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="95" fill="#2D5A3D"/>
-  <rect x="90" y="95" width="20" height="50" rx="3" fill="#8B6F47"/>
-  <circle cx="100" cy="85" r="35" fill="#4A7C59"/>
-  <circle cx="75" cy="75" r="28" fill="#5E9B6E"/>
-  <circle cx="125" cy="75" r="28" fill="#5E9B6E"/>
-  <circle cx="100" cy="60" r="30" fill="#6FB583"/>
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M540 38L924.515 704H155.485L540 38Z" fill="#1CD19E"/>
+<circle cx="539.5" cy="890.5" r="151.5" fill="#8B7355"/>
 </svg>

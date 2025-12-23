@@ -28,7 +28,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefit
               color: showBenefits ? 'var(--surface)' : 'var(--text-primary)',
               border: showBenefits ? 'none' : '1px solid var(--outline)',
               borderRadius: '8px',
-              fontSize: '15px',
+              fontSize: '17px',
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
@@ -43,7 +43,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ treeData, showBenefit
             <span className="material-icons" style={{
               transform: showBenefits ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.2s ease',
-              fontSize: '12px'
+              fontSize: '14px'
             }}>
               expand_more
             </span>

@@ -25,7 +25,7 @@ const TreeInfoBox: React.FC<TreeInfoBoxProps> = ({ treeData }) => {
       background: 'var(--primary-surface)',
       borderRadius: '8px',
       marginBottom: '16px',
-      fontSize: '14px',
+      fontSize: '16px',
       border: '1px solid var(--primary-border)'
     }}>
       {hasValidData(treeData.height_m) && (

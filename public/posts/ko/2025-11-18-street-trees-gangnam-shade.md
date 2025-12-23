@@ -276,7 +276,7 @@ featured: true
 
 가로수들의 그늘이 서로 겹치면 100%를 초과합니다. 서초구 헌릉로는 112.3%인데, 이건 그늘이 12.3% 겹친다는 뜻입니다. 더 진하고 시원한 그늘이 만들어집니다.
 
-이게 이상해 보일 수 있는데, 실은 학술적으로도 인정된 개념입니다. **RISC(Range Inventory Standardization Committee, 1983)** 공식 정의에 따르면 "수관 피복(Canopy cover)은 100%를 초과할 수 있다"고 명시되어 있습니다. Arizona 대학 문헌에서는 **170%** 수관 피복 사례도 기록되어 있습니다.
+이게 이상해 보일 수 있는데, 실은 학술적으로도 인정된 개념입니다. **RISC(Range Inventory Standardization Committee)** 공식 정의에 따르면 "수관 피복(Canopy cover)은 100%를 초과할 수 있다"고 명시되어 있습니다. 
 
 **가로수 크기의 마법**
 

@@ -1,13 +1,13 @@
 /* src/App.css - 게임화된 스타일 업데이트 */
 :root {
-  /* Primary Brand Colors - Greens */
-  --primary: #84cc16;
-  --primary-light: #a3e635;
-  --primary-lighter: #bef264;
-  --primary-dark: #4d7c0f;
-  --primary-darker: #365314;
-  --primary-surface: #f7fee7;
-  --primary-border: #d9f99d;
+  /* Primary Brand Colors - Mint Green */
+  --primary: #1CD19E;
+  --primary-light: #4EEDC4;
+  --primary-lighter: #7FF5D9;
+  --primary-dark: #16A085;
+  --primary-darker: #0E7A64;
+  --primary-surface: #E8FBF7;
+  --primary-border: #A8F0DE;
 
   /* Tree Type Colors */
   --tree-protected: #FF6B6B;
@@ -60,7 +60,7 @@
   --error: #ff4757;
   --error-dark: #e74c3c;
   --warning: #F39C12;
-  --success: #84cc16;
+  --success: #1CD19E;
   --info: #45B7D1;
 
   /* Special UI Colors */
@@ -80,8 +80,8 @@
   --shadow-color-md: rgba(0, 0, 0, 0.12);
   --shadow-color-lg: rgba(0, 0, 0, 0.15);
   --shadow-color-xl: rgba(0, 0, 0, 0.2);
-  --shadow-primary: rgba(132, 204, 22, 0.3);
-  --shadow-glow: rgba(78, 205, 196, 0.3);
+  --shadow-primary: rgba(28, 209, 158, 0.3);
+  --shadow-glow: rgba(28, 209, 158, 0.3);
 
   /* Solid colors (gradients removed) */
   --gradient-primary: var(--primary);

@@ -209,7 +209,7 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
       position: 'absolute',
       top: '20px',
       left: '20px',
-      zIndex: 1000,
+      zIndex: 10,
       width: '350px',
       maxWidth: 'calc(100vw - 40px)'
     }}>
