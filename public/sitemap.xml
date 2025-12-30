@@ -1,12 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Main Page -->
   <url>
     <loc>https://seoultreemap.com/</loc>
-    <lastmod>2025-01-12</lastmod>
+    <lastmod>2025-12-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ko" href="https://seoultreemap.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://seoultreemap.com/" />
+  </url>
+
+  <!-- Blog Index -->
+  <url>
+    <loc>https://seoultreemap.com/blog</loc>
+    <lastmod>2025-12-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://seoultreemap.com/blog/2025-11-18-street-trees-gangnam-shade</loc>
+    <lastmod>2025-11-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seoultreemap.com/blog/2025-11-16-street-trees-pruning</loc>
+    <lastmod>2025-11-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seoultreemap.com/blog/2025-11-14-street-trees-selection</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seoultreemap.com/blog/2025-11-11-street-trees-hero</loc>
+    <lastmod>2025-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
