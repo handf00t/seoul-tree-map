@@ -4,7 +4,7 @@ slug: "street-trees-selection"
 title: "우리 동네 가로수는 왜 그 나무일까?"
 excerpt: "은행나무, 벚나무, 느티나무... 가로수는 아무 나무나 심는 게 아니에요. 어떤 기준으로 골라서 심는지 알아봅니다."
 category: "story"
-tags: ["가로수", "도시숲", "환경", "도시"]
+tags: ["가로수", "수종", "은행나무", "벚나무", "느티나무", "플라타너스", "메타세쿼이아", "단풍나무"]
 author: "서울트리맵"
 avatar: "/logo.svg"
 publishedAt: "2025-11-14"

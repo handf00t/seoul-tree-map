@@ -4,7 +4,7 @@ slug: "street-trees-pruning"
 title: "가로수는 왜 머리를 자를까?"
 excerpt: "겨울이면 앙상해지는 가로수. 왜 가지를 잘라내는 걸까요? 가로수 가지치기의 비밀을 알아봅니다."
 category: "story"
-tags: ["가로수", "가지치기", "전정", "도시"]
+tags: ["가로수", "가지치기", "전정", "나무관리", "수형관리", "태풍대비", "겨울나무"]
 author: "서울트리맵"
 avatar: "/logo.svg"
 publishedAt: "2025-11-16"
