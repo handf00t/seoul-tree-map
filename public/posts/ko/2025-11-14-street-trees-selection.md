@@ -7,7 +7,7 @@ category: "story"
 tags: ["가로수", "수종", "은행나무", "벚나무", "느티나무", "플라타너스", "메타세쿼이아", "단풍나무"]
 author: "서울트리맵"
 avatar: "/logo.svg"
-publishedAt: "2025-11-14"
+publishedAt: "2025-9-14"
 coverImage: "/blog/street-trees-selection.png"
 readTime: 6
 featured: true

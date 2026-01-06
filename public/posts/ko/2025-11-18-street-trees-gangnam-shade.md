@@ -7,7 +7,7 @@ category: "story"
 tags: ["가로수", "그늘", "강남구", "서초구", "송파구", "폭염", "여름산책", "수관폭", "걷기좋은길"]
 author: "서울트리맵"
 avatar: "/logo.svg"
-publishedAt: "2025-11-18"
+publishedAt: "2025-10-18"
 coverImage: "/blog/street-trees-gangnam-shade.png"
 readTime: 10
 featured: true

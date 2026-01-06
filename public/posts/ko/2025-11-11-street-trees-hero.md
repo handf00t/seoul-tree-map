@@ -7,7 +7,7 @@ category: "story"
 tags: ["가로수", "도시숲", "환경", "미세먼지", "공기정화", "열섬현상", "그늘", "소음저감", "생태통로"]
 author: "서울트리맵"
 avatar: "/logo.svg"
-publishedAt: "2025-11-11"
+publishedAt: "2025-9-11"
 coverImage: "/blog/street-trees-hero.png"
 readTime: 5
 featured: true

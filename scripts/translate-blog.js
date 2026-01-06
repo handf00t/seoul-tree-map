@@ -1,26 +1,40 @@
 #!/usr/bin/env node
 
 /**
- * 블로그 포스트 자동 번역 스크립트
+ * 블로그 포스트 자동 번역 스크립트 (Claude API)
  *
  * 실행: npm run translate-blog
  *
+ * 환경변수:
+ * - ANTHROPIC_API_KEY: Claude API 키
+ *
  * 기능:
  * 1. public/posts/ko/ 의 마크다운 파일 읽기
- * 2. 영어(en), 일본어(ja)로 자동 번역
- * 3. public/posts/en/, public/posts/ja/ 에 저장
+ * 2. Claude API로 자연스러운 영어 번역
+ * 3. public/posts/en/ 에 저장
+ * 4. manifest.json 자동 업데이트
  */
 
 const fs = require('fs');
 const path = require('path');
-const translate = require('@vitalets/google-translate-api').translate;
+const Anthropic = require('@anthropic-ai/sdk').default;
 
 const POSTS_DIR = path.join(__dirname, '../public/posts');
-const LANGUAGES = {
-  en: 'English'
-};
+const MANIFEST_PATH = path.join(POSTS_DIR, 'manifest.json');
 
-console.log('🌍 블로그 포스트 자동 번역 시작...\n');
+// API 키 확인
+const apiKey = process.env.ANTHROPIC_API_KEY;
+if (!apiKey) {
+  console.error('❌ ANTHROPIC_API_KEY 환경변수가 설정되지 않았습니다.');
+  console.log('\n설정 방법:');
+  console.log('  export ANTHROPIC_API_KEY="your-api-key"');
+  console.log('  npm run translate-blog');
+  process.exit(1);
+}
+
+const anthropic = new Anthropic({ apiKey });
+
+console.log('🌍 블로그 포스트 자동 번역 시작 (Claude API)...\n');
 
 // Front Matter 파싱
 function parseFrontMatter(markdown) {
@@ -28,7 +42,7 @@ function parseFrontMatter(markdown) {
   const match = markdown.match(frontMatterRegex);
 
   if (!match) {
-    return { metadata: {}, content: markdown };
+    return { frontMatter: '', content: markdown };
   }
 
   const [, frontMatter, content] = match;
@@ -40,19 +54,41 @@ function rebuildMarkdown(frontMatter, content) {
   return `---\n${frontMatter}\n---\n\n${content}`;
 }
 
-// 텍스트 번역
-async function translateText(text, targetLang) {
+// Claude API로 번역
+async function translateWithClaude(text, context = 'blog post') {
   try {
-    const result = await translate(text, { to: targetLang });
-    return result.text;
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4096,
+      messages: [
+        {
+          role: 'user',
+          content: `You are a professional translator specializing in Korean to English translation for blog content about urban trees and forestry.
+
+Translate the following Korean ${context} to natural, engaging English.
+- Keep the same markdown formatting (headings, lists, bold, etc.)
+- Maintain the friendly, educational tone
+- Keep technical terms accurate (tree species names, forestry terms)
+- Do not translate or modify URLs, file paths, or code blocks
+- For tree species, use the common English name if available
+
+Korean text to translate:
+${text}
+
+Provide only the translated text, no explanations.`
+        }
+      ]
+    });
+
+    return response.content[0].text;
   } catch (error) {
-    console.error(`번역 실패 (${targetLang}):`, error.message);
-    return text; // 실패 시 원문 반환
+    console.error(`번역 실패:`, error.message);
+    throw error;
   }
 }
 
-// Front Matter 필드별 번역
-async function translateFrontMatter(frontMatter, targetLang) {
+// Front Matter 번역
+async function translateFrontMatter(frontMatter) {
   const lines = frontMatter.split('\n');
   const translatedLines = [];
 
@@ -69,15 +105,26 @@ async function translateFrontMatter(frontMatter, targetLang) {
     // 번역이 필요한 필드
     if (['title', 'excerpt'].includes(key)) {
       // 따옴표 제거
-      const quote = value.startsWith('"') ? '"' : '';
+      const hasQuote = value.startsWith('"');
       value = value.replace(/^"|"$/g, '');
 
-      console.log(`  번역 중: ${key}...`);
-      const translated = await translateText(value, targetLang);
-      translatedLines.push(`${key}: ${quote}${translated}${quote}`);
-    } else if (key === 'author') {
-      // 작성자는 번역하지 않음 (선택사항)
-      translatedLines.push(line);
+      console.log(`  📝 ${key} 번역 중...`);
+      const translated = await translateWithClaude(value, `blog ${key}`);
+      translatedLines.push(`${key}: "${translated.trim()}"`);
+    } else if (key === 'tags') {
+      // 태그 번역
+      console.log(`  🏷️  tags 번역 중...`);
+      const tagMatch = value.match(/\[(.*)\]/);
+      if (tagMatch) {
+        const tags = tagMatch[1].split(',').map(t => t.trim().replace(/"/g, ''));
+        const translatedTags = await translateWithClaude(tags.join(', '), 'keywords/tags');
+        const formattedTags = translatedTags.split(',').map(t => `"${t.trim()}"`).join(', ');
+        translatedLines.push(`tags: [${formattedTags}]`);
+      } else {
+        translatedLines.push(line);
+      }
+    } else if (key === 'author' && value.includes('서울트리맵')) {
+      translatedLines.push('author: "Seoul Tree Map"');
     } else {
       translatedLines.push(line);
     }
@@ -86,65 +133,87 @@ async function translateFrontMatter(frontMatter, targetLang) {
   return translatedLines.join('\n');
 }
 
-// 마크다운 본문 번역 (단락별)
-async function translateContent(content, targetLang) {
-  const lines = content.split('\n');
-  const translatedLines = [];
+// 마크다운 본문 번역
+async function translateContent(content) {
+  console.log('  📄 본문 번역 중...');
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-
-    // 빈 줄, 구분선, 코드 블록은 번역하지 않음
-    if (!line || line === '---' || line.startsWith('```')) {
-      translatedLines.push(lines[i]);
-      continue;
-    }
-
-    // 제목, 리스트, 일반 텍스트 번역
-    if (line.startsWith('#') || line.startsWith('-') || line.match(/^[\w가-힣]/)) {
-      const prefix = line.match(/^(#{1,6}\s*|-\s*\*\*|\*\*|)/)[0];
-      const text = line.replace(prefix, '');
-
-      if (text.trim()) {
-        process.stdout.write('.');  // 진행 표시
-        const translated = await translateText(text, targetLang);
-        translatedLines.push(lines[i].replace(text, translated));
-      } else {
-        translatedLines.push(lines[i]);
-      }
-    } else {
-      translatedLines.push(lines[i]);
-    }
-  }
-
-  console.log(''); // 줄바꿈
-  return translatedLines.join('\n');
+  // 전체 콘텐츠를 한 번에 번역 (문맥 유지)
+  const translated = await translateWithClaude(content, 'blog article body');
+  return translated;
 }
 
 // 파일 번역
 async function translateFile(filename) {
   const koPath = path.join(POSTS_DIR, 'ko', filename);
+  const enPath = path.join(POSTS_DIR, 'en', filename);
 
   if (!fs.existsSync(koPath)) {
     console.log(`❌ 파일을 찾을 수 없음: ${filename}`);
-    return;
+    return false;
+  }
+
+  // 이미 영어 버전이 있는지 확인
+  if (fs.existsSync(enPath)) {
+    const koStat = fs.statSync(koPath);
+    const enStat = fs.statSync(enPath);
+
+    if (enStat.mtime >= koStat.mtime) {
+      console.log(`⏭️  스킵 (이미 최신): ${filename}`);
+      return true;
+    }
   }
 
   console.log(`\n📄 번역 중: ${filename}`);
   const markdown = fs.readFileSync(koPath, 'utf-8');
   const { frontMatter, content } = parseFrontMatter(markdown);
 
-  for (const [lang, langName] of Object.entries(LANGUAGES)) {
-    console.log(`\n🔄 ${langName} 번역 중...`);
-
-    const translatedFrontMatter = await translateFrontMatter(frontMatter, lang);
-    const translatedContent = await translateContent(content, lang);
+  try {
+    const translatedFrontMatter = await translateFrontMatter(frontMatter);
+    const translatedContent = await translateContent(content);
     const translatedMarkdown = rebuildMarkdown(translatedFrontMatter, translatedContent);
 
-    const targetPath = path.join(POSTS_DIR, lang, filename);
-    fs.writeFileSync(targetPath, translatedMarkdown, 'utf-8');
-    console.log(`✅ 저장: ${targetPath}`);
+    // en 디렉토리 확인
+    const enDir = path.join(POSTS_DIR, 'en');
+    if (!fs.existsSync(enDir)) {
+      fs.mkdirSync(enDir, { recursive: true });
+    }
+
+    fs.writeFileSync(enPath, translatedMarkdown, 'utf-8');
+    console.log(`✅ 저장 완료: ${enPath}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ 번역 실패: ${filename}`, error.message);
+    return false;
   }
+}
+
+// manifest.json 업데이트
+function updateManifest(translatedFiles) {
+  let manifest = { languages: ['ko', 'en'], posts: { ko: [], en: [] } };
+
+  if (fs.existsSync(MANIFEST_PATH)) {
+    manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
+  }
+
+  // ko 포스트 목록 갱신
+  const koDir = path.join(POSTS_DIR, 'ko');
+  manifest.posts.ko = fs.readdirSync(koDir)
+    .filter(f => f.endsWith('.md'))
+    .sort((a, b) => b.localeCompare(a)); // 최신순
+
+  // en 포스트 목록 갱신
+  const enDir = path.join(POSTS_DIR, 'en');
+  if (fs.existsSync(enDir)) {
+    manifest.posts.en = fs.readdirSync(enDir)
+      .filter(f => f.endsWith('.md'))
+      .sort((a, b) => b.localeCompare(a)); // 최신순
+  }
+
+  manifest.updatedAt = new Date().toISOString();
+  manifest.totalCount = manifest.posts.ko.length + manifest.posts.en.length;
+
+  fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2), 'utf-8');
+  console.log('\n📋 manifest.json 업데이트 완료');
 }
 
 // 메인 실행
@@ -165,11 +234,19 @@ async function main() {
 
   console.log(`총 ${files.length}개의 포스트를 번역합니다.\n`);
 
+  const translatedFiles = [];
   for (const file of files) {
-    await translateFile(file);
+    const success = await translateFile(file);
+    if (success) {
+      translatedFiles.push(file);
+    }
   }
 
+  // manifest.json 업데이트
+  updateManifest(translatedFiles);
+
   console.log('\n🎉 번역 완료!\n');
+  console.log(`📊 결과: ${translatedFiles.length}/${files.length} 파일 번역됨`);
 }
 
 main().catch(error => {

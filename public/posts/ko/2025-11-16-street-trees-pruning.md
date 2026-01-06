@@ -7,7 +7,7 @@ category: "story"
 tags: ["가로수", "가지치기", "전정", "나무관리", "수형관리", "태풍대비", "겨울나무"]
 author: "서울트리맵"
 avatar: "/logo.svg"
-publishedAt: "2025-11-16"
+publishedAt: "2025-10-16"
 coverImage: "/blog/street-trees-pruning.png"
 readTime: 6
 featured: false

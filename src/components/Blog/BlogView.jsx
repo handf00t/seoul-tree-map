@@ -13,7 +13,7 @@ import { loadAllPosts } from '../../utils/markdownLoader';
 const BlogView = ({ onClose }) => {
   const navigate = useNavigate();
   const { postId } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedPost, setSelectedPost] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -22,12 +22,19 @@ const BlogView = ({ onClose }) => {
   useEffect(() => {
     async function fetchPosts() {
       setIsLoading(true);
-      const loadedPosts = await loadAllPosts();
+      const lang = i18n.language === 'ko' ? 'ko' : 'en';
+      let loadedPosts = await loadAllPosts(lang);
+
+      // 영어 포스트가 없으면 한국어로 fallback
+      if (loadedPosts.length === 0 && lang === 'en') {
+        loadedPosts = await loadAllPosts('ko');
+      }
+
       setPosts(loadedPosts);
       setIsLoading(false);
     }
     fetchPosts();
-  }, []);
+  }, [i18n.language]);
 
   // URL 파라미터로 포스트 선택 (slug 기반)
   useEffect(() => {
