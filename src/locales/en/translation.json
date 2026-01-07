@@ -235,7 +235,42 @@
       "content": "Send us your improvement suggestions, feature requests, or bug reports."
     },
     "link": "Link",
-    "sendFeedbackEmail": "Send Feedback via Email"
+    "sendFeedbackEmail": "Send Feedback via Email",
+    "detail": {
+      "intro": {
+        "title": "Seoul Tree Map",
+        "features": ["Explore neighborhood trees", "Filter by species and size", "View annual ecological benefits", "Save and share favorites"],
+        "mapDisplayTitle": "Map Display",
+        "mapDisplayDesc": "Trees are displayed as circles. Circle size reflects trunk diameter. Colors vary by species. Trees appear more clearly in high-density areas."
+      },
+      "species": {
+        "title": "Species and Size Classification",
+        "sizeTitle": "Size Classification",
+        "sizeItems": ["Small: < 15cm", "Medium-Small: 15-30cm", "Medium: 30-50cm", "Medium-Large: 50-80cm", "Large: ≥ 80cm"],
+        "sizeDesc": "Tree size is measured by DBH (Diameter at Breast Height, trunk diameter at 1.3m above ground). Larger circles indicate larger trees.",
+        "colorTitle": "Tree Type Colors",
+        "colorItems": ["Protected Tree: Red (#FF6B6B)", "Street Tree: By species", "Park Tree: Sky Blue (#45B7D1)"],
+        "speciesColorTitle": "Street Tree Species Colors",
+        "speciesColorItems": ["Ginkgo: Gold (#FFD700)", "Zelkova: Dark Green (#228B22)", "Platanus: Light Green (#8FBC8F)", "Cherry: Light Pink (#FFB6C1)", "Maple: Orange (#FF4500)", "Pine: Forest Green (#006400)", "Willow: Lime Green (#32CD32)", "Oak: Brown (#8B4513)", "Other: Green (#22C55E)"]
+      },
+      "dataSource": {
+        "title": "Data Source",
+        "detailTitle": "Details",
+        "items": ["Seoul Street Tree Location Data https://data.seoul.go.kr/dataList/OA-1325/S/1/datasetView.do", "Seoul Protected and Heritage Tree Data https://data.seoul.go.kr/dataList/OA-1323/S/1/datasetView.do", "Seoul Park and Private Tree Data https://data.seoul.go.kr/dataList/OA-1324/S/1/datasetView.do"]
+      },
+      "ecoBenefits": {
+        "title": "Ecological Benefits",
+        "crownTitle": "Crown Area Measurement",
+        "crownDesc": "Uses measured crown width if available. Otherwise estimates using DBH and species-specific regression formulas.",
+        "calcTitle": "Benefit Calculations",
+        "calcItems": ["Stormwater: 157 liters absorbed per 1㎡ crown area annually. Valued at water utility rates (₩0.85/L)", "Energy Savings: Varies by building proximity. High-density areas (Jung-gu 75%) > Low-density areas (Seocho-gu 21%). Valued at electricity rates (₩175/kWh)", "Air Purification: 129g pollutants removed per 1㎡ crown area annually. Species adjustment (Pine 1.3x, Zelkova 1.0x, etc.). Includes PM2.5, PM10, NO₂ and 5 major pollutants", "Carbon Sequestration: Biomass calculated using species-specific allometric equations. 2% annual growth rate applied. Valued at carbon credit prices (₩45/kg)"]
+      },
+      "feedback": {
+        "title": "Feedback",
+        "inquiryTitle": "Inquiries and Suggestions",
+        "inquiryDesc": "We welcome all feedback including opinions, bug reports, and feature suggestions for Seoul Tree Map."
+      }
+    }
   },
   "landing": {
     "blogTitle": "Latest Stories",

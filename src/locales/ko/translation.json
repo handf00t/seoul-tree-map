@@ -235,7 +235,42 @@
       "content": "개선사항, 기능 제안, 오류 제보를 보내주세요."
     },
     "link": "링크",
-    "sendFeedbackEmail": "이메일로 피드백 보내기"
+    "sendFeedbackEmail": "이메일로 피드백 보내기",
+    "detail": {
+      "intro": {
+        "title": "서울 나무 지도",
+        "features": ["우리 동네 나무 탐색", "수종과 크기를 필터링", "연간 생태적 편익 확인", "즐겨찾기 저장 및 공유"],
+        "mapDisplayTitle": "지도 표시 방식",
+        "mapDisplayDesc": "나무는 원으로 표시됩니다. 원의 크기는 흉고직경을 반영합니다. 수종별로 색상이 나뉩니다. 나무 밀도가 높은 지역에서 더 선명하게 표시됩니다."
+      },
+      "species": {
+        "title": "수종과 크기분류",
+        "sizeTitle": "크기 분류 기준",
+        "sizeItems": ["소형: 15cm 미만", "중소형: 15~30cm", "중형: 30cm~50cm", "중대형: 50cm~80cm", "대형: 80cm 이상"],
+        "sizeDesc": "나무 크기는 흉고직경(DBH, 지면에서 1.3m 높이의 줄기 지름)으로 측정합니다. 원의 크기가 클수록 나무가 큽니다.",
+        "colorTitle": "나무 유형별 색상",
+        "colorItems": ["보호수: 빨간색 (#FF6B6B)", "가로수: 수종별 색상", "공원수목: 하늘색 (#45B7D1)"],
+        "speciesColorTitle": "가로수 수종별 색상",
+        "speciesColorItems": ["은행나무: 금색 (#FFD700)", "느티나무: 진녹색 (#228B22)", "플라타너스: 연녹색 (#8FBC8F)", "벚나무: 연분홍 (#FFB6C1)", "단풍나무: 주황색 (#FF4500)", "소나무: 진녹색 (#006400)", "버드나무: 라임그린 (#32CD32)", "참나무: 갈색 (#8B4513)", "기타 수종: 녹색 (#22C55E)"]
+      },
+      "dataSource": {
+        "title": "데이터 출처",
+        "detailTitle": "상세 정보",
+        "items": ["서울시 가로수 위치 정보 https://data.seoul.go.kr/dataList/OA-1325/S/1/datasetView.do", "서울시 보호수 및 노거수 위치 정보 https://data.seoul.go.kr/dataList/OA-1323/S/1/datasetView.do", "서울시 공원 및 사유지수목 위치정보 https://data.seoul.go.kr/dataList/OA-1324/S/1/datasetView.do"]
+      },
+      "ecoBenefits": {
+        "title": "생태 편익",
+        "crownTitle": "수관면적 측정",
+        "crownDesc": "실측 수관너비가 있으면 우선 사용. 없으면 흉고직경(DBH)과 수종별 회귀식으로 추정",
+        "calcTitle": "편익별 계산",
+        "calcItems": ["빗물 흡수 : 수관면적 1㎡당 연간 157리터 흡수. 상수도 요금 기준 가치 환산 (0.85원/L)", "에너지 절약: 건물 근접도에 따라 차등 적용. 고밀도 지역(중구 75%) > 저밀도 지역(서초구 21%). 전기 요금 기준 환산 (175원/kWh)", "대기 정화: 수관면적 1㎡당 연간 129g 오염물질 제거. 수종별 보정 (소나무 1.3배, 느티나무 1.0배 등). PM2.5, PM10, NO₂ 등 5대 오염물질 포함", "탄소 흡수 : 수종별 상대생장식으로 바이오매스 계산. 연간 성장률 2% 적용. 배출권 거래가 기준 환산 (45원/kg)"]
+      },
+      "feedback": {
+        "title": "피드백",
+        "inquiryTitle": "문의 및 제안",
+        "inquiryDesc": "서울 나무 지도에 대한 의견, 버그 제보, 기능 제안 등 모든 피드백을 환영합니다."
+      }
+    }
   },
   "landing": {
     "blogTitle": "최신 이야기",

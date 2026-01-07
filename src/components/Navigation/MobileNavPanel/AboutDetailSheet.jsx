@@ -3,129 +3,75 @@ import { useTranslation } from 'react-i18next';
 import IconButton from '../../UI/IconButton';
 
 const AboutDetailSheet = ({ section, onClose }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   if (!section) return null;
 
   const getDetailContent = (sectionId) => {
     switch (sectionId) {
       case 'intro':
         return {
-          title: '서울 나무 지도',
+          title: t('about.detail.intro.title'),
           sections: [
             {
               sectionTitle: null,
-              items: [
-                '우리 동네 나무 탐색',
-                '수종과 크기를 필터링',
-                '연간 생태적 편익 확인',
-                '즐겨찾기 저장 및 공유'
-              ]
+              items: t('about.detail.intro.features', { returnObjects: true })
             },
             {
-              sectionTitle: '지도 표시 방식',
-              description: '나무는 원으로 표시됩니다. 원의 크기는 흉고직경을 반영합니다. 수종별로 색상이 나뉩니다. 나무 원도가 높을 자연대로 반투명합니다. 나무 반도가 높을 지역에서 더 선명하게 표시됩니다.'
+              sectionTitle: t('about.detail.intro.mapDisplayTitle'),
+              description: t('about.detail.intro.mapDisplayDesc')
             }
           ]
         };
       case 'species':
         return {
-          title: '수종과 크기분류',
+          title: t('about.detail.species.title'),
           sections: [
             {
-              sectionTitle: '크기 분류 기준',
-              items: [
-                '소형: 15cm 미만',
-                '중소형: 15~30cm',
-                '중형: 30cm~50cm',
-                '중대형: 50cm~80cm',
-                '대형: 80cm 이상'
-              ],
-              description: '나무 크기는 흉고직경(DBH, 지면에서 1.3m 높이의 줄기 지름)으로 측정합니다. 원의 크기가 클수록 나무가 큽니다.'
+              sectionTitle: t('about.detail.species.sizeTitle'),
+              items: t('about.detail.species.sizeItems', { returnObjects: true }),
+              description: t('about.detail.species.sizeDesc')
             },
             {
-              sectionTitle: '나무 유형별 색상',
-              items: [
-                '보호수: 빨간색 (#FF6B6B)',
-                '가로수: 수종별 색상',
-                '공원수목: 하늘색 (#45B7D1)'
-              ]
+              sectionTitle: t('about.detail.species.colorTitle'),
+              items: t('about.detail.species.colorItems', { returnObjects: true })
             },
             {
-              sectionTitle: '가로수 수종별 색상',
-              items: [
-                '은행나무: 금색 (#FFD700)',
-                '느티나무: 진녹색 (#228B22)',
-                '플라타너스: 연녹색 (#8FBC8F)',
-                '벚나무: 연분홍 (#FFB6C1)',
-                '단풍나무: 주황색 (#FF4500)',
-                '소나무: 진녹색 (#006400)',
-                '버드나무: 라임그린 (#32CD32)',
-                '참나무: 갈색 (#8B4513)',
-                '기타 수종: 녹색 (#22C55E)'
-              ]
-            }
-          ]
-        };
-      case 'favorites':
-        return {
-          title: '즐겨찾기',
-          sections: [
-            {
-              sectionTitle: '사용 방법',
-              items: [
-                'Dummy item 1',
-                'Dummy item 2',
-                'Dummy item 3',
-                'Dummy item 4'
-              ]
-            },
-            {
-              sectionTitle: null,
-              description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              sectionTitle: t('about.detail.species.speciesColorTitle'),
+              items: t('about.detail.species.speciesColorItems', { returnObjects: true })
             }
           ]
         };
       case 'data-source':
         return {
-          title: '데이터 출처',
+          title: t('about.detail.dataSource.title'),
           sections: [
             {
-              sectionTitle: '상세 정보',
-              items: [
-                '서울시 가로수 위치 정보 https://data.seoul.go.kr/dataList/OA-1325/S/1/datasetView.do',
-                '서울시 보호수 및 노거수 위치 정보 https://data.seoul.go.kr/dataList/OA-1323/S/1/datasetView.do',
-                '서울시 공원 및 사유지수목 위치정보 https://data.seoul.go.kr/dataList/OA-1324/S/1/datasetView.do',
-              ]
+              sectionTitle: t('about.detail.dataSource.detailTitle'),
+              items: t('about.detail.dataSource.items', { returnObjects: true })
             },
           ]
         };
       case 'eco-benefits':
         return {
-          title: '생태 편익',
+          title: t('about.detail.ecoBenefits.title'),
           sections: [
             {
-              sectionTitle: '수관면적 측정',
-              description: '실측 수관너비가 있으면 우선 사용. 없으면 흉고직경(DBH)과 수종별 회귀식으로 추정'
+              sectionTitle: t('about.detail.ecoBenefits.crownTitle'),
+              description: t('about.detail.ecoBenefits.crownDesc')
             },
             {
-
-              sectionTitle: '편익별 계산',
-              items: [
-                '빗물 흡수 : 수관면적 1㎡당 연간 157리터 흡수. 상수도 요금 기준 가치 환산 (0.85원/L)',
-                '에너지 절약: 건물 근접도에 따라 차등 적용. 고밀도 지역(중구 75%) > 저밀도 지역(서초구 21%). 전기 요금 기준 환산 (175원/kWh)',
-                '대기 정화: 수관면적 1㎡당 연간 129g 오염물질 제거. 수종별 보정 (소나무 1.3배, 느티나무 1.0배 등). PM2.5, PM10, NO₂ 등 5대 오염물질 포함',
-                '탄소 흡수 : 수종별 상대생장식으로 바이오매스 계산. 연간 성장률 2% 적용. 배출권 거래가 기준 환산 (45원/kg)'
-              ]
+              sectionTitle: t('about.detail.ecoBenefits.calcTitle'),
+              items: t('about.detail.ecoBenefits.calcItems', { returnObjects: true })
             }
           ]
         };
       case 'feedback':
         return {
-          title: '피드백',
+          title: t('about.detail.feedback.title'),
           sections: [
             {
-              sectionTitle: '문의 및 제안',
-              description: '서울 나무 지도에 대한 의견, 버그 제보, 기능 제안 등 모든 피드백을 환영합니다.'
+              sectionTitle: t('about.detail.feedback.inquiryTitle'),
+              description: t('about.detail.feedback.inquiryDesc')
             },
             {
               sectionTitle: null,
@@ -142,6 +88,14 @@ const AboutDetailSheet = ({ section, onClose }) => {
   };
 
   const content = getDetailContent(section.id);
+
+  // Email subject and body based on language
+  const emailSubject = i18n.language === 'ko'
+    ? '서울 나무 지도 피드백'
+    : 'Seoul Tree Map Feedback';
+  const emailBody = i18n.language === 'ko'
+    ? '안녕하세요,%0D%0A%0D%0A피드백 내용을 작성해주세요.'
+    : 'Hello,%0D%0A%0D%0APlease write your feedback here.';
 
   return (
     <div style={{
@@ -303,7 +257,7 @@ const AboutDetailSheet = ({ section, onClose }) => {
 
             {sec.emailButton && (
               <a
-                href="mailto:handfoot119@gmail.com?subject=서울 나무 지도 피드백&body=안녕하세요,%0D%0A%0D%0A피드백 내용을 작성해주세요."
+                href={`mailto:handfoot119@gmail.com?subject=${emailSubject}&body=${emailBody}`}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
