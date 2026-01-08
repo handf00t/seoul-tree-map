@@ -205,14 +205,17 @@ const SearchFilterPanel = ({ map, activeFilterCount, onFilterApply }) => {
   if (!map) return null;
 
   return (
-    <div style={{
-      position: 'absolute',
-      top: '20px',
-      left: '20px',
-      zIndex: 10,
-      width: '350px',
-      maxWidth: 'calc(100vw - 40px)'
-    }}>
+    <div
+      data-filter-panel
+      style={{
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        zIndex: 10,
+        width: '350px',
+        maxWidth: 'calc(100vw - 40px)'
+      }}
+    >
       <div className="surface-elevated" style={{
         overflow: 'hidden',
         animation: 'slideDown var(--duration-normal) ease',

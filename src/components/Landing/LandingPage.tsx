@@ -60,6 +60,11 @@ const LandingPage: React.FC<LandingPageProps> = ({
         return;
       }
 
+      // SearchFilterPanel 클릭은 무시
+      if (target.closest('[data-filter-panel]')) {
+        return;
+      }
+
       if (mapSectionRef.current && !mapSectionRef.current.contains(target)) {
         setIsMapActive(false);
       }
