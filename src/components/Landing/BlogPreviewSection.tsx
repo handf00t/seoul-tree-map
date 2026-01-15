@@ -7,6 +7,7 @@ import { loadAllPosts } from '../../utils/markdownLoader';
 
 interface BlogPost {
   id: string;
+  slug: string;
   title: string;
   date: string;
   excerpt: string;
@@ -37,6 +38,7 @@ const BlogPreviewSection: React.FC<BlogPreviewSectionProps> = ({ onViewAll }) =>
         // 최신 3개 포스트만 사용
         const latestPosts = allPosts.slice(0, 3).map((post: any) => ({
           id: post.contentFile?.replace('.md', '') || post.id,
+          slug: post.slug,
           title: post.title,
           date: post.publishedAt?.toISOString() || post.date,
           excerpt: post.excerpt || '',
@@ -149,7 +151,7 @@ const BlogPreviewSection: React.FC<BlogPreviewSectionProps> = ({ onViewAll }) =>
           {posts.map((post) => (
             <article
               key={post.id}
-              onClick={() => navigate(`/blog/${post.id}`)}
+              onClick={() => navigate(`/blog/${post.slug}`)}
               style={{
                 background: 'var(--surface-variant)',
                 borderRadius: '16px',
